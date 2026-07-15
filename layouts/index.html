@@ -1,0 +1,18 @@
+{{ define "main" }}
+  {{/* Throwaway Phase 0 home — proves the pipeline emits CSS (text-eto-blue is
+       a token-generated utility) and, next seam, that Alpine initializes. The
+       real Home is Phase 7. */}}
+  <section class="mx-auto max-w-2xl px-6 py-16">
+    <h1 class="text-4xl font-bold text-eto-blue">Euro Team Outreach</h1>
+    <p class="mt-4 text-lg text-gray-700">
+      Phase 0 scaffold — Hugo, Tailwind v4, and Alpine are wired up.
+    </p>
+    {{/* Proves Alpine initializes (toggle) and the x-cloak CSS rule works. */}}
+    <div x-data="{ open: false }" class="mt-8">
+      <button @click="open = !open" class="rounded bg-eto-blue px-4 py-2 font-semibold text-white">
+        Toggle Alpine
+      </button>
+      <p x-show="open" x-cloak class="mt-3 text-gray-700">Alpine is working.</p>
+    </div>
+  </section>
+{{ end }}

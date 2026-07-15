@@ -1,0 +1,13 @@
+Tailwind Plus License Notice
+============================
+
+This project's developer holds a Tailwind Plus (formerly Tailwind UI) license.
+
+Licensed snippets may be kept locally under `docs/tailwind_plus/` as design
+references. That directory is git-ignored and must never be committed.
+
+Tailwind Plus components are used as *design patterns* — read for layout,
+spacing, and class idiom, then re-implemented as Hugo templates. They are not
+copied verbatim into this repository.
+
+See https://tailwindcss.com/plus/license for the full license terms.

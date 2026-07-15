@@ -1,0 +1,15 @@
+{{/* Alpine.js bundle. js.Build (esbuild) resolves the alpinejs npm import from
+     node_modules and bundles it; minified + fingerprinted + SRI in production,
+     plain in dev. Idiom mirrors dobroizlo's page-js block. */}}
+{{ with resources.Get "js/main.js" }}
+  {{ $opts := dict "minify" (not hugo.IsDevelopment) "target" "es2020" }}
+  {{ with . | js.Build $opts }}
+    {{ if hugo.IsDevelopment }}
+      <script defer src="{{ .RelPermalink }}"></script>
+    {{ else }}
+      {{ with . | fingerprint }}
+        <script defer src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous"></script>
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}

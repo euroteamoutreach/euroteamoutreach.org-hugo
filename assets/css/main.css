@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@source "hugo_stats.json";
+@plugin "@tailwindcss/typography";
+
+/* PROVISIONAL design tokens — Phase 1 (Claude Design) REPLACES this whole block.
+   Tailwind v4 is CSS-first: each token here auto-generates the matching
+   utilities (--color-eto-blue → bg-eto-blue, text-eto-blue, …). The type scale,
+   spacing, and grey palette come from Tailwind v4's own defaults for now; only
+   the house blue is a considered value. Re-skinning the site is editing this
+   one block — that is the whole point of the CSS-first approach (#50). */
+@theme {
+  /* House blue — shared with Bible First today (#239). */
+  --color-eto-blue: #0d47a1;
+
+  /* Neutral system sans until Phase 1 chooses the real typeface — avoids
+     committing to (or fetching) a webfont before the design session. */
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Keep x-cloak elements hidden until Alpine initializes (prevents a flash of
+   un-inited content). Alpine is bundled in the scripts partial. */
+[x-cloak] {
+  display: none !important;
+}

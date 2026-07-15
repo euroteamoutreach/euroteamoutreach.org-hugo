@@ -1,0 +1,35 @@
+# Hugo build output
+public/
+resources/_gen/
+.hugo_build.lock
+
+# Node modules
+node_modules/
+
+# Hugo stats (regenerated on build, feeds Tailwind's JIT scan)
+hugo_stats.json
+
+# Temporary working files
+tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+
+# Tailwind Plus licensed snippets — kept locally as design references only,
+# never committed. See the root NOTICE file.
+docs/tailwind_plus/
+
+# The PRD lives in the private planning repo (euroteamoutreach/eto-web-reboot).
+# docs/prd is a LOCAL symlink → ../../planning/prd so the old path keeps
+# resolving from the Hugo root; it must never be committed to this public repo.
+/docs/prd
+
+# Commit-message scratch file (see git commit protocol)
+.git_commit_msg
+
+# Claude Code local settings (personal overrides)
+.claude/settings.local.json

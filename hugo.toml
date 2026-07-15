@@ -1,0 +1,131 @@
+baseURL = "https://euroteamoutreach.org/"
+locale = "en-US"
+title = "Euro Team Outreach"
+enableRobotsTXT = true
+
+# Pagination
+[pagination]
+  pagerSize = 8
+
+# Permalinks — the datestamped blog filename IS the slug, so legacy post URLs
+# are reproducible (2026-05-27-teaching-serving-standing.md → /blog/2026-05-27-teaching-serving-standing/).
+# Mirrors ofreport (#31, #47).
+[permalinks]
+  blog = "/blog/:slug/"
+
+# Taxonomies — tags only, no categories (#47)
+[taxonomies]
+  tag = "tags"
+
+# RSS output
+[services.rss]
+  limit = 10
+
+[outputFormats.RSS]
+  baseName = "feed"
+
+# Minification. Disable XML so the feed's <content:encoded> keeps its literal
+# <![CDATA[…]]> wrapper (the tdewolff minifier would otherwise rewrite it as
+# entity-encoded HTML). CDATA is the more robustly-interpreted form for HTML
+# inside content:encoded across RSS/MailChimp consumers. HTML/CSS/JS
+# minification is unaffected; only feed.xml and sitemap.xml ship with
+# whitespace preserved (both still valid; negligible after gzip). Not optional.
+[minify]
+  disableXML = true
+
+# Migrated Middleman blog posts carry raw HTML, so Goldmark must not escape it.
+[markup.goldmark.renderer]
+  unsafe = true
+
+# Site parameters
+[params]
+  description = "Euro Team Outreach — preaching the Gospel, teaching the Bible, discipling men in missions."
+  # ETO's Cloudinary cloud name. PUBLIC, not a secret — delivery needs only this.
+  # The API key/secret are needed only to UPLOAD and never enter the repo (#60).
+  cloudinaryBase = "https://res.cloudinary.com/euro-team-outreach"
+
+  # Umami analytics. Left blank until the Phase 14 production cutover; the
+  # analytics.html partial (Phase 12) emits nothing while websiteId is empty,
+  # so it stays inert on every build. euroteamoutreach.org needs a NEW website
+  # record in the shared Umami instance (unlike ofreport, which reused one).
+  [params.umami]
+    scriptUrl = "https://lens.euroteamoutreach.org/script.js"
+    websiteId = ""
+
+# Build stats feed Tailwind v4's JIT scan (@source "hugo_stats.json" in main.css).
+# The cachebuster invalidates the generated CSS whenever the class list changes.
+[build]
+  [build.buildStats]
+    enable = true
+  [[build.cachebusters]]
+    source = 'assets/notwatching/hugo_stats\.json'
+    target = 'css'
+
+# Module mounts for the Tailwind pipeline. hugo_stats.json is mounted with
+# disableWatch = true so the build writing it doesn't trigger an infinite
+# rebuild loop.
+[module]
+  [[module.mounts]]
+    source = 'assets'
+    target = 'assets'
+  [[module.mounts]]
+    disableWatch = true
+    source = 'hugo_stats.json'
+    target = 'assets/notwatching/hugo_stats.json'
+
+# Main navigation. "ETO" (the brand/home link) is rendered separately by the
+# Phase 2 header, following ofreport's brand-plus-menu pattern; these are the
+# destination items. Give carries button = true so the header styles it as a
+# button, not a plain link (#24). pageRefs resolve once the content stubs land
+# (issue #4); the menu is inert config until the Phase 2 header renders it.
+[[menus.main]]
+  name = "Our Story"
+  pageRef = "/about/"
+  weight = 10
+[[menus.main]]
+  name = "UGO"
+  pageRef = "/ugo/"
+  weight = 20
+[[menus.main]]
+  name = "Give"
+  pageRef = "/give/"
+  weight = 30
+  [menus.main.params]
+    button = true
+[[menus.main]]
+  name = "Blog"
+  pageRef = "/blog/"
+  weight = 40
+[[menus.main]]
+  name = "Team"
+  pageRef = "/team/"
+  weight = 50
+[[menus.main]]
+  name = "Connect"
+  pageRef = "/contact/"
+  weight = 60
+
+# Footer utility links (Phase 2 footer.html renders these).
+[[menus.footer]]
+  name = "Meet Jesus"
+  pageRef = "/jesus/"
+  weight = 10
+[[menus.footer]]
+  name = "Doctrine"
+  pageRef = "/doctrine/"
+  weight = 20
+[[menus.footer]]
+  name = "Connect"
+  pageRef = "/contact/"
+  weight = 30
+
+# Footer social icons. Each entry's `icon` param maps to a social SVG (Phase 2).
+# Real URLs are populated when the footer is built; kept as a commented example
+# so the structure is documented without inventing account links here.
+# [[menus.footer_social]]
+#   name = "Facebook"
+#   url = "https://www.facebook.com/..."
+#   weight = 10
+#   [menus.footer_social.params]
+#     icon = "facebook"
+#     label = "ETO on Facebook"

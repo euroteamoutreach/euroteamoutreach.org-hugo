@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+  {{/* Deferred so hugo_stats.json (Tailwind's JIT scan target) is complete
+       before the CSS is generated. See docs/prd/02-architecture.md. */}}
+  {{ with (templates.Defer (dict "key" "global")) }}
+    {{ partial "css.html" . }}
+  {{ end }}
+</head>
+<body class="min-h-screen bg-white font-sans text-gray-900 antialiased">
+  {{/* Global chrome (header, nav, footer, doorway band) is Phase 2. */}}
+  <main>
+    {{ block "main" . }}{{ end }}
+  </main>
+  {{ partial "scripts.html" . }}
+</body>
+</html>

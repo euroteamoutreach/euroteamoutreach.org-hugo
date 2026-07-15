@@ -1,0 +1,16 @@
+{{ define "main" }}
+  {{/* Minimal Phase 0 fallback for list/section/taxonomy pages. Silences the
+       "no layout for kind taxonomy" build warning from the tags taxonomy.
+       Real list templates arrive with the blog (Phase 10) and chrome (Phase 2). */}}
+  <section class="mx-auto max-w-2xl px-6 py-16">
+    <h1 class="text-4xl font-bold text-eto-blue">{{ .Title }}</h1>
+    {{ .Content }}
+    {{ with .Pages }}
+      <ul class="mt-6 space-y-2">
+        {{ range . }}
+          <li><a class="text-eto-blue underline" href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+        {{ end }}
+      </ul>
+    {{ end }}
+  </section>
+{{ end }}
