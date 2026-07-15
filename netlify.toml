@@ -1,0 +1,44 @@
+[build]
+  publish = "public"
+  command = "npm ci && hugo --gc --minify"
+
+[build.environment]
+  HUGO_VERSION = "0.164.0"   # pin — the GitHub Actions CI workflow must pin this exact version
+  HUGO_ENVIRONMENT = "production"
+  NODE_VERSION = "22"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Preview + branch deploys build with HUGO_ENVIRONMENT = "preview" — NOT
+# "development". Do not "clean this up." Two halves must match:
+#
+#   1. "preview" turns hugo.IsProduction OFF without turning hugo.IsDevelopment
+#      ON. IsDevelopment staying false keeps the CSS pipeline in minify +
+#      fingerprint mode, so a deploy preview tests exactly what production
+#      ships. "development" would flip IsDevelopment true and drop
+#      minify/fingerprint — previews would stop testing the real build.
+#   2. IsProduction being false lets the Phase 12 seo.html partial emit
+#      noindex,nofollow on the *.netlify.app preview/branch URLs, keeping them
+#      out of the search index.
+#
+# ofreport already fought and won this — lift it, don't re-derive it
+# (see docs/prd/12-risks-and-open-items.md §"Already Solved").
+# ─────────────────────────────────────────────────────────────────────────────
+
+[context.deploy-preview]
+  command = "npm ci && hugo --gc --minify --buildFuture -b $DEPLOY_PRIME_URL"
+[context.deploy-preview.environment]
+  HUGO_ENVIRONMENT = "preview"
+
+[context.branch-deploy]
+  command = "npm ci && hugo --gc --minify -b $DEPLOY_PRIME_URL"
+[context.branch-deploy.environment]
+  HUGO_ENVIRONMENT = "preview"
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
