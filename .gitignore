@@ -28,6 +28,11 @@ docs/tailwind_plus/
 # resolving from the Hugo root; it must never be committed to this public repo.
 /docs/prd
 
+# Debriefs live in the private planning repo (euroteamoutreach/eto-web-reboot).
+# docs/debriefs is a LOCAL symlink → ../../planning/debriefs, mirroring docs/prd,
+# so the /debrief skill's default path resolves without committing to this public repo.
+/docs/debriefs
+
 # Commit-message scratch file (see git commit protocol)
 .git_commit_msg
 
