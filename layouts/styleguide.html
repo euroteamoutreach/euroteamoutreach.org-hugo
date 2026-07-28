@@ -1,0 +1,475 @@
+{{/* ---------------------------------------------------------------------
+     /styleguide/ — the design review surface (#67).
+
+     This page replaces the page-comp set the design phase would otherwise
+     have produced: real Tailwind, real Hugo, real self-hosted fonts, at a
+     real URL on a real phone. Every later phase reviews against it, and the
+     in-situ copy/design tweaks deferred under #56 land here first.
+
+     TWO RULES THIS FILE MUST KEEP:
+
+     1. NO LITERAL HEX ANYWHERE. Colour is applied through token-generated
+        utilities (bg-eto-600, text-ink, …), and every value the page
+        DISPLAYS — swatch hexes, contrast ratios — is read back at runtime
+        from the live computed styles by assets/js/styleguide.js. A
+        styleguide that hard-codes its own colours stops telling the truth
+        the moment a token changes, which defeats the point of having one.
+
+     2. NOINDEXED AND UNLINKED. The noindex meta and sitemap exclusion come
+        from front matter (content/styleguide.md); the absence from the main
+        and footer menus is by omission in hugo.toml. Reachable by URL only.
+        Do not add it to a menu "for convenience."
+     --------------------------------------------------------------------- */}}
+
+{{ define "main" }}
+  {{/* Swatch groups. Only token NAMES live here — never values. One swatch
+       markup below serves every group, so ramps stay visually comparable. */}}
+  {{ $groups := slice
+    (dict
+      "id" "blue"
+      "title" "Brand blue"
+      "note" "One hex is a brand, not a system (#63). The house blue is pinned at 600 — read it off the swatch, not off this sentence — and the ramp exists because a value that dark and saturated cannot also serve hover states, tinted bands, or text on dark grounds. Prefixed eto-* so Tailwind's own blue-* is not shadowed."
+      "pinned" "eto-600"
+      "tokens" (slice "eto-50" "eto-100" "eto-200" "eto-300" "eto-400" "eto-500" "eto-600" "eto-700" "eto-800" "eto-900")
+    )
+    (dict
+      "id" "gold"
+      "title" "Accent — gold"
+      "note" "Giving actions ONLY (#64). A second hue, not a second shade, is what makes a CTA read as a CTA when the brand colour is also the chrome. The moment gold appears on “Read more” it stops signalling. It is a surface colour, never a text colour — see the contrast pairs below."
+      "tokens" (slice "gold" "gold-hover")
+    )
+    (dict
+      "id" "neutrals"
+      "title" "Grounds, warm neutrals, and ink"
+      "note" "The warmth is deliberate and was chosen against the instinct for cool slate (#65) — the brand is already blue-heavy, so the neutrals pull the other way. Ink stays a cool slate on purpose: at 11:1 on paper the temperature of body text is imperceptible, and it is the mid-tones that carry warmth."
+      "tokens" (slice "paper" "warm-100" "warm-200" "warm-300" "warm-400" "warm-600" "warm-800" "ink")
+    )
+  }}
+
+  {{/* Contrast pairs. No token names are threaded into the JS — it measures
+       the colours the browser actually paints on these samples. */}}
+  {{ $pairs := slice
+    (dict "fg" "ink" "bg" "gold" "note" "The gold button’s own label.")
+    (dict "fg" "white" "bg" "gold" "note" "Why gold buttons are ink, not white.")
+    (dict "fg" "gold" "bg" "paper" "note" "Why gold is never body text.")
+    (dict "fg" "gold" "bg" "eto-900" "note" "The one exception — UGO stat-band numerals.")
+    (dict "fg" "white" "bg" "eto-600" "note" "Primary button; chrome on blue.")
+    (dict "fg" "ink" "bg" "paper" "note" "Body text on the default ground.")
+    (dict "fg" "warm-600" "bg" "paper" "note" "Secondary text, captions, meta.")
+  }}
+
+  <div class="bg-paper text-ink">
+    {{/* ---------------- Masthead ---------------- */}}
+    <section class="border-b border-warm-200 bg-white">
+      <div class="mx-auto max-w-5xl px-6 py-12 sm:py-16">
+        <p class="text-xs font-semibold tracking-widest text-warm-600 uppercase">
+          Euro Team Outreach · Design system
+        </p>
+        <h1 class="mt-3 text-4xl font-black tracking-tight text-eto-600 sm:text-5xl">
+          Style Guide
+        </h1>
+        <p class="mt-4 max-w-prose text-lg leading-relaxed text-warm-800">
+          Every design token in the real stack. This page is the design review
+          surface — it replaces a set of static comps, because a deploy preview
+          is real Tailwind, real Hugo, and real self-hosted fonts on a real
+          phone. Nothing here is hard-coded: swatch values and contrast ratios
+          are read from the live computed styles, so if a token changes, this
+          page changes with it.
+        </p>
+        <p class="mt-4 max-w-prose text-sm text-warm-600">
+          Noindexed, excluded from <code class="font-mono">sitemap.xml</code>,
+          and not linked from any menu.
+        </p>
+
+        {{/* The rules tokens cannot enforce on their own. */}}
+        <ul class="mt-8 grid gap-3 sm:grid-cols-2">
+          {{ range slice
+            "Gold is a surface colour, never a text colour — except on eto-900."
+            "Gold appears only on giving actions. On “Read more” it stops signalling."
+            "No shadows. Separation comes from a change of ground, a 1px warm-200 rule, or space."
+            "Four surfaces, closed set: paper · white · eto-50 · eto-900."
+          }}
+            <li class="rounded-eto-lg border border-warm-200 bg-paper px-4 py-3 text-sm text-warm-800">
+              {{ . }}
+            </li>
+          {{ end }}
+        </ul>
+      </div>
+    </section>
+
+    {{/* ---------------- Colour ---------------- */}}
+    {{ range $groups }}
+      {{ $group := . }}
+      <section id="{{ $group.id }}" class="border-b border-warm-200">
+        <div class="mx-auto max-w-5xl px-6 py-12">
+          <h2 class="text-2xl font-semibold tracking-tight">{{ $group.title }}</h2>
+          <p class="mt-2 max-w-prose text-sm leading-relaxed text-warm-600">
+            {{ $group.note }}
+          </p>
+          <div class="mt-6 grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-5 lg:grid-cols-10">
+            {{ range $group.tokens }}
+              <div class="min-w-0">
+                <div class="relative h-16 rounded-eto border border-warm-200 bg-{{ . }}">
+                  {{ if eq . $group.pinned }}
+                    <span class="absolute -top-2 left-1 rounded bg-eto-900 px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase">
+                      Brand
+                    </span>
+                  {{ end }}
+                </div>
+                {{/* break-words, NOT break-all — the swatch cell is too narrow
+                     for the full name, and break-all splits it mid-number
+                     ("--color-eto-5 / 00"). Normal wrapping takes the hyphen. */}}
+                <p class="mt-2 font-mono text-[11px] leading-tight break-words text-warm-800">
+                  --color-{{ . }}
+                </p>
+                <p
+                  class="font-mono text-[11px] leading-tight text-warm-600"
+                  data-token-value="--color-{{ . }}"
+                >
+                  …
+                </p>
+              </div>
+            {{ end }}
+          </div>
+        </div>
+      </section>
+    {{ end }}
+
+    {{/* ---------------- Contrast ---------------- */}}
+    <section id="contrast" class="border-b border-warm-200 bg-white">
+      <div class="mx-auto max-w-5xl px-6 py-12">
+        <h2 class="text-2xl font-semibold tracking-tight">Contrast</h2>
+        <p class="mt-2 max-w-prose text-sm leading-relaxed text-warm-600">
+          Measured, not asserted. Each ratio below is computed in the browser
+          from the colours actually painted on the sample, so the numbers
+          cannot drift away from the tokens. WCAG 2.1 thresholds: 4.5:1 for
+          body text (AA), 3:1 for text at 18.66px bold or 24px regular (AA
+          Large), 7:1 for AAA.
+        </p>
+        <div class="mt-6 grid gap-5 sm:grid-cols-2">
+          {{ range $pairs }}
+            <div data-contrast>
+              <div
+                class="rounded-eto-lg border border-warm-200 bg-{{ .bg }} px-5 py-6"
+                data-contrast-ground
+              >
+                <p class="text-xl font-bold text-{{ .fg }}" data-contrast-sample>
+                  1,250 boxes delivered
+                </p>
+                <p class="mt-1 text-sm text-{{ .fg }}">
+                  Body text at the default size, for comparison.
+                </p>
+              </div>
+              <p class="mt-2 flex flex-wrap items-baseline gap-x-2 text-sm">
+                <span class="font-mono text-xs text-warm-800">
+                  {{ .fg }} on {{ .bg }}
+                </span>
+                <span
+                  class="font-mono text-xs font-semibold"
+                  data-contrast-out
+                >…</span>
+              </p>
+              <p class="text-xs text-warm-600">{{ .note }}</p>
+            </div>
+          {{ end }}
+        </div>
+      </div>
+    </section>
+
+    {{/* ---------------- Typography ---------------- */}}
+    <section id="type" class="border-b border-warm-200">
+      <div class="mx-auto max-w-5xl px-6 py-12">
+        <h2 class="text-2xl font-semibold tracking-tight">Typography</h2>
+        <p class="mt-2 max-w-prose text-sm leading-relaxed text-warm-600">
+          Source Sans 3 is the direct successor to the Source Sans Pro the
+          legacy site already runs — evolution, not revolution (#15, #66). Both
+          faces are self-hosted from this origin and carry full Cyrillic, which
+          satisfies the Ukrainian-pages need (#68) at no extra cost. Whether
+          blog prose actually runs on the serif is decided in Phase 10, against
+          a real migrated post.
+        </p>
+        <div class="mt-8 grid gap-10 lg:grid-cols-2">
+          {{ range slice
+            (dict "class" "font-sans" "name" "Source Sans 3" "token" "--font-sans" "role" "All chrome and body")
+            (dict "class" "font-serif" "name" "Source Serif 4" "token" "--font-serif" "role" "Available; blog prose is a Phase 10 decision")
+          }}
+            <div class="{{ .class }} min-w-0">
+              <div class="border-b border-warm-200 pb-3">
+                <p class="font-sans text-xs font-semibold tracking-widest text-warm-600 uppercase">
+                  {{ .role }}
+                </p>
+                <p class="mt-1 text-lg font-semibold">{{ .name }}</p>
+                <p
+                  class="font-mono text-[11px] break-words text-warm-600"
+                  data-token-value="{{ .token }}"
+                >
+                  …
+                </p>
+              </div>
+
+              <p class="mt-6 text-4xl leading-none font-black tracking-tight break-words text-eto-600 sm:text-5xl">
+                Euro Team Outreach
+              </p>
+              <p class="mt-5 text-2xl font-semibold tracking-tight">
+                Preaching the Gospel in Ukraine
+              </p>
+              <p class="mt-2 text-xs font-semibold tracking-widest text-warm-600 uppercase">
+                Small label · uppercase
+              </p>
+              <p class="mt-4 max-w-prose leading-relaxed text-warm-800">
+                Aid goes out on discrete trips, not year-round. Teams load
+                boxes, drive to villages near the front, and hand them over
+                one household at a time — with the Gospel first and the box
+                second. The measure of a trip is not the tonnage.
+              </p>
+              <p class="mt-4 text-2xl break-words">
+                «Добро і Зло · Херсонська область»
+              </p>
+              <table class="mt-5 text-right tabular-nums">
+                <tbody>
+                  {{ range slice
+                    (dict "label" "Boxes delivered" "value" "1,250")
+                    (dict "label" "Cost per box" "value" "$20")
+                    (dict "label" "Villages reached" "value" "43")
+                  }}
+                    <tr>
+                      <td class="pr-6 text-left text-sm text-warm-600">
+                        {{ .label }}
+                      </td>
+                      <td class="text-lg font-semibold">{{ .value }}</td>
+                    </tr>
+                  {{ end }}
+                </tbody>
+              </table>
+              <p class="mt-1 text-xs text-warm-600">
+                Tabular numerals — figures align in a column.
+              </p>
+            </div>
+          {{ end }}
+        </div>
+      </div>
+    </section>
+
+    {{/* ---------------- Buttons ---------------- */}}
+    <section id="buttons" class="border-b border-warm-200 bg-white">
+      <div class="mx-auto max-w-5xl px-6 py-12">
+        <h2 class="text-2xl font-semibold tracking-tight">Button roles</h2>
+        <p class="mt-2 max-w-prose text-sm leading-relaxed text-warm-600">
+          Three roles, shown on both grounds because the header sits on white
+          while most content sits on paper. Gold is reserved for giving
+          actions; blue is the primary action everywhere else; outline is
+          tertiary. Hover to see the paired hover token.
+        </p>
+        <div class="mt-6 grid gap-5 sm:grid-cols-2">
+          {{ range slice
+            (dict "ground" "bg-paper" "label" "On paper — the default ground")
+            (dict "ground" "bg-white" "label" "On white — cards and the header")
+          }}
+            <div class="rounded-eto-lg border border-warm-200 {{ .ground }} px-5 py-6">
+              <p class="text-xs font-semibold tracking-widest text-warm-600 uppercase">
+                {{ .label }}
+              </p>
+              <div class="mt-4 flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  class="rounded-eto bg-gold px-5 py-2.5 font-semibold text-ink transition-colors hover:bg-gold-hover"
+                >
+                  Give
+                </button>
+                <button
+                  type="button"
+                  class="rounded-eto bg-eto-600 px-5 py-2.5 font-semibold text-white transition-colors hover:bg-eto-700"
+                >
+                  Read more
+                </button>
+                <button
+                  type="button"
+                  class="rounded-eto border border-eto-600 px-5 py-2.5 font-semibold text-eto-600 transition-colors hover:bg-eto-50"
+                >
+                  Learn more
+                </button>
+              </div>
+            </div>
+          {{ end }}
+        </div>
+      </div>
+    </section>
+
+    {{/* ---------------- Surfaces ---------------- */}}
+    <section id="surfaces">
+      <div class="mx-auto max-w-5xl px-6 pt-12 pb-6">
+        <h2 class="text-2xl font-semibold tracking-tight">The four surfaces</h2>
+        <p class="mt-2 max-w-prose text-sm leading-relaxed text-warm-600">
+          A closed set. Stacked here so the section rhythm reads as rhythm
+          rather than as a list of values. Separation is a change of ground, a
+          1px warm-200 rule, or space — never a shadow.
+        </p>
+      </div>
+
+      <div class="bg-paper py-10">
+        <div class="mx-auto max-w-5xl px-6">
+          <p class="text-xs font-semibold tracking-widest text-warm-600 uppercase">
+            paper — the default ground
+          </p>
+          <p class="mt-2 max-w-prose text-warm-800">
+            Most content sits here. Warm, low-contrast, and quiet enough that
+            a filled gold button is the loudest thing on the page.
+          </p>
+        </div>
+      </div>
+
+      <div class="border-y border-warm-200 bg-white py-10">
+        <div class="mx-auto max-w-5xl px-6">
+          <p class="text-xs font-semibold tracking-widest text-warm-600 uppercase">
+            white — cards, raised panels, the header
+          </p>
+          <p class="mt-2 max-w-prose text-warm-800">
+            Reads as lifted against paper without needing a shadow. The header
+            sits here; warmth is carried by elements further down the page.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-eto-50 py-10">
+        <div class="mx-auto max-w-5xl px-6">
+          <p class="text-xs font-semibold tracking-widest text-eto-800 uppercase">
+            eto-50 — quiet emphasis, the doorway band
+          </p>
+          <p class="mt-2 max-w-prose text-eto-900">
+            A tint of the brand, not a second brand colour. Marks a band as
+            distinct without competing with a giving CTA.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-eto-900 py-10">
+        <div class="mx-auto max-w-5xl px-6">
+          <p class="text-xs font-semibold tracking-widest text-eto-200 uppercase">
+            eto-900 — the footer and stat bands
+          </p>
+          <p class="mt-2 max-w-prose text-eto-100">
+            The only heavy surface, and the one place gold is legible as text.
+          </p>
+          <p class="mt-4">
+            <span class="text-4xl font-black text-gold tabular-nums">1,250</span>
+            <span class="ml-2 text-sm tracking-wide text-eto-200 uppercase">
+              boxes delivered
+            </span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {{/* ---------------- Radius ---------------- */}}
+    <section id="radius" class="border-b border-warm-200">
+      <div class="mx-auto max-w-5xl px-6 py-12">
+        <h2 class="text-2xl font-semibold tracking-tight">Radius</h2>
+        <p class="mt-2 max-w-prose text-sm leading-relaxed text-warm-600">
+          Two steps, both echoing the logo badge’s corner — the mark rounds a
+          500-unit-wide rectangle at 39 units, roughly 8%. Shown against the
+          logo, which is what they are derived from.
+        </p>
+        <div class="mt-6 flex flex-wrap items-end gap-8">
+          {{ with resources.Get "img/eto-logo-full.svg" }}
+            <div>
+              <img
+                src="{{ .RelPermalink }}"
+                alt="Euro Team Outreach logo"
+                width="200"
+                height="116"
+                class="w-40 max-w-full"
+              >
+              <p class="mt-2 font-mono text-[11px] text-warm-600">
+                the badge · ~8% corner
+              </p>
+            </div>
+          {{ end }}
+          {{ range slice
+            (dict "class" "rounded-eto" "token" "--radius-eto" "use" "buttons, photos, inputs")
+            (dict "class" "rounded-eto-lg" "token" "--radius-eto-lg" "use" "cards, panels")
+          }}
+            <div>
+              <div class="h-24 w-40 max-w-full border border-warm-300 bg-white {{ .class }}"></div>
+              <p class="mt-2 font-mono text-[11px] text-warm-800">{{ .token }}</p>
+              <p
+                class="font-mono text-[11px] text-warm-600"
+                data-token-value="{{ .token }}"
+              >
+                …
+              </p>
+              <p class="text-xs text-warm-600">{{ .use }}</p>
+            </div>
+          {{ end }}
+        </div>
+      </div>
+    </section>
+
+    {{/* ---------------- Token census ----------------
+         Auto-derived from the @theme block so this page cannot silently fall
+         behind it: adding a token to main.css adds it here. The regex matches
+         DECLARATIONS (name followed by a colon), which is what keeps the prose
+         in the surrounding comments — several of which name tokens — out of
+         the list. Inline style is used deliberately: the swatch has to resolve
+         a token name known only at build time, so there is no utility class to
+         reach for. The value still comes from the token, never a literal. */}}
+    {{ $src := resources.Get "css/main.css" }}
+    {{ $names := slice }}
+    {{ range findRE `--(?:color|font|radius)-[a-z0-9-]+[ \t]*:` $src.Content }}
+      {{ $names = $names | append (strings.TrimRight ": \t" .) }}
+    {{ end }}
+    <section id="census" class="bg-white">
+      <div class="mx-auto max-w-5xl px-6 py-12">
+        <h2 class="text-2xl font-semibold tracking-tight">Token census</h2>
+        <p class="mt-2 max-w-prose text-sm leading-relaxed text-warm-600">
+          Every token declared in the <code class="font-mono">@theme</code>
+          block of <code class="font-mono">assets/css/main.css</code>, read out
+          of the file at build time and given its live value at render time.
+          If a token exists, it is on this list — which is what makes “every
+          token appears on the styleguide” a structural fact rather than a
+          promise. The type scale and spacing scale are deliberately Tailwind’s
+          own defaults (#71) and so declare nothing here.
+        </p>
+        <p class="mt-3 font-mono text-xs text-warm-800">
+          {{ len $names }} tokens declared
+        </p>
+        <ul class="mt-6 grid gap-x-6 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+          {{ range $names }}
+            <li class="flex min-w-0 items-baseline gap-2 border-b border-warm-200 py-1.5">
+              {{ if hasPrefix . "--color-" }}
+                <span
+                  class="inline-block h-3 w-3 shrink-0 translate-y-0.5 rounded-xs border border-warm-300"
+                  style="{{ printf "background-color: var(%s)" . | safeCSS }}"
+                ></span>
+              {{ end }}
+              <code class="min-w-0 font-mono text-[11px] break-words text-warm-800">
+                {{ . }}
+              </code>
+              <span
+                class="ml-auto shrink-0 pl-2 font-mono text-[11px] text-warm-600"
+                data-token-value="{{ . }}"
+                data-token-truncate
+              >…</span>
+            </li>
+          {{ end }}
+        </ul>
+      </div>
+    </section>
+  </div>
+{{ end }}
+
+{{ define "scripts" }}
+  {{/* Styleguide-only. Kept out of the global bundle so the reading of live
+       token values and contrast ratios never ships to real visitors. */}}
+  {{ with resources.Get "js/styleguide.js" }}
+    {{ $opts := dict "minify" (not hugo.IsDevelopment) "target" "es2020" }}
+    {{ with . | js.Build $opts }}
+      {{ if hugo.IsDevelopment }}
+        <script defer src="{{ .RelPermalink }}"></script>
+      {{ else }}
+        {{ with . | fingerprint }}
+          <script defer src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous"></script>
+        {{ end }}
+      {{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
