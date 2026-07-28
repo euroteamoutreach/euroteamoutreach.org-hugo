@@ -1,0 +1,16 @@
+{{ define "main" }}
+  {{/* Minimal Phase 2 fallback for single pages — the counterpart to the
+       list.html fallback beside it. Its whole job is to make the ten content
+       stubs render something, so Phase 2's chrome can be reviewed with its own
+       nav and doorway links actually resolving instead of 404ing.
+
+       Deliberately title + .Content and nothing more. The real page templates
+       arrive in Phase 7; designing them here would build against un-reviewed
+       chrome. */}}
+  <article class="mx-auto max-w-2xl px-6 py-16">
+    <h1 class="text-4xl font-bold text-eto-600">{{ .Title }}</h1>
+    <div class="prose mt-6 max-w-none">
+      {{ .Content }}
+    </div>
+  </article>
+{{ end }}
