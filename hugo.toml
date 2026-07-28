@@ -74,10 +74,10 @@ enableRobotsTXT = true
     target = 'assets/notwatching/hugo_stats.json'
 
 # Main navigation. "ETO" (the brand/home link) is rendered separately by the
-# Phase 2 header, following ofreport's brand-plus-menu pattern; these are the
+# header, following ofreport's brand-plus-menu pattern; these are the
 # destination items. Give carries button = true so the header styles it as a
-# button, not a plain link (#24). pageRefs resolve once the content stubs land
-# (issue #4); the menu is inert config until the Phase 2 header renders it.
+# button, not a plain link (#24) — the header keys off that param and never
+# off the entry's name, so the gold-only-on-giving rule survives a menu edit.
 [[menus.main]]
   name = "Our Story"
   pageRef = "/about/"
@@ -86,12 +86,6 @@ enableRobotsTXT = true
   name = "UGO"
   pageRef = "/ugo/"
   weight = 20
-[[menus.main]]
-  name = "Give"
-  pageRef = "/give/"
-  weight = 30
-  [menus.main.params]
-    button = true
 [[menus.main]]
   name = "Blog"
   pageRef = "/blog/"
@@ -104,6 +98,18 @@ enableRobotsTXT = true
   name = "Connect"
   pageRef = "/contact/"
   weight = 60
+# Give is LAST on purpose, and the gap to 100 is deliberate headroom so a
+# nav item added later cannot land after it. It is the only button in the
+# bar, and a filled element that size needs an edge to anchor to — suspended
+# mid-row (it was weight 30, between UGO and Blog) it read as an accident
+# rather than as hierarchy. Position is menu data, so it is fixed here and
+# the header template stays a pure weight-ordered render.
+[[menus.main]]
+  name = "Give"
+  pageRef = "/give/"
+  weight = 100
+  [menus.main.params]
+    button = true
 
 # Footer utility links (Phase 2 footer.html renders these).
 [[menus.footer]]

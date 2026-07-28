@@ -1,0 +1,197 @@
+{{/* ---------------------------------------------------------------------
+     header.html — the top nav (#24).
+
+         ETO   Our Story   UGO   [ Give ]   Blog   Team   Connect
+
+     Driven entirely by [[menus.main]] in hugo.toml. "ETO" above is the
+     brand/home link, rendered separately from the menu items — ofreport's
+     brand-plus-menu pattern. The menu carries the six destinations only.
+
+     THREE RULES THIS FILE MUST KEEP:
+
+     1. GIVE IS THE ONLY GOLD THING HERE, and the only filled element in the
+        header (#64). Gold signals because it is rare and because it means
+        one thing: a giving action. The moment a second element in this bar
+        goes gold, or gold appears on something that isn't giving, it stops
+        signalling. The entry earns it via params.button = true in
+        hugo.toml — never by being hard-coded here by name.
+
+     2. WHITE GROUND, NO SHADOW (#65, 03-design-system.md). The header sits
+        on white while the page sits on paper; warmth is carried further
+        down. Separation from the page is the 1px warm-200 rule below —
+        shadows are not one of the three permitted separation devices, so
+        do not add one when this scrolls over content. An opaque white bar
+        over the paper ground is itself a change of ground, which is.
+
+     3. SENTENCE CASE, and the current-section mark stays quiet — colour and
+        weight, no underline, no fill, no tab. This replaces the legacy grey
+        uppercase nav. Humble sobriety is a design constraint here, not
+        only a copy one.
+
+     Sticky, not fixed. Both sister sites use `fixed top-0` and pay for it
+     with a matching pad on <main> (ofreport: `pt-16`) — a coupling where
+     changing the header height silently breaks the top of every page.
+     `sticky` participates in normal flow and reserves its own space, so
+     that compensation disappears. It works here because nothing between
+     this element and the viewport sets `overflow` — the usual silent
+     killer. ⚠️ Sticky headers cover in-page anchor targets; the
+     `scroll-margin-top` rule in assets/css/main.css is what pays that
+     debt, and it is load-bearing for the UGO section stack (Phase 5).
+     Neither sister site has it, and both land anchors under the bar.
+
+     Give is deliberately NOT in the mobile bar — it lives inside the panel
+     with everything else. A gold button pinned to every mobile viewport is
+     the donation-funnel read the doorway band exists to prevent (#5, #25),
+     and Give is reachable from that band on every page regardless.
+     --------------------------------------------------------------------- */}}
+
+{{ $page := . }}
+
+{{/* The gold vocabulary, defined once so the two renderings below cannot
+     drift apart — the constraint in rule 1 is easier to hold when there is
+     one place to hold it. Ink on gold, never white: measured 6.08:1 vs
+     1.97:1 (#64).
+
+     These values also appear on /styleguide/, which is the second occurrence
+     — under the project's rule of three, the trigger to hoist the button
+     roles into data/ is the THIRD consumer, most likely /give/'s own CTA in
+     Phase 6. Not yet. */}}
+{{ $give := "rounded-eto bg-gold font-semibold text-ink transition-colors hover:bg-gold-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
+
+{{/* Shared by every non-button link in both navs. The focus ring is offset
+     rather than tight because these sit inline with no background of their
+     own — a 2px ring on the glyphs themselves reads as a smudge. */}}
+{{ $link := "rounded-eto transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-eto-600" }}
+
+{{/* The current-section mark (rule 3 above) — colour and weight, nothing
+     else. Hoisted next to the vocabularies rather than written inline in the
+     two loops because it is a DESIGN decision, and a design decision that
+     lives in two places drifts; the desktop and mobile navs would start
+     disagreeing about what "current" looks like.
+
+     Both loops derive $current identically, with HasMenuCurrent joining
+     IsMenuCurrent so a nested page (/blog/{post}/, /team/{slug}/) marks its
+     parent section instead of marking nothing. Keep the two in agreement. */}}
+{{ $currentMark := "font-semibold text-eto-700" }}
+{{ $defaultMark := "text-warm-600 hover:text-eto-600" }}
+
+<header
+  x-data="{ open: false }"
+  {{/* On the ROOT, not the panel. Alpine's away/outside handler bails on
+       `el.contains(e.target)`, so anchoring it here makes a click on the
+       toggle "inside", where it cannot fight the toggle's own handler. On
+       the panel both would fire, and only transition timing would keep the
+       hamburger from being a no-op. */}}
+  @click.away="open = false"
+  @keydown.escape.window="if (open) { open = false; $refs.toggle.focus() }"
+  class="sticky top-0 z-40 border-b border-warm-200 bg-white"
+>
+  <div class="mx-auto flex h-14 max-w-5xl items-center justify-between px-6 sm:h-16">
+
+    {{/* Brand — the logo lockup, as both the legacy site and ofreport do
+         (#15, evolution not revolution). Sized to the legacy widths: 65px
+         mobile / 83px desktop. Preflight's `img { height: auto }` plus the
+         intrinsic width/height attributes hold the 500×290 ratio and
+         reserve the space, so the bar cannot shift as the SVG loads. */}}
+    <a
+      href="{{ site.Home.RelPermalink }}"
+      class="shrink-0 rounded-eto focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-eto-600"
+      aria-label="{{ site.Title }} — home"
+    >
+      {{ with resources.Get "img/eto-logo-full.svg" }}
+        <img
+          src="{{ .RelPermalink }}"
+          alt="{{ site.Title }}"
+          width="500"
+          height="290"
+          class="w-16 sm:w-20"
+        >
+      {{ end }}
+    </a>
+
+    {{/* Desktop navigation */}}
+    <nav class="hidden md:flex md:items-center md:gap-x-7" aria-label="Main">
+      {{ range site.Menus.main }}
+        {{ $current := or ($page.IsMenuCurrent "main" .) ($page.HasMenuCurrent "main" .) }}
+        {{ if .Params.button }}
+          <a href="{{ .URL }}" class="{{ $give }} px-5 py-2.5 text-sm">{{ .Name }}</a>
+        {{ else }}
+          <a
+            href="{{ .URL }}"
+            {{ if $current }}aria-current="page"{{ end }}
+            class="{{ $link }} text-sm {{ if $current }}{{ $currentMark }}{{ else }}{{ $defaultMark }}{{ end }}"
+          >
+            {{ .Name }}
+          </a>
+        {{ end }}
+      {{ end }}
+    </nav>
+
+    {{/* Mobile toggle. x-ref lets Escape hand focus back here rather than
+         stranding it on a panel that no longer exists. The negative margin
+         pulls the icon's padding box flush with the container edge, so the
+         glyph optically aligns with the logo while keeping a 40px target. */}}
+    <button
+      type="button"
+      x-ref="toggle"
+      @click="open = !open"
+      :aria-expanded="open"
+      aria-controls="mobile-nav"
+      aria-label="Toggle navigation menu"
+      class="-mr-2 rounded-eto p-2 text-warm-600 transition-colors hover:text-eto-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600 md:hidden"
+    >
+      {{/* Heroicons outline, 24px — inlined through Hugo's own pipeline (SVGs
+           and icons are native-pipeline assets; Cloudinary carries the
+           photographs). aria-hidden on both: the button's aria-label is the
+           accessible name, so the glyphs must not announce a second one. */}}
+      <svg x-show="!open" class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+      <svg x-show="open" x-cloak class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+  </div>
+
+  {{/* Mobile panel. x-cloak is what keeps it from flashing open between
+       first paint and Alpine booting — the [x-cloak] rule lives in main.css
+       and the script is deferred, so that gap is real, not theoretical. */}}
+  <div
+    id="mobile-nav"
+    x-show="open"
+    x-cloak
+    x-transition:enter="transition duration-150 ease-out"
+    x-transition:enter-start="opacity-0 -translate-y-1"
+    x-transition:enter-end="opacity-100 translate-y-0"
+    x-transition:leave="transition duration-100 ease-in"
+    x-transition:leave-start="opacity-100 translate-y-0"
+    x-transition:leave-end="opacity-0 -translate-y-1"
+    class="border-t border-warm-200 bg-white md:hidden"
+  >
+    {{/* py-2.5 on the links, not py-2 — with the 24px line box that is a 44px
+         tap target, the WCAG 2.5.5 floor. */}}
+    <nav class="px-6 py-4" aria-label="Main">
+      {{ range site.Menus.main }}
+        {{ $current := or ($page.IsMenuCurrent "main" .) ($page.HasMenuCurrent "main" .) }}
+        {{ if .Params.button }}
+          {{/* Still gold, still the only gold thing — a giving action does not
+               stop being one at 375px. inline-block, NOT a full-width block:
+               Give sits at weight 30, in the middle of the list, and a
+               full-bleed gold slab there fragments the nav and shouts in a
+               way the tone will not carry (#25 — humble sobriety). Sized to
+               the desktop button so it reads as the same control. */}}
+          <a href="{{ .URL }}" class="{{ $give }} my-2 inline-block px-5 py-2.5">{{ .Name }}</a>
+        {{ else }}
+          <a
+            href="{{ .URL }}"
+            {{ if $current }}aria-current="page"{{ end }}
+            class="{{ $link }} block py-2.5 {{ if $current }}{{ $currentMark }}{{ else }}{{ $defaultMark }}{{ end }}"
+          >
+            {{ .Name }}
+          </a>
+        {{ end }}
+      {{ end }}
+    </nav>
+  </div>
+</header>
