@@ -161,9 +161,12 @@
         {{ $current := or ($page.IsMenuCurrent "main" .) ($page.HasMenuCurrent "main" .) }}
         {{ if .Params.button }}
           {{/* Still gold, still the only gold thing — a giving action does not
-               stop being one at 375px. Block, so it reads as the button it is
-               rather than as a stray tinted link in a list. */}}
-          <a href="{{ .URL }}" class="{{ $give }} mt-3 block px-5 py-2.5 text-center">{{ .Name }}</a>
+               stop being one at 375px. inline-block, NOT a full-width block:
+               Give sits at weight 30, in the middle of the list, and a
+               full-bleed gold slab there fragments the nav and shouts in a
+               way the tone will not carry (#25 — humble sobriety). Sized to
+               the desktop button so it reads as the same control. */}}
+          <a href="{{ .URL }}" class="{{ $give }} my-2 inline-block px-5 py-2.5">{{ .Name }}</a>
         {{ else }}
           <a
             href="{{ .URL }}"
