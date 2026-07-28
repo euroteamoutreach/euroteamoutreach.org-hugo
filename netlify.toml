@@ -42,3 +42,14 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Self-hosted webfonts. These are served from static/ by absolute /fonts/ path,
+# which means they are NOT fingerprinted the way Hugo's asset-pipeline output is
+# — this header is what buys back the cache safety that fingerprinting would
+# have provided. Safe because the files are immutable: a new weight or subset
+# arrives as a NEW filename, never as changed bytes at an existing one. If you
+# ever re-subset a font in place, change its filename in the same commit.
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
