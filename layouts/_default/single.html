@@ -8,7 +8,12 @@
        arrive in Phase 7; designing them here would build against un-reviewed
        chrome. */}}
   <article class="mx-auto max-w-2xl px-6 py-16">
-    <h1 class="text-4xl font-bold text-eto-600">{{ .Title }}</h1>
+    {{/* Guarded because the team bios key their display name off a `name`
+         front-matter field rather than `title`, so `.Title` is empty on
+         /team/{slug}/ and an unguarded heading would emit a bare <h1></h1>.
+         Reading `name` here would push the team content model into the DEFAULT
+         template; Phase 9's team-bio template is what owns it. */}}
+    {{ with .Title }}<h1 class="text-4xl font-bold text-eto-600">{{ . }}</h1>{{ end }}
     <div class="prose mt-6 max-w-none">
       {{ .Content }}
     </div>
