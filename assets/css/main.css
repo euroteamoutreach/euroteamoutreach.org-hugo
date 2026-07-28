@@ -1,20 +1,75 @@
 @import "tailwindcss";
+@import "./fonts.css";
 @source "hugo_stats.json";
 @plugin "@tailwindcss/typography";
 
-/* PROVISIONAL design tokens — Phase 1 (Claude Design) REPLACES this whole block.
-   Tailwind v4 is CSS-first: each token here auto-generates the matching
-   utilities (--color-eto-blue → bg-eto-blue, text-eto-blue, …). The type scale,
-   spacing, and grey palette come from Tailwind v4's own defaults for now; only
-   the house blue is a considered value. Re-skinning the site is editing this
-   one block — that is the whole point of the CSS-first approach (#50). */
-@theme {
-  /* House blue — shared with Bible First today (#239). */
-  --color-eto-blue: #0d47a1;
+/* Design tokens — the design system (#50). Tailwind v4 is CSS-first: each token
+   here auto-generates the matching utilities (--color-eto-600 → bg-eto-600,
+   text-eto-600, …) AND stays readable as a plain custom property. Re-skinning
+   the site is editing this one block.
 
-  /* Neutral system sans until Phase 1 chooses the real typeface — avoids
-     committing to (or fetching) a webfont before the design session. */
-  --font-sans: ui-sans-serif, system-ui, sans-serif;
+   Every value below was reviewed in a rendered specimen page before adoption.
+   Rationale lives in planning/DECISIONS.md #63–66 — read those before changing
+   anything here; several of these resist the "obvious" correction on purpose.
+
+   The type scale and spacing scale are deliberately Tailwind v4's defaults (#71).
+   Only the values with a considered reason to diverge are overridden. */
+@theme {
+  /* Brand blue — 600 is the pinned house blue, shared with Bible First (#63).
+     One hex is a brand, not a system: #0d47a1 is too dark and saturated to
+     serve hover states, tinted bands, or text on dark grounds, so it ships as
+     a ramp with the brand value pinned at 600. Prefixed --color-eto-* rather
+     than overriding blue-*, so Tailwind's default palette isn't shadowed. */
+  --color-eto-50: #f0f5fd;
+  --color-eto-100: #dbe7fa;
+  --color-eto-200: #b6cef4;
+  --color-eto-300: #85aae9;
+  --color-eto-400: #4b84d9;
+  --color-eto-500: #1c5cc4;
+  --color-eto-600: #0d47a1; /* BRAND */
+  --color-eto-700: #0a3a85;
+  --color-eto-800: #072b64;
+  --color-eto-900: #051f48;
+
+  /* Accent — giving actions ONLY (#64). A second HUE (not another shade of
+     blue) is what makes a CTA read as a CTA when the brand color is also the
+     chrome. The moment gold appears on "Read more" it stops signalling.
+
+     ⚠️ Gold is a SURFACE color, never a text color. Measured: ink-on-gold
+     6.08:1 (AA pass) · white-on-gold 1.97:1 (fail) · gold-on-paper 1.87:1
+     (fail) · gold-on-eto-900 8.22:1 (pass — the one exception, used for the
+     UGO stat-band numerals). */
+  --color-gold: #f9a825;
+  --color-gold-hover: #e09612;
+
+  /* Grounds + warm neutral ramp (#65). The warmth is deliberate and was chosen
+     AGAINST Joshua's own knee-jerk preference for cool slate — the brand is
+     already blue-heavy, so the neutrals pull the other way. Do not "correct"
+     this back to a cool/slate ramp. */
+  --color-paper: #faf9f6;
+  --color-warm-100: #f2efe8;
+  --color-warm-200: #e7e1d6; /* 1px structural rules */
+  --color-warm-300: #d3cbbc;
+  --color-warm-400: #a89f8f;
+  --color-warm-600: #6f6a60; /* secondary text */
+  --color-warm-800: #3e3b35;
+
+  /* Ink stays a COOL slate — a deliberate hybrid with the warm ramp above. At
+     11.39:1 on paper the temperature of body text is imperceptible; it is the
+     mid-tones that carry warmth. */
+  --color-ink: #2d3748;
+
+  /* Type (#66). Source Sans 3 is the direct successor to the Source Sans Pro
+     the legacy site already runs — evolution, not revolution (#15). Serif is
+     available now; whether /blog prose actually uses it is decided in Phase 10
+     against a real migrated post. Both faces are self-hosted (see fonts.css)
+     and carry full Cyrillic, which satisfies the Ukrainian-pages need (#68). */
+  --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", Georgia, ui-serif, serif;
+
+  /* Geometry — echoes the logo badge's ~8% corner radius. */
+  --radius-eto: 6px; /* buttons, photos, inputs */
+  --radius-eto-lg: 10px; /* cards, panels */
 }
 
 /* Keep x-cloak elements hidden until Alpine initializes (prevents a flash of
