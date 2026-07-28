@@ -1,0 +1,21 @@
+{{ define "main" }}
+  {{/* Minimal Phase 2 fallback for single pages — the counterpart to the
+       list.html fallback beside it. Its whole job is to make the ten content
+       stubs render something, so Phase 2's chrome can be reviewed with its own
+       nav and doorway links actually resolving instead of 404ing.
+
+       Deliberately title + .Content and nothing more. The real page templates
+       arrive in Phase 7; designing them here would build against un-reviewed
+       chrome. */}}
+  <article class="mx-auto max-w-2xl px-6 py-16">
+    {{/* Guarded because the team bios key their display name off a `name`
+         front-matter field rather than `title`, so `.Title` is empty on
+         /team/{slug}/ and an unguarded heading would emit a bare <h1></h1>.
+         Reading `name` here would push the team content model into the DEFAULT
+         template; Phase 9's team-bio template is what owns it. */}}
+    {{ with .Title }}<h1 class="text-4xl font-bold text-eto-600">{{ . }}</h1>{{ end }}
+    <div class="prose mt-6 max-w-none">
+      {{ .Content }}
+    </div>
+  </article>
+{{ end }}
