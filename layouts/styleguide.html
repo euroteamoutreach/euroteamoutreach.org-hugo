@@ -116,7 +116,10 @@
                     </span>
                   {{ end }}
                 </div>
-                <p class="mt-2 font-mono text-[11px] leading-tight break-all text-warm-800">
+                {{/* break-words, NOT break-all — the swatch cell is too narrow
+                     for the full name, and break-all splits it mid-number
+                     ("--color-eto-5 / 00"). Normal wrapping takes the hyphen. */}}
+                <p class="mt-2 font-mono text-[11px] leading-tight break-words text-warm-800">
                   --color-{{ . }}
                 </p>
                 <p
@@ -438,7 +441,7 @@
                   style="{{ printf "background-color: var(%s)" . | safeCSS }}"
                 ></span>
               {{ end }}
-              <code class="min-w-0 font-mono text-[11px] break-all text-warm-800">
+              <code class="min-w-0 font-mono text-[11px] break-words text-warm-800">
                 {{ . }}
               </code>
               <span
