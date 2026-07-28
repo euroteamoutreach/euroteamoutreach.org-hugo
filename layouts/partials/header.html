@@ -49,14 +49,31 @@
 
 {{/* The gold vocabulary, defined once so the two renderings below cannot
      drift apart — the constraint in rule 1 is easier to hold when there is
-     one place to hold it. Values match the button roles on /styleguide/.
-     Ink on gold, never white: measured 6.08:1 vs 1.97:1 (#64). */}}
+     one place to hold it. Ink on gold, never white: measured 6.08:1 vs
+     1.97:1 (#64).
+
+     These values also appear on /styleguide/, which is the second occurrence
+     — under the project's rule of three, the trigger to hoist the button
+     roles into data/ is the THIRD consumer, most likely /give/'s own CTA in
+     Phase 6. Not yet. */}}
 {{ $give := "rounded-eto bg-gold font-semibold text-ink transition-colors hover:bg-gold-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
 
 {{/* Shared by every non-button link in both navs. The focus ring is offset
      rather than tight because these sit inline with no background of their
      own — a 2px ring on the glyphs themselves reads as a smudge. */}}
 {{ $link := "rounded-eto transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-eto-600" }}
+
+{{/* The current-section mark (rule 3 above) — colour and weight, nothing
+     else. Hoisted next to the vocabularies rather than written inline in the
+     two loops because it is a DESIGN decision, and a design decision that
+     lives in two places drifts; the desktop and mobile navs would start
+     disagreeing about what "current" looks like.
+
+     Both loops derive $current identically, with HasMenuCurrent joining
+     IsMenuCurrent so a nested page (/blog/{post}/, /team/{slug}/) marks its
+     parent section instead of marking nothing. Keep the two in agreement. */}}
+{{ $currentMark := "font-semibold text-eto-700" }}
+{{ $defaultMark := "text-warm-600 hover:text-eto-600" }}
 
 <header
   x-data="{ open: false }"
@@ -95,8 +112,6 @@
     {{/* Desktop navigation */}}
     <nav class="hidden md:flex md:items-center md:gap-x-7" aria-label="Main">
       {{ range site.Menus.main }}
-        {{/* HasMenuCurrent as well as IsMenuCurrent, so a blog post or a team
-             bio marks its parent section rather than marking nothing. */}}
         {{ $current := or ($page.IsMenuCurrent "main" .) ($page.HasMenuCurrent "main" .) }}
         {{ if .Params.button }}
           <a href="{{ .URL }}" class="{{ $give }} px-5 py-2.5 text-sm">{{ .Name }}</a>
@@ -104,7 +119,7 @@
           <a
             href="{{ .URL }}"
             {{ if $current }}aria-current="page"{{ end }}
-            class="{{ $link }} text-sm {{ if $current }}font-semibold text-eto-700{{ else }}text-warm-600 hover:text-eto-600{{ end }}"
+            class="{{ $link }} text-sm {{ if $current }}{{ $currentMark }}{{ else }}{{ $defaultMark }}{{ end }}"
           >
             {{ .Name }}
           </a>
@@ -171,7 +186,7 @@
           <a
             href="{{ .URL }}"
             {{ if $current }}aria-current="page"{{ end }}
-            class="{{ $link }} block py-2.5 {{ if $current }}font-semibold text-eto-700{{ else }}text-warm-600 hover:text-eto-600{{ end }}"
+            class="{{ $link }} block py-2.5 {{ if $current }}{{ $currentMark }}{{ else }}{{ $defaultMark }}{{ end }}"
           >
             {{ .Name }}
           </a>

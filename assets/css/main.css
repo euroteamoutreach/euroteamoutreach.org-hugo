@@ -80,16 +80,24 @@
 
 /* The sticky header's rent. Without this, every in-page anchor scrolls its
    target to top: 0 — which is UNDERNEATH the header — so the reader lands on
-   the section above the one they asked for. 5rem clears the 4rem bar with a
-   little air.
+   the section above the one they asked for.
 
-   Scoped to [id] because that is exactly the set of elements a fragment URL
-   can target, and it costs nothing on the ones never linked to. This is not
-   optional polish: the UGO page is an eight-section stack and the give-CTA
+   scroll-padding-top on the SCROLLPORT, not scroll-margin-top on the targets.
+   The obstruction is a property of the viewport, not of the elements being
+   scrolled to, and this is the mechanism CSS provides for exactly that: one
+   declaration on the one element that owns "how much of the top is covered."
+   Tagging [id] instead would encode "anchor target" as "has an id" — two sets
+   that are not the same. #mobile-nav in header.html carries an id purely for
+   the aria-controls wiring and would silently inherit a scroll offset it has
+   no use for; so would every future id added for a JS hook or a test.
+
+   5rem is the tallest the header ever gets (4rem at sm:h-16) plus 1rem of
+   air. If the header height changes, change this with it.
+
+   Not optional polish: the UGO page is an eight-section stack and the give-CTA
    deep-links into designations (Phases 5–6). ⚠️ Neither sister site has this
    rule, and both land anchors under their fixed headers — do not "converge"
-   with them by deleting it. If the header height ever changes, change this
-   with it. */
-[id] {
-  scroll-margin-top: 5rem;
+   with them by deleting it. */
+html {
+  scroll-padding-top: 5rem;
 }
