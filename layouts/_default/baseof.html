@@ -20,9 +20,9 @@
   {{/* Global chrome arrives one partial per Phase 2 issue. Each PR adds its
        partial AND the line here that calls it — `partial` on a missing file is
        a build error, so the calls cannot all land up front.
-         header.html        → issue #13 (above <main>)
          doorway-band.html  → issue #14 (below <main>, above the footer)
          footer.html        → issue #15 */}}
+  {{ partial "header.html" . }}
   <main class="grow">
     {{ block "main" . }}{{ end }}
   </main>
