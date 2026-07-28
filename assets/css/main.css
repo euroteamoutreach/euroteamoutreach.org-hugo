@@ -77,3 +77,19 @@
 [x-cloak] {
   display: none !important;
 }
+
+/* The sticky header's rent. Without this, every in-page anchor scrolls its
+   target to top: 0 — which is UNDERNEATH the header — so the reader lands on
+   the section above the one they asked for. 5rem clears the 4rem bar with a
+   little air.
+
+   Scoped to [id] because that is exactly the set of elements a fragment URL
+   can target, and it costs nothing on the ones never linked to. This is not
+   optional polish: the UGO page is an eight-section stack and the give-CTA
+   deep-links into designations (Phases 5–6). ⚠️ Neither sister site has this
+   rule, and both land anchors under their fixed headers — do not "converge"
+   with them by deleting it. If the header height ever changes, change this
+   with it. */
+[id] {
+  scroll-margin-top: 5rem;
+}
