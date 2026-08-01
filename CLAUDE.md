@@ -32,12 +32,9 @@ The **why** — and the full PRD — live in a separate **private** repo, `eurot
 
 ## Development Approach
 
-**Developer-directed, AI-assisted.** Joshua directs all decisions and seeks to understand each step.
+**Developer-directed, AI-assisted.** Joshua directs the decisions and wants to follow the reasoning.
 
-- **Explain before building** — rationale before code
-- **Incremental progress** — one template or feature at a time
-- **No black boxes** — every file should be understood by the developer
-- **Present options** — surface trade-offs; let the developer choose
+- **Explain the decision, not the syntax** — surface trade-offs and rejected alternatives; skip Hugo and Tailwind concept tutorials. He ships this stack in production.
 - **Replace, don't deprecate** — no backward-compat shims
 
 ### Tailwind Plus Workflow
