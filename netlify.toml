@@ -54,6 +54,27 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Legacy giving URLs → /give/ (redirect-map.md, 07-donations.md). These MUST
+# sit above the fall-through below, or it would keep proxying the legacy
+# /donate page. /donate/* also catches /donate/thanks/, the legacy post-gift
+# page; Givebutter sends its own receipt, so there is no thank-you page to keep.
+# Netlify matches with or without the trailing slash, so one rule covers both.
+[[redirects]]
+  from = "/donate"
+  to = "/give/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/donate/*"
+  to = "/give/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/donations"
+  to = "/give/"
+  status = 301
+  force = true
+
 # ─────────────────────────────────────────────────────────────────────────────
 # TEMPORARY — legacy fall-through for the pre-UGO launch track (#21).
 #
