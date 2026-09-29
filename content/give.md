@@ -29,8 +29,8 @@ doorways:
     button: "Meet the team"
 
 where:
-  heading: "Where your gift goes"
-  intro: "You can give to the work as a whole, or direct your gift to a specific part of it. Choose a fund when you give:"
+  heading: "Where your gift to ETO goes"
+  intro: "When you give to ETO, you can support the work as a whole or direct your gift to one part of it. Choose a fund when you give:"
 
 online:
   heading: "Give online"
@@ -54,4 +54,4 @@ trust:
   disclaimer: "Contributions to ETO are solicited with the understanding that ETO has complete discretion and control over the use of all donated funds. ETO will attempt to honor requests to support particular causes or individuals, but the final decision on the use of all funds rests with the organization."
 ---
 
-Your generosity carries the Gospel — and real, practical help — to people across Ukraine. Every gift goes to work in the field: an aid box placed in a family's hands near the front, the Scriptures opened in someone's own language, a missionary family kept on the ground doing the work. Give once, or give monthly to help sustain it.
+Your generosity carries the Gospel — and real, practical help — to people across Ukraine. Every gift goes to work in the field: an aid box placed in a family's hands near the front, the Scriptures opened in someone's own language. Give once, or give monthly to help sustain it.
