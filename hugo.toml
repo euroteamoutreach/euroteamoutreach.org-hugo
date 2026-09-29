@@ -79,6 +79,16 @@ enableRobotsTXT = true
     scriptUrl = "https://lens.euroteamoutreach.org/script.js"
     websiteId = ""
 
+  # Givebutter (#12, #51) — the /give/ donation form. All PUBLIC values: the
+  # account key and widget ID appear in the page source of any site that embeds
+  # them, and nothing here can move money. Campaign "Give to Euro Team Outreach"
+  # (code BRWFQV). campaignUrl is the hosted page, linked as the fallback when
+  # the widget script is blocked.
+  [params.givebutter]
+    account = "PADVwpfbw1ny2chu"
+    widget = "gkVll6"
+    campaignUrl = "https://givebutter.com/fund-bible-teaching-and-missions-in-ukraine-brwfqv"
+
 # Build stats feed Tailwind v4's JIT scan (@source "hugo_stats.json" in main.css).
 # The cachebuster invalidates the generated CSS whenever the class list changes.
 [build]
