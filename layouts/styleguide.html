@@ -404,6 +404,37 @@
       </div>
     </section>
 
+    {{/* ---------------- Photos ----------------
+         The cloudinary-img partial, rendered for real. "sample" is the demo
+         image Cloudinary seeds into every account, so this needs no upload and
+         exercises the actual delivery path from ETO's cloud. */}}
+    <section id="photos" class="border-b border-warm-200 bg-white">
+      <div class="mx-auto max-w-5xl px-6 py-12">
+        <h2 class="text-2xl font-semibold tracking-tight">Photos</h2>
+        <p class="mt-2 max-w-prose text-sm leading-relaxed text-warm-600">
+          Photographs come from Cloudinary through
+          <code class="font-mono">cloudinary-img.html</code>: a responsive
+          <code class="font-mono">srcset</code> at five widths, each
+          <code class="font-mono">c_limit,f_auto,q_auto</code>, so the browser
+          picks the size and Cloudinary picks the format and compression. Lazy
+          by default; <code class="font-mono">alt</code> is required, and a
+          missing one fails the build. Corners are
+          <code class="font-mono">rounded-eto</code>.
+        </p>
+        <figure class="mt-6 max-w-xl">
+          {{ partial "cloudinary-img.html" (dict
+            "src" "sample"
+            "alt" "Cloudinary’s built-in sample photo"
+            "sizes" "(min-width: 640px) 36rem, 100vw"
+            "class" "h-auto w-full rounded-eto bg-warm-100"
+          ) }}
+          <figcaption class="mt-2 font-mono text-[11px] text-warm-600">
+            src="sample" · sizes="(min-width: 640px) 36rem, 100vw"
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
     {{/* ---------------- Token census ----------------
          Auto-derived from the @theme block so this page cannot silently fall
          behind it: adding a token to main.css adds it here. The regex matches

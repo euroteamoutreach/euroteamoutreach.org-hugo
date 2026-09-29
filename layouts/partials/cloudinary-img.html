@@ -1,0 +1,59 @@
+{{- /*
+  cloudinary-img — a responsive <img> delivered from ETO's Cloudinary account.
+
+  Builds delivery URLs from site.Params.cloudinaryBase (the public cloud name;
+  API secrets never enter this repo, #60). Every width uses
+  c_limit,f_auto,q_auto: c_limit never upscales an intrinsically small image,
+  f_auto picks AVIF/WebP per browser, q_auto picks the compression. Cloudinary
+  honors EXIF orientation on delivery by default, which the UGO field photos
+  depend on (planning/copy/ugo.md "Build caveat — EXIF orientation").
+
+  Params (dict):
+    src      (required) Cloudinary public ID, e.g. "ugo/2025/bread-bakers"
+    alt      (required) alt text. Pass "" explicitly for a decorative image;
+             omitting it fails the build, so no photo ships without a decision.
+    sizes    (optional) the sizes attribute; default "100vw". Set it to the
+             rendered width (e.g. "(min-width: 1024px) 50vw, 100vw") or the
+             browser over-fetches.
+    class    (optional) classes for the <img>
+    width    (optional) intrinsic width, with height, to reserve layout space
+    height   (optional) intrinsic height
+    loading  (optional) "lazy" (default) or "eager". Use eager for the one
+             above-the-fold hero; it also sets fetchpriority="high".
+
+  Usage:
+    {{ partial "cloudinary-img.html" (dict
+         "src" "ugo/2025/bread-bakers"
+         "alt" "Volunteers loading bread into a van"
+         "sizes" "(min-width: 1024px) 33vw, 100vw") }}
+*/ -}}
+{{- $src := .src -}}
+{{- if not $src -}}
+  {{- errorf "cloudinary-img: 'src' is required" -}}
+{{- end -}}
+{{- if not (isset . "alt") -}}
+  {{- errorf "cloudinary-img: 'alt' is required for %q (pass \"\" for a decorative image)" $src -}}
+{{- end -}}
+
+{{- /* Widths cover phone at 1x through a full-bleed hero on a 1024px-wide 2x
+       screen. The fallback src uses 1024, a sensible middle for browsers that
+       ignore srcset. */ -}}
+{{- $widths := slice 480 768 1024 1536 2048 -}}
+{{- $srcset := slice -}}
+{{- range $widths -}}
+  {{- $srcset = $srcset | append (printf "%s/image/upload/c_limit,f_auto,q_auto,w_%d/%s %dw" site.Params.cloudinaryBase . $src .) -}}
+{{- end -}}
+{{- $fallback := printf "%s/image/upload/c_limit,f_auto,q_auto,w_1024/%s" site.Params.cloudinaryBase $src -}}
+{{- $loading := .loading | default "lazy" -}}
+
+<img
+  src="{{ $fallback }}"
+  srcset="{{ delimit $srcset ", " }}"
+  sizes="{{ .sizes | default "100vw" }}"
+  alt="{{ .alt }}"
+  {{- with .class }} class="{{ . }}"{{ end }}
+  {{- with .width }} width="{{ . }}"{{ end }}
+  {{- with .height }} height="{{ . }}"{{ end }}
+  loading="{{ $loading }}"
+  {{- if eq $loading "eager" }} fetchpriority="high"{{ end }}
+  decoding="async">
