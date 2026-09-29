@@ -132,12 +132,15 @@
            on purpose: Gospel first, and the footer's final word is an
            invitation rather than a legal notice (#46).
 
-           GetPage rather than a literal "/jesus/" — /jesus is a preserved
-           legacy URL (10-url-preservation.md) and this fails the BUILD if the
-           page ever moves, instead of shipping a silent 404 in global chrome. */}}
+           A literal "/jesus/" for now: until the page is ported it is not
+           rendered (the hugo.toml cascade), so GetPage would return an empty
+           permalink, and the legacy page serves this URL through the
+           netlify.toml fall-through. When /jesus/ is ported, go back to
+           (site.GetPage "/jesus").RelPermalink so a moved page fails the build
+           instead of shipping a silent 404 in global chrome. */}}
       <p class="text-lg text-eto-100">
         Have you met Jesus? We&rsquo;d love to
-        <a href="{{ (site.GetPage "/jesus").RelPermalink }}" class="{{ $onDark }} font-semibold underline underline-offset-4 hover:text-white">introduce you</a>.
+        <a href="/jesus/" class="{{ $onDark }} font-semibold underline underline-offset-4 hover:text-white">introduce you</a>.
       </p>
 
       {{/* The "X is a ministry of Euro Team Outreach, Inc." tagline pattern

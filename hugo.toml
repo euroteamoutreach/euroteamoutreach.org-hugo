@@ -24,6 +24,33 @@ enableRobotsTXT = true
 [outputFormats.RSS]
   baseName = "feed"
 
+# ─────────────────────────────────────────────────────────────────────────────
+# TEMPORARY — the pre-UGO launch track (#21). Remove when the blog migrates.
+#
+# Netlify serves every path this site does not build from the legacy S3 site
+# (the fall-through rule at the end of netlify.toml). The two blocks below keep
+# this site from building the paths legacy still owns.
+#
+# 1. No home RSS. The RSS baseName above makes the home feed /feed.xml — the
+#    exact path MailChimp's RSS automation polls. A new-site feed there would
+#    list this site's pages as items, and MailChimp could email them to the
+#    whole list. Until the blog migrates, /feed.xml must fall through to the
+#    legacy feed unchanged. Restore "rss" here in the blog-migration PR, after
+#    pausing the automation (09-blog-migration.md).
+[outputs]
+  home = ["html"]
+
+# 2. Unbuilt pages stay unrendered, so their legacy versions show instead of an
+#    empty stub. Delete a path from this list in the PR that builds its page.
+#    Anything linking to these (menus, footer) uses a literal url, not pageRef /
+#    GetPage — an unrendered page has an empty permalink.
+[[cascade]]
+  [cascade.build]
+    render = "never"
+    list = "never"
+  [cascade.target]
+    path = "{/about,/approach,/doctrine,/jesus,/pray,/serve,/team,/team/**,/blog,/blog/**,/tags,/tags/**}"
+
 # Minification. Disable XML so the feed's <content:encoded> keeps its literal
 # <![CDATA[…]]> wrapper (the tdewolff minifier would otherwise rewrite it as
 # entity-encoded HTML). CDATA is the more robustly-interpreted form for HTML
@@ -80,7 +107,7 @@ enableRobotsTXT = true
 # off the entry's name, so the gold-only-on-giving rule survives a menu edit.
 [[menus.main]]
   name = "Our Story"
-  pageRef = "/about/"
+  url = "/about/"
   weight = 10
 [[menus.main]]
   name = "UGO"
@@ -88,11 +115,11 @@ enableRobotsTXT = true
   weight = 20
 [[menus.main]]
   name = "Blog"
-  pageRef = "/blog/"
+  url = "/blog/"
   weight = 40
 [[menus.main]]
   name = "Team"
-  pageRef = "/team/"
+  url = "/team/"
   weight = 50
 [[menus.main]]
   name = "Connect"
@@ -114,11 +141,11 @@ enableRobotsTXT = true
 # Footer utility links (Phase 2 footer.html renders these).
 [[menus.footer]]
   name = "Meet Jesus"
-  pageRef = "/jesus/"
+  url = "/jesus/"
   weight = 10
 [[menus.footer]]
   name = "Doctrine"
-  pageRef = "/doctrine/"
+  url = "/doctrine/"
   weight = 20
 [[menus.footer]]
   name = "Connect"
