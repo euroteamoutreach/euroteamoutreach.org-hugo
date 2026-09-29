@@ -8,18 +8,13 @@
 
   ⚠️ Cause-framed copy only (docs/prd/07-donations.md). If a card ever needs
   to name a person, the answer is no — stop and ask.
-
-  Deliberately NOT gold: a card describes where a gift goes, it does not take
-  one. Gold stays on the giving actions themselves (#64).
-
-  Usage:
-    {{ range hugo.Data.designations }}
-      {{ partial "designation-card.html" . }}
-    {{ end }}
 */ -}}
 {{- $blurb := .blurb -}}
 {{- with .box_price -}}
   {{- $blurb = replace $blurb "{box_price}" (printf "$%d" .) -}}
+{{- end -}}
+{{- if strings.Contains $blurb "{box_price}" -}}
+  {{- errorf "designation-card: %q uses {box_price} but sets no box_price" .slug -}}
 {{- end -}}
 <article
   id="{{ .slug }}"

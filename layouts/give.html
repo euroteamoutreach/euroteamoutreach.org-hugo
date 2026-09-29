@@ -46,13 +46,6 @@
   {{ $primary := "inline-block rounded-eto bg-eto-600 px-5 py-2.5 font-semibold text-white transition-colors hover:bg-eto-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
 
   {{/* ---------------- Hero + doorways ---------------- */}}
-  {{/* /team/ is a literal URL, not pageRef/GetPage: it is unrendered on the
-       pre-UGO track (hugo.toml cascade) and falls through to legacy, so
-       GetPage would hand back an empty permalink. */}}
-  {{ $doorways := slice
-    (dict "copy" $p.doorways.eto "href" "#give-online")
-    (dict "copy" $p.doorways.family "href" "/team/")
-  }}
   <section class="border-b border-warm-200 bg-white">
     <div class="{{ $section }}">
       <h1 class="text-4xl font-black tracking-tight text-eto-600 sm:text-5xl">
@@ -62,14 +55,14 @@
         {{ .Content }}
       </div>
       <div class="mt-10 grid gap-4 md:grid-cols-2">
-        {{ range $doorways }}
+        {{ range $p.doorways }}
           <div class="flex flex-col rounded-eto-lg border border-warm-200 bg-paper p-6">
             <h2 class="text-xl font-semibold tracking-tight text-ink">
-              {{ .copy.heading }}
+              {{ .heading }}
             </h2>
-            <p class="mt-2 grow leading-relaxed text-warm-800">{{ .copy.text }}</p>
+            <p class="mt-2 grow leading-relaxed text-warm-800">{{ .text }}</p>
             <div class="mt-6">
-              <a href="{{ .href }}" class="{{ $primary }}">{{ .copy.button }}</a>
+              <a href="{{ .href }}" class="{{ $primary }}">{{ .button }}</a>
             </div>
           </div>
         {{ end }}
@@ -110,17 +103,17 @@
         </p>
         <div class="mt-8 grid gap-10 md:grid-cols-2 md:gap-4">
           <div>
-            {{/* min-h reserves roughly the form's first step, so the page
-                 doesn't jump when the widget script arrives. */}}
-            <div class="min-h-[28rem] max-w-xl">
+            {{/* min-h reserves the form's first step (~630px on phones,
+                 ~445px from md up), so the page doesn't jump when the widget script arrives. */}}
+            <div class="min-h-[40rem] max-w-xl md:min-h-[28rem]">
               <givebutter-widget id="{{ .widget }}"></givebutter-widget>
             </div>
             <p class="mt-4 text-sm text-warm-600">
-              Form not loading?
+              {{ $p.online.fallback.prompt }}
               <a
                 href="{{ .campaignUrl }}"
                 class="font-semibold text-eto-600 underline underline-offset-2 hover:text-eto-700"
-                >Give on Givebutter instead</a
+                >{{ $p.online.fallback.link }}</a
               >.
             </p>
           </div>

@@ -3,11 +3,6 @@ title: "Give"
 slug: give
 layout: give
 description: "Give to Euro Team Outreach — carry the Gospel and real, practical help to people across Ukraine. Give once, or give monthly."
-hero_image: ""
-give_designation: ""
-give_cta_label: ""
-status: active
-weight: 30
 
 # Page copy, rendered section by section by layouts/give.html. The four fund
 # cards are NOT here — they come from data/designations.yaml (#40).
@@ -18,12 +13,15 @@ weight: 30
 # to ETO; the second card routes them to /team/, where each family links its
 # own support channels (#10, #32). Side by side, the two also say plainly that
 # a gift to ETO is not a gift to a named family (#14).
+#
+# /team/ is a literal URL, not a pageRef: it is unrendered on the pre-UGO
+# track (hugo.toml cascade) and falls through to legacy.
 doorways:
-  eto:
+  - href: "#give-online"
     heading: "Give to ETO"
     text: "Support ETO's ministry in Ukraine — the work as a whole, or one of the funds below. Give once, or monthly."
     button: "Give online to ETO"
-  family:
+  - href: "/team/"
     heading: "Support a missionary family"
     text: "Many supporters give directly to a specific family. Each missionary family is supported through their own channels."
     button: "Meet the team"
@@ -35,6 +33,9 @@ where:
 online:
   heading: "Give online"
   note: "You'll receive an emailed receipt for your records. Monthly giving is welcome — a recurring gift quietly strengthens the work between trips."
+  fallback:
+    prompt: "Form not loading?"
+    link: "Give on Givebutter instead"
   mail:
     heading: "Prefer to mail a check?"
     text: "You're welcome to send one, payable to *Euro Team Outreach, Inc.*:"
