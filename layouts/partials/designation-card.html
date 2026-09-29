@@ -1,0 +1,41 @@
+{{- /*
+  designation-card — one giving designation, rendered from data/designations.yaml.
+
+  Takes a single entry from hugo.Data.designations (never a hand-built dict),
+  so the card cannot say anything the data file does not. The blurb is
+  markdownified inline for the Good & Evil title's italics; "{box_price}" in a
+  blurb is replaced with that entry's box_price as dollars.
+
+  ⚠️ Cause-framed copy only (docs/prd/07-donations.md). If a card ever needs
+  to name a person, the answer is no — stop and ask.
+
+  Deliberately NOT gold: a card describes where a gift goes, it does not take
+  one. Gold stays on the giving actions themselves (#64).
+
+  Usage:
+    {{ range hugo.Data.designations }}
+      {{ partial "designation-card.html" . }}
+    {{ end }}
+*/ -}}
+{{- $blurb := .blurb -}}
+{{- with .box_price -}}
+  {{- $blurb = replace $blurb "{box_price}" (printf "$%d" .) -}}
+{{- end -}}
+<article
+  id="{{ .slug }}"
+  class="flex gap-4 rounded-eto-lg border border-warm-200 bg-white p-5 sm:p-6"
+>
+  <span
+    class="flex size-10 shrink-0 items-center justify-center rounded-eto bg-eto-50 text-eto-600"
+  >
+    {{- with resources.Get (printf "img/icon-%s.svg" .icon) -}}
+      {{ replaceRE `<svg ` `<svg class="size-6" ` .Content 1 | safeHTML }}
+    {{- else -}}
+      {{ errorf "designation-card: no assets/img/icon-%s.svg for %q" .icon .slug }}
+    {{- end -}}
+  </span>
+  <div class="min-w-0">
+    <h3 class="text-lg font-semibold tracking-tight text-ink">{{ .name }}</h3>
+    <p class="mt-1 leading-relaxed text-warm-800">{{ $blurb | markdownify }}</p>
+  </div>
+</article>
