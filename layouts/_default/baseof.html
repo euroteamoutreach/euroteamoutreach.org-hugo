@@ -31,8 +31,9 @@
        deliberately empty until the Phase 14 cutover, and the partial must emit
        nothing while it is, so this stays a comment rather than an inert file.
        → docs/prd/02-architecture.md §"Analytics" */}}
-  {{/* Per-page scripts. Bundled by the template that defines this block, via
-       js.Build with fingerprinting + SRI — the global bundle above stays lean.
+  {{/* Per-page scripts, so the global bundle above stays lean. Our own JS is
+       bundled via js.Build with fingerprinting + SRI; a third-party embed
+       (Givebutter on /give/) is a plain tag, with SRI where the vendor allows.
        See docs/prd/02-architecture.md. */}}
   {{ block "scripts" . }}{{ end }}
 </body>
