@@ -100,6 +100,24 @@ enableRobotsTXT = true
     source = 'hugo_stats.json'
     target = 'assets/notwatching/hugo_stats.json'
 
+# Security. Hugo 0.165 dropped tailwindcss from the default exec allow-list, so
+# css.TailwindCSS fails without this. Setting `allow` REPLACES Hugo's default
+# list rather than extending it: the first five entries are the 0.167 defaults
+# (from `hugo config`), and tailwindcss is the only addition. Re-check the
+# defaults on each Hugo bump.
+[security.exec]
+  allow = ['^(dart-)?sass$', '^go$', '^git$', '^node$', '^postcss$', '^tailwindcss$']
+
+# Hugo 0.166 refuses to run Node tools (Tailwind) if any symlink under the
+# project resolves outside security.node.permissions.allowRead, and it walks the
+# whole project to check — ignoreFiles does not exempt a directory. The local
+# docs/prd and docs/debriefs symlinks point into the private planning repo, so
+# their exact targets are allowed here. '.' is Hugo's default and must stay.
+# Local-only in effect: both symlinks are gitignored, and on CI/Netlify these
+# paths don't exist, so Hugo drops them as unresolvable.
+[security.node.permissions]
+  allowRead = ['.', '../planning/prd', '../planning/debriefs']
+
 # Main navigation. "ETO" (the brand/home link) is rendered separately by the
 # header, following ofreport's brand-plus-menu pattern; these are the
 # destination items. Give carries button = true so the header styles it as a
