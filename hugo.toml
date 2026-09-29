@@ -87,7 +87,7 @@ enableRobotsTXT = true
   [params.givebutter]
     account = "PADVwpfbw1ny2chu"
     widget = "gkVll6"
-    campaignUrl = "https://givebutter.com/fund-bible-teaching-and-missions-in-ukraine-brwfqv"
+    campaignUrl = "https://givebutter.com/euroteamoutreach"
 
 # Build stats feed Tailwind v4's JIT scan (@source "hugo_stats.json" in main.css).
 # The cachebuster invalidates the generated CSS whenever the class list changes.
