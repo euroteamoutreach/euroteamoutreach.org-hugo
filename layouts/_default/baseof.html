@@ -20,12 +20,12 @@
   {{/* Global chrome arrives one partial per Phase 2 issue. Each PR adds its
        partial AND the line here that calls it — `partial` on a missing file is
        a build error, so the calls cannot all land up front.
-         doorway-band.html  → issue #14 (below <main>, above the footer)
-         footer.html        → issue #15 */}}
+         doorway-band.html  → issue #14 (below <main>, above the footer) */}}
   {{ partial "header.html" . }}
   <main class="grow">
     {{ block "main" . }}{{ end }}
   </main>
+  {{ partial "footer.html" . }}
   {{ partial "scripts.html" . }}
   {{/* Phase 12 — analytics.html goes here. params.umami.websiteId is
        deliberately empty until the Phase 14 cutover, and the partial must emit

@@ -1,0 +1,163 @@
+{{/* ---------------------------------------------------------------------
+     footer.html — the closing chrome on every page.
+
+       Field updates in your inbox.          [ you@example.com ][ Subscribe ]
+       ─────────────────────────────────────────────────────────────────────
+       Meet Jesus · Doctrine · Connect                              (f) (X)
+       ─────────────────────────────────────────────────────────────────────
+       Have you met Jesus? We'd love to introduce you.
+       Euro Team Outreach, Inc. is a 501(c)(3) …
+       © YYYY Euro Team Outreach, Inc. …
+
+     THREE RULES THIS FILE MUST KEEP:
+
+     1. THE GROUND IS eto-900, and this is one of only two places that
+        surface is used at all (the other is the UGO stat band — Phase 5).
+        It is the heaviest of the four permitted surfaces and it earns the
+        weight by being terminal: the page ends here. Do not reach for it
+        to "add emphasis" somewhere in the middle of a page.
+
+     2. NO GOLD, even though this is the one ground where gold is legible
+        as text (8.22:1, #64). Legibility is not permission. Gold means a
+        giving action; the Give doorway lives in doorway-band.html directly
+        above this partial, and a gold Subscribe button sitting under it
+        would teach visitors that gold means "a button" — which is exactly
+        the signal the token exists to protect.
+
+     3. NO SHADOWS. The internal seams below are 1px border-eto-800 rules.
+        That measures 1.19:1 against the ground — near-identical to the
+        1.24:1 of the sanctioned warm-200-on-paper rule, i.e. the same
+        device transposed onto a dark surface, not a new one. Anything
+        lighter (eto-700 is 1.51:1) is louder than the rule it mirrors.
+
+     Text on this ground, all measured: white 16.20:1 (headings) ·
+     eto-200 10.13:1 (links, body) · eto-300 6.89:1 (the quiet legal tier).
+     Focus rings are WHITE here, not the eto-600 used on light grounds —
+     eto-600 on eto-900 is 1.88:1, an invisible focus indicator, which is a
+     WCAG 1.4.11 failure and not a cosmetic one.
+
+     max-w-5xl matches header.html and /styleguide/. ⚠️ Phase 7 settles the
+     page container; if it lands on something other than max-w-5xl, the
+     header and this file move together — content follows the container,
+     the chrome follows content.
+     --------------------------------------------------------------------- */}}
+
+{{/* Shared link vocabulary, defined once so the three link contexts below
+     (utility nav, the Jesus invitation, social icons) cannot drift into three
+     different hover and focus treatments. */}}
+{{ $onDark := "rounded-eto text-eto-200 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white" }}
+
+<footer class="bg-eto-900 text-white">
+
+  {{/* ---------------- Newsletter ---------------- */}}
+  {{/* items-start, not items-center: the copy block is two lines and the form
+       is one, and centring them against each other floats the form in a way
+       that reads as unaligned at every width between md and lg. */}}
+  <div class="mx-auto max-w-5xl px-6 py-12 sm:py-16">
+    <div class="grid gap-6 md:grid-cols-2 md:items-start md:gap-12">
+      <div>
+        <h2 class="text-xl font-semibold tracking-tight sm:text-2xl">
+          Field updates in your inbox.
+        </h2>
+        <p class="mt-2 max-w-prose leading-relaxed text-eto-200">
+          Prayer points and stories from Ukraine, a few times a year — never spam.
+        </p>
+      </div>
+      {{ partial "mailchimp-form.html" . }}
+    </div>
+  </div>
+
+  {{/* ---------------- Utility links + social ---------------- */}}
+  <div class="border-t border-eto-800">
+    <div class="mx-auto max-w-5xl flex flex-col gap-6 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
+
+      {{/* aria-label "Footer" distinguishes this landmark from header.html's
+           "Main" — two <nav>s with no accessible names are two anonymous
+           landmarks in a screen reader's list. */}}
+      <nav aria-label="Footer">
+        <ul class="flex flex-wrap gap-x-6 gap-y-1">
+          {{ range site.Menus.footer }}
+            <li>
+              {{/* py-2 against text-sm's 20px line box measures 36px tall —
+                   past WCAG 2.5.8's 24px AA floor, though short of the 44px
+                   AAA target, which the header's controls also sit under. */}}
+              <a href="{{ .URL }}" class="{{ $onDark }} block py-2 text-sm font-semibold">
+                {{ .Name }}
+              </a>
+            </li>
+          {{ end }}
+        </ul>
+      </nav>
+
+      {{/* Social. Exactly two accounts — that is the complete set carried over
+           from the legacy footer, verified against all three legacy sites.
+           There is no YouTube, Instagram or LinkedIn slot because there are no
+           such accounts; the UGO YouTube playlists belong on /ugo/, not in
+           global chrome. `with` so an empty menu emits no stray <ul>. */}}
+      {{ with site.Menus.footer_social }}
+        <ul class="-mx-2.5 flex items-center sm:-mr-2.5 sm:ml-0">
+          {{ range . }}
+            <li>
+              <a
+                href="{{ .URL }}"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="{{ .Params.label }}"
+                class="{{ $onDark }} block p-2.5"
+              >
+                {{/* Inlined, not <img>: the SVG has to inherit currentColor to
+                     pick up the hover and focus states above, which an <img>
+                     cannot do. Simple Icons marks, the same family ofreport
+                     uses — sister-site parity is deliberate. aria-hidden on the
+                     glyph because the <a> already carries the accessible name;
+                     without it the icon's own <title> announces a second one. */}}
+                {{ with resources.Get (printf "img/social-%s.svg" .Params.icon) }}
+                  {{ replaceRE `<svg ` `<svg aria-hidden="true" class="size-5 fill-current" ` .Content 1 | safeHTML }}
+                {{ end }}
+              </a>
+            </li>
+          {{ end }}
+        </ul>
+      {{ end }}
+
+    </div>
+  </div>
+
+  {{/* ---------------- Invitation + legal ---------------- */}}
+  <div class="border-t border-eto-800">
+    <div class="mx-auto max-w-5xl px-6 py-8">
+
+      {{/* The legacy umbrella footer's own closing line, kept verbatim —
+           evolution, not revolution (#15). It is the last thing on every page
+           on purpose: Gospel first, and the footer's final word is an
+           invitation rather than a legal notice (#46).
+
+           GetPage rather than a literal "/jesus/" — /jesus is a preserved
+           legacy URL (10-url-preservation.md) and this fails the BUILD if the
+           page ever moves, instead of shipping a silent 404 in global chrome. */}}
+      <p class="text-lg text-eto-100">
+        Have you met Jesus? We&rsquo;d love to
+        <a href="{{ (site.GetPage "/jesus").RelPermalink }}" class="{{ $onDark }} font-semibold underline underline-offset-4 hover:text-white">introduce you</a>.
+      </p>
+
+      {{/* The "X is a ministry of Euro Team Outreach, Inc." tagline pattern
+           inverts on the umbrella site — here ETO *is* the X — so the slot
+           carries the entity's own attribution. First sentence lifted verbatim
+           from the approved /give copy; the trademark and copyright line is the
+           legacy copyright bar, ported. ⚠️ This is factual legal text about a
+           501(c)(3). Do not embellish it, and do not add tax-deductibility or
+           discretion-and-control language here — that copy is load-bearing and
+           belongs on /give/ (07-donations.md). */}}
+      <p class="mt-6 max-w-prose text-sm leading-relaxed text-eto-300">
+        Euro Team Outreach, Inc. is a 501(c)(3) nonprofit corporation registered
+        in the State of Texas.
+      </p>
+      <p class="mt-2 max-w-prose text-sm leading-relaxed text-eto-300">
+        &copy; {{ now.Year }} Euro Team Outreach, Inc. All rights reserved.
+        Bible First is a registered trademark of Euro Team Outreach, Inc.
+      </p>
+
+    </div>
+  </div>
+
+</footer>

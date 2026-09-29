@@ -125,13 +125,30 @@ enableRobotsTXT = true
   pageRef = "/contact/"
   weight = 30
 
-# Footer social icons. Each entry's `icon` param maps to a social SVG (Phase 2).
-# Real URLs are populated when the footer is built; kept as a commented example
-# so the structure is documented without inventing account links here.
-# [[menus.footer_social]]
-#   name = "Facebook"
-#   url = "https://www.facebook.com/..."
-#   weight = 10
-#   [menus.footer_social.params]
-#     icon = "facebook"
-#     label = "ETO on Facebook"
+# Footer social icons. Each entry's `icon` param maps to assets/img/social-{icon}.svg,
+# which footer.html inlines so the mark inherits the link's hover/focus colour.
+#
+# EXACTLY TWO ACCOUNTS — this is the complete set, not a starting point. Both URLs
+# come from the legacy footer partial and are cross-checked against all three legacy
+# sites plus the Middleman feature spec, which asserts them. Joshua confirmed both
+# accounts are current (2026-07-28). The legacy footer had no YouTube, Instagram, or
+# LinkedIn because ETO has no such accounts; the UGO YouTube playlists live on /ugo/,
+# not in global chrome. Do not add speculative slots here.
+#
+# Twitter is X now, and the icon, label, and URL all say X — a half-migrated social
+# link is the one outcome worth avoiding. twitter.com/eto_ukraine still 301s here, so
+# using x.com drops a redirect hop and matches what the address bar shows anyway.
+[[menus.footer_social]]
+  name = "Facebook"
+  url = "https://www.facebook.com/euroteamoutreach"
+  weight = 10
+  [menus.footer_social.params]
+    icon = "facebook"
+    label = "ETO on Facebook"
+[[menus.footer_social]]
+  name = "X"
+  url = "https://x.com/eto_ukraine"
+  weight = 20
+  [menus.footer_social.params]
+    icon = "x"
+    label = "ETO on X"
