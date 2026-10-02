@@ -1,0 +1,160 @@
+{{/* ---------------------------------------------------------------------
+     /give/ — the single giving hub (#25, docs/prd/07-donations.md).
+
+         hero + two doorways → where your gift goes → give online → trust
+
+     ⚠️ LEGALLY LOAD-BEARING. Stop and ask before changing the designation
+     model, the donation flow, or the trust copy.
+
+     Copy comes from content/give.md front matter (the hero is its body); the
+     fund cards come from data/designations.yaml. Nothing on this page names
+     a fund or states a price in the template.
+
+     FOUR RULES THIS FILE MUST KEEP:
+
+     1. NO GOLD IN THIS TEMPLATE (#64). The one giving action on the page is
+        the Givebutter form's own Donate button, which Givebutter renders.
+        The doorway buttons only route — one scrolls to the form, one goes to
+        /team/ — so they take the blue primary role. The nav's Give button is
+        the header's business.
+
+     2. THE TWO DOORWAYS ARE EQUAL. Same card, same button, side by side.
+        Weighting either one breaks the point: a visitor looking to support a
+        family must find that path as fast as one giving to ETO, and the
+        pairing is what tells both that the two are different gifts (#14).
+
+     3. EVERY SECTION SPANS THE FULL CONTAINER. Prose keeps a readable
+        measure inside its column, but no section's right edge stops short of
+        the others' — alternating widths read as a sawtooth down the page.
+        Layouts that split (give online, trust) do it with a two-column grid
+        whose centre line matches the card grids above, so one vertical line
+        runs down the whole page.
+
+     4. THE TRUST SECTION IS NOT FINE PRINT. Body size, body colour, no
+        collapsing. The disclaimer "reads as integrity" (07-donations.md) —
+        shrinking it into a footnote reads as hiding it.
+
+     The widget script loads here only, via the per-page "scripts" block, so
+     every other page stays free of the third-party request. It cannot carry
+     SRI — Givebutter serves a moving "latest" build.
+     --------------------------------------------------------------------- */}}
+
+{{ define "main" }}
+  {{ $p := .Params }}
+  {{ $section := "mx-auto max-w-5xl px-6 py-12 sm:py-16" }}
+  {{ $h2 := "text-2xl font-semibold tracking-tight text-ink sm:text-3xl" }}
+  {{ $primary := "inline-block rounded-eto bg-eto-600 px-5 py-2.5 font-semibold text-white transition-colors hover:bg-eto-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
+
+  {{/* ---------------- Hero + doorways ---------------- */}}
+  <section class="border-b border-warm-200 bg-white">
+    <div class="{{ $section }}">
+      <h1 class="text-4xl font-black tracking-tight text-eto-600 sm:text-5xl">
+        {{ .Title }}
+      </h1>
+      <div class="mt-4 max-w-prose text-lg leading-relaxed text-warm-800">
+        {{ .Content }}
+      </div>
+      <div class="mt-10 grid gap-4 md:grid-cols-2">
+        {{ range $p.doorways }}
+          <div class="flex flex-col rounded-eto-lg border border-warm-200 bg-paper p-6">
+            <h2 class="text-xl font-semibold tracking-tight text-ink">
+              {{ .heading }}
+            </h2>
+            <p class="mt-2 grow leading-relaxed text-warm-800">{{ .text }}</p>
+            <div class="mt-6">
+              <a href="{{ .href }}" class="{{ $primary }}">{{ .button }}</a>
+            </div>
+          </div>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- Where your gift goes ---------------- */}}
+  <section aria-labelledby="where-heading">
+    <div class="{{ $section }}">
+      <h2 id="where-heading" class="{{ $h2 }}">{{ $p.where.heading }}</h2>
+      <p class="mt-3 max-w-prose leading-relaxed text-warm-800">
+        {{ $p.where.intro }}
+      </p>
+      <div class="mt-8 grid gap-4 md:grid-cols-2">
+        {{ range hugo.Data.designations }}
+          {{ partial "designation-card.html" . }}
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- Give online ---------------- */}}
+  {{/* Form first in source order, so phones reach it before the check
+       option; on desktop it takes the left, primary column. */}}
+  {{ with site.Params.givebutter }}
+    <section
+      id="give-online"
+      aria-labelledby="give-online-heading"
+      class="border-y border-warm-200 bg-white"
+    >
+      <div class="{{ $section }}">
+        <h2 id="give-online-heading" class="{{ $h2 }}">
+          {{ $p.online.heading }}
+        </h2>
+        <p class="mt-3 max-w-prose leading-relaxed text-warm-800">
+          {{ $p.online.note }}
+        </p>
+        <div class="mt-8 grid gap-10 md:grid-cols-2 md:gap-4">
+          <div>
+            {{/* min-h reserves the form's first step (~630px on phones,
+                 ~445px from md up), so the page doesn't jump when the widget script arrives. */}}
+            <div class="min-h-[40rem] max-w-xl md:min-h-[28rem]">
+              <givebutter-widget id="{{ .widget }}"></givebutter-widget>
+            </div>
+            <p class="mt-4 text-sm text-warm-600">
+              {{ $p.online.fallback.prompt }}
+              <a
+                href="{{ .campaignUrl }}"
+                class="font-semibold text-eto-600 underline underline-offset-2 hover:text-eto-700"
+                >{{ $p.online.fallback.link }}</a
+              >.
+            </p>
+          </div>
+          <aside
+            aria-labelledby="mail-heading"
+            class="leading-relaxed text-warm-800"
+          >
+            <h3 id="mail-heading" class="text-lg font-semibold tracking-tight text-ink">
+              {{ $p.online.mail.heading }}
+            </h3>
+            <p class="mt-2">{{ $p.online.mail.text | markdownify }}</p>
+            <address class="mt-4 border-l-2 border-warm-200 pl-4 text-ink not-italic">
+              {{ delimit $p.online.mail.address "<br>" | safeHTML }}
+            </address>
+          </aside>
+        </div>
+      </div>
+    </section>
+  {{ else }}
+    {{ errorf "layouts/give.html: params.givebutter is missing from hugo.toml" }}
+  {{ end }}
+
+  {{/* ---------------- Accountability & trust ---------------- */}}
+  {{/* Heading left, prose right, on the same centre line as the card
+       grids: the half-width column keeps a readable measure on its own. */}}
+  <section aria-labelledby="trust-heading">
+    <div class="{{ $section }} grid gap-4 md:grid-cols-2">
+      <h2 id="trust-heading" class="{{ $h2 }}">{{ $p.trust.heading }}</h2>
+      <div class="space-y-4 leading-relaxed text-warm-800">
+        <p>{{ $p.trust.statement }}</p>
+        <p class="italic">{{ $p.trust.disclaimer }}</p>
+      </div>
+    </div>
+  </section>
+{{ end }}
+
+{{ define "scripts" }}
+  {{ with site.Params.givebutter }}
+    <script
+      async
+      src="https://widgets.givebutter.com/latest.umd.cjs?acct={{ .account }}&p=other"
+    ></script>
+  {{ end }}
+{{ end }}
