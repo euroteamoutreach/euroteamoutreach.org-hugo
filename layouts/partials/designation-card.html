@@ -4,14 +4,16 @@
   Takes a single entry from hugo.Data.designations (never a hand-built dict),
   so the card cannot say anything the data file does not. The blurb is
   markdownified inline for the Good & Evil title's italics; "{box_price}" in a
-  blurb is replaced with that entry's box_price as dollars.
+  blurb is replaced with that entry's box_price as dollars: whole amounts as
+  "$20", anything else with cents ("$22.50").
 
   ⚠️ Cause-framed copy only (docs/prd/07-donations.md). If a card ever needs
   to name a person, the answer is no — stop and ask.
 */ -}}
 {{- $blurb := .blurb -}}
 {{- with .box_price -}}
-  {{- $blurb = replace $blurb "{box_price}" (printf "$%d" .) -}}
+  {{- $cents := cond (eq (math.Floor .) (float .)) 0 2 -}}
+  {{- $blurb = replace $blurb "{box_price}" (lang.FormatCurrency $cents "USD" .) -}}
 {{- end -}}
 {{- if strings.Contains $blurb "{box_price}" -}}
   {{- errorf "designation-card: %q uses {box_price} but sets no box_price" .slug -}}
