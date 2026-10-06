@@ -1,0 +1,38 @@
+{{- /*
+  photo-backdrop — a full-bleed Cloudinary photo with a colour wash over it,
+  sitting behind a section's own content.
+
+  Renders only the two background layers; the section keeps its markup. The
+  caller's section must be `relative isolate overflow-hidden`: isolate gives
+  the -z-10 layers a stacking context of their own, so they sit behind the
+  section's content without slipping behind the page ground.
+
+  A real <img>, not a CSS background-image, so the photo keeps its srcset,
+  its alt text and eager loading as the page's LCP candidate (#39). The wash
+  is a class string, so tuning it is a class change, not a re-export.
+
+  Each page brings its own photo: home and /ugo/ do not share a hero (#28).
+
+  Params (dict):
+    photo     (required) id, width, height, alt — a Cloudinary photo record
+    wash      (required) classes for the overlay, e.g. "bg-eto-900/70"
+    position  (optional) object-position classes; default "object-center"
+*/ -}}
+{{- $photo := .photo -}}
+{{- if not $photo -}}
+  {{- errorf "photo-backdrop: 'photo' is required" -}}
+{{- end -}}
+{{- if not .wash -}}
+  {{- errorf "photo-backdrop: 'wash' is required for %q" $photo.id -}}
+{{- end -}}
+<div class="absolute inset-0 -z-10">
+  {{ partial "cloudinary-img.html" (dict
+    "src" $photo.id
+    "alt" $photo.alt
+    "width" $photo.width
+    "height" $photo.height
+    "loading" "eager"
+    "class" (printf "size-full object-cover %s" (.position | default "object-center"))
+  ) }}
+  <div class="absolute inset-0 {{ .wash }}"></div>
+</div>
