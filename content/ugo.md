@@ -59,8 +59,9 @@ model:
     - heading: "Aid"
       photo: aid
       body: "Each family receives an aid box — about **{box_price}** of non-perishable food and household essentials: flour, cooking oil, beans, rice, canned meat. Wherever we can, we add fresh bread, baked locally that morning. It will not undo what the war has broken. But it is real food in real hands, and it carries a message of its own: *you have not been forgotten.*"
-  # Pre-UGO track (#21): /good-and-evil/ is still served by the legacy site
-  # through the fallback proxy, and Bible First's own site is live. Both move
+  # Pre-UGO track (#21): /good-and-evil/ goes through the fallback proxy to a
+  # legacy redirect stub, which sends the visitor off-site to
+  # goodandevilbook.com (http only). Bible First's own site is live. Both move
   # to on-site pages in Phase 2.
   links:
     - label: "Learn about Good and Evil"
@@ -82,9 +83,10 @@ next:
     If you would like to stand with us in this, there is a place for you. Here's how.
 
 # The three doorways. Pre-UGO track (#21): /pray/ and /serve/ are not built
-# yet, and legacy has neither, so Pray goes to legacy's /subscribe/ (served
-# through the fallback proxy) and Go to /contact/. When /pray/ and /serve/
-# ship, point these at them.
+# yet, and legacy has neither. Pray goes to /subscribe/, which the fallback
+# proxy hands to a legacy redirect stub that sends the visitor off-site to the
+# MailChimp signup form; Go goes to /contact/. When /pray/ and /serve/ ship,
+# point these at them.
 involved:
   heading: "Three ways to stand with us"
   doorways:

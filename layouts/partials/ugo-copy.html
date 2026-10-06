@@ -6,9 +6,10 @@
 
     {trip_dates}  data/ugo.yaml trip         "October 17–26, 2026"
                                              "October 28 – November 3, 2026"
+                                             "December 28, 2026 – January 3, 2027"
     {trip_year}   data/ugo.yaml trip.start   "2026"
-    {box_price}   data/designations.yaml     "$20" (via usd.html), from the
-                  page's give_designation
+    {box_price}   data/designations.yaml     "$20" (via usd.html), from /ugo/'s
+                  give_designation, whichever page renders the copy
 
   An unknown or misspelled token fails the build rather than shipping as
   literal braces.
@@ -24,18 +25,23 @@
   {{- $dates := "" -}}
   {{- if eq ($start.Format "200601") ($end.Format "200601") -}}
     {{- $dates = printf "%s–%s" ($start.Format "January 2") ($end.Format "2, 2006") -}}
-  {{- else -}}
+  {{- else if eq $start.Year $end.Year -}}
     {{- $dates = printf "%s – %s" ($start.Format "January 2") ($end.Format "January 2, 2006") -}}
+  {{- else -}}
+    {{- $dates = printf "%s – %s" ($start.Format "January 2, 2006") ($end.Format "January 2, 2006") -}}
   {{- end -}}
   {{- $s = replace $s "{trip_dates}" $dates -}}
   {{- $s = replace $s "{trip_year}" ($start.Format "2006") -}}
 {{- else -}}
   {{- errorf "ugo-copy: data/ugo.yaml has no trip" -}}
 {{- end -}}
-{{- with index (where hugo.Data.designations "slug" page.Params.give_designation) 0 -}}
+{{- /* The /ugo/ page's fund, not the rendering page's: home (#28) shows UGO
+     copy too, and has no give_designation of its own. */ -}}
+{{- $slug := (site.GetPage "/ugo").Params.give_designation -}}
+{{- with index (where hugo.Data.designations "slug" $slug) 0 -}}
   {{- $s = replace $s "{box_price}" (partial "usd.html" .box_price) -}}
 {{- else -}}
-  {{- errorf "ugo-copy: give_designation %q is not in data/designations.yaml" page.Params.give_designation -}}
+  {{- errorf "ugo-copy: /ugo/ give_designation %q is not in data/designations.yaml" $slug -}}
 {{- end -}}
 {{- with findRE `\{[a-z_]+\}` $s 1 -}}
   {{- errorf "ugo-copy: unknown token %s in %q" (index . 0) $s -}}
