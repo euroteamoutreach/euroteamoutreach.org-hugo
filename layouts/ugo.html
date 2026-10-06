@@ -38,7 +38,7 @@
   {{ $p := .Params }}
   {{ $ugo := hugo.Data.ugo }}
   {{ $section := "mx-auto max-w-5xl px-6 py-12 sm:py-16" }}
-  {{ $h2 := "text-2xl font-semibold tracking-tight text-ink sm:text-3xl" }}
+  {{ $h2 := "text-heading text-ink" }}
   {{ $prose := "space-y-4 text-body text-warm-800" }}
   {{ $focus := "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
   {{ $btn := printf "inline-block rounded-eto px-5 py-2.5 font-semibold transition-colors %s" $focus }}
@@ -95,7 +95,7 @@
       {{/* Heading and summary share the top row, so neither stops halfway
            across a band whose stat row runs the full width below. */}}
       <div class="grid gap-4 md:grid-cols-2 md:items-baseline">
-        <h2 id="stats-heading" class="text-2xl font-semibold tracking-tight sm:text-3xl">
+        <h2 id="stats-heading" class="text-heading">
           {{ $p.stats.heading }}
         </h2>
         <p class="text-body text-eto-100">
@@ -179,7 +179,7 @@
               "frame" "aspect-4/3"
             ) }}
             <div>
-              <h3 class="text-xl font-semibold tracking-tight text-ink">
+              <h3 class="text-subheading text-ink">
                 {{ .heading }}
               </h3>
               <p class="mt-2 text-body text-warm-800">
@@ -234,7 +234,7 @@
             <span class="flex size-10 items-center justify-center rounded-eto bg-eto-50 text-eto-600">
               {{ partial "icon.html" (dict "name" (printf "icon-%s" .icon) "class" "size-6") }}
             </span>
-            <h3 class="mt-4 text-xl font-semibold tracking-tight text-ink">
+            <h3 class="mt-4 text-subheading text-ink">
               {{ .heading }}
             </h3>
             <p class="mt-2 grow text-body text-warm-800">
@@ -298,7 +298,7 @@
       <div class="mt-8 grid gap-8 md:grid-cols-2 md:gap-4">
         {{ range $ugo.playlists }}
           <div>
-            <h3 class="mb-3 text-lg font-semibold tracking-tight text-ink">
+            <h3 class="mb-3 text-subheading text-ink">
               {{ .title }}
             </h3>
             {{ partial "youtube-playlist.html" . }}

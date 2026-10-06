@@ -252,14 +252,17 @@
              typed here: resize across 768px to watch each role step up. */}}
         <h3 class="mt-14 text-xl font-semibold tracking-tight">Text roles</h3>
         <p class="mt-2 max-w-prose text-sm leading-relaxed text-warm-600">
-          Pages name what a paragraph is rather than repeating size classes;
-          the sizes live in <code>main.css</code>. Each role steps up one size
-          from <code>md</code> (768px), because a laptop screen sits further
-          from the eye than a phone. Colour stays on the element, set by the
-          ground the text sits on.
+          Pages name what a line of text is rather than repeating size
+          classes; the sizes live in <code>main.css</code>. Each role steps up
+          one size from <code>md</code> (768px), because a laptop screen sits
+          further from the eye than a phone. Read top to bottom, this is the
+          whole ladder: each heading clears the step below it by about 1.25×.
+          Colour stays on the element, set by the ground the text sits on.
         </p>
         <div class="mt-6 divide-y divide-warm-200 border-y border-warm-200">
           {{ range slice
+            (dict "class" "text-heading" "role" "Heading" "steps" "24px → 30px from md" "use" "Section headings (h2)" "sample" "Three ways to stand with us")
+            (dict "class" "text-subheading" "role" "Sub-heading" "steps" "20px → 24px from md" "use" "Headings inside a section (h3); not card titles" "sample" "The Gospel and the aid arrive together")
             (dict "class" "text-lede" "role" "Lede" "steps" "18px → 20px from md" "use" "A page's opening paragraph" "sample" "We carry the Gospel of Jesus Christ and practical, hand-delivered aid into Ukrainian communities near the front — village by village, box by box.")
             (dict "class" "text-body" "role" "Body" "steps" "16px → 18px from md" "use" "Every reading paragraph: section bodies, cards, trust copy" "sample" "Every aid box has to be bought and packed before the team can hand it out, and each gift helps prepare the boxes for a trip south. It will not undo what the war has broken. But it is real food in real hands, and it carries a message of its own.")
             (dict "class" "text-caption" "role" "Caption" "steps" "14px → 16px from md" "use" "Photo captions, quote sources, notes, fine print" "sample" "Loading aid boxes in Lviv before the drive south, October 2025.")

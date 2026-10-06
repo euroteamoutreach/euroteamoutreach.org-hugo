@@ -132,6 +132,36 @@ html {
   }
 }
 
+/* Headings ride the same ladder, so moving body copy can never quietly close
+   the gap above it (it did once: 20px sub-heads over 18px body read as body).
+   Desktop runs 18 → 24 → 30, each step ~1.25× the last; phones 16 → 20 → 24.
+   Unlike the text roles these carry weight and tracking too, since a heading's
+   role is its whole face, not just its size. Colour still stays on the element.
+
+   Card titles are not sub-headings: they label a bordered card beside an icon,
+   and keep their own smaller size. */
+@utility text-heading {
+  font-size: var(--text-2xl);
+  line-height: var(--text-2xl--line-height);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  @variant md {
+    font-size: var(--text-3xl);
+    line-height: var(--text-3xl--line-height);
+  }
+}
+
+@utility text-subheading {
+  font-size: var(--text-xl);
+  line-height: var(--text-xl--line-height);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  @variant md {
+    font-size: var(--text-2xl);
+    line-height: var(--text-2xl--line-height);
+  }
+}
+
 /* A page's opening paragraph: one step above body at every width, so it keeps
    its lead when body grows. */
 @utility text-lede {

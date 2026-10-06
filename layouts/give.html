@@ -43,7 +43,7 @@
 {{ define "main" }}
   {{ $p := .Params }}
   {{ $section := "mx-auto max-w-5xl px-6 py-12 sm:py-16" }}
-  {{ $h2 := "text-2xl font-semibold tracking-tight text-ink sm:text-3xl" }}
+  {{ $h2 := "text-heading text-ink" }}
   {{ $primary := "inline-block rounded-eto bg-eto-600 px-5 py-2.5 font-semibold text-white transition-colors hover:bg-eto-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
 
   {{/* ---------------- Hero + doorways ---------------- */}}
@@ -122,7 +122,7 @@
             aria-labelledby="mail-heading"
             class="text-body text-warm-800"
           >
-            <h3 id="mail-heading" class="text-lg font-semibold tracking-tight text-ink">
+            <h3 id="mail-heading" class="text-subheading text-ink">
               {{ $p.online.mail.heading }}
             </h3>
             <p class="mt-2">{{ $p.online.mail.text | markdownify }}</p>
