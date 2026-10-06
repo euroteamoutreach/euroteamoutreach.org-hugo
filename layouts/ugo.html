@@ -39,7 +39,8 @@
   {{ $section := "mx-auto max-w-5xl px-6 py-12 sm:py-16" }}
   {{ $h2 := "text-2xl font-semibold tracking-tight text-ink sm:text-3xl" }}
   {{ $prose := "space-y-4 leading-relaxed text-warm-800" }}
-  {{ $btn := "inline-block rounded-eto px-5 py-2.5 font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
+  {{ $focus := "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
+  {{ $btn := printf "inline-block rounded-eto px-5 py-2.5 font-semibold transition-colors %s" $focus }}
   {{ $gold := printf "%s bg-gold text-ink hover:bg-gold-hover" $btn }}
   {{ $primary := printf "%s bg-eto-600 text-white hover:bg-eto-700" $btn }}
   {{ $outline := printf "%s border border-eto-600 text-eto-600 hover:bg-eto-50" $btn }}
@@ -80,7 +81,7 @@
       </div>
       {{ partial "photo-figure.html" (dict
         "photo" $hero
-        "sizes" "(min-width: 1024px) 384px, (min-width: 768px) 40vw, 100vw"
+        "sizes" "(min-width: 1024px) 384px, (min-width: 768px) 40vw, min(100vw, 384px)"
         "loading" "eager"
         "class" "mx-auto w-full max-w-sm md:col-span-2"
       ) }}
@@ -215,7 +216,7 @@
         </div>
         {{ partial "photo-figure.html" (dict
           "photo" $featured.next_inset
-          "sizes" "(min-width: 1024px) 304px, (min-width: 768px) 33vw, 100vw"
+          "sizes" "(min-width: 1024px) 304px, (min-width: 768px) 33vw, min(100vw, 320px)"
           "class" "mx-auto w-full max-w-xs md:max-w-none"
         ) }}
       </div>
@@ -230,11 +231,7 @@
         {{ range $p.involved.doorways }}
           <div class="flex flex-col rounded-eto-lg border border-eto-100 bg-white p-6">
             <span class="flex size-10 items-center justify-center rounded-eto bg-eto-50 text-eto-600">
-              {{ with resources.Get (printf "img/icon-%s.svg" .icon) }}
-                {{ replaceRE `<svg ` `<svg class="size-6" ` .Content 1 | safeHTML }}
-              {{ else }}
-                {{ errorf "layouts/ugo.html: no assets/img/icon-%s.svg" .icon }}
-              {{ end }}
+              {{ partial "icon.html" (dict "name" (printf "icon-%s" .icon) "class" "size-6") }}
             </span>
             <h3 class="mt-4 text-xl font-semibold tracking-tight text-ink">
               {{ .heading }}
@@ -244,7 +241,7 @@
             </p>
             <div class="mt-6">
               {{ if .give }}
-                <a href="{{ $giveHref }}" class="{{ $gold }}">{{ .label }}</a>
+                <a href="{{ $giveHref }}" class="{{ $gold }}">{{ $p.give.label }}</a>
               {{ else }}
                 <a href="{{ .href }}" class="{{ $primary }}">{{ .label }} →</a>
               {{ end }}
@@ -260,21 +257,16 @@
     <div class="{{ $section }} grid gap-10 md:grid-cols-2 md:gap-4">
       <div>
         <h2 id="give-heading" class="{{ $h2 }}">{{ $p.give.heading }}</h2>
-        <p class="mt-4 max-w-prose leading-relaxed text-warm-800">
-          {{ $p.give.intro }}
-        </p>
-        <p class="mt-4 max-w-prose leading-relaxed text-warm-800">
-          {{ $p.give.text }}
-        </p>
+        <div class="mt-4 max-w-prose {{ $prose }}">
+          {{ partial "ugo-copy.html" $p.give.body }}
+        </div>
       </div>
       <div class="md:pl-8">
         <dl class="divide-y divide-warm-200 border-y border-warm-200">
           {{ range $ugo.give_band_boxes }}
-            {{ $amount := mul . $fund.box_price }}
-            {{ $cents := cond (eq (math.Floor $amount) (float $amount)) 0 2 }}
             <div class="flex items-baseline justify-between gap-4 py-3">
               <dt class="text-2xl font-black tracking-tight text-ink tabular-nums">
-                {{ lang.FormatCurrency $cents "USD" $amount }}
+                {{ partial "usd.html" (mul . $fund.box_price) }}
               </dt>
               <dd class="text-warm-800">
                 {{ cond (eq . 1) "1 aid box" (printf "%d aid boxes" .) }}
@@ -285,7 +277,7 @@
         <div class="mt-6">
           <a href="{{ $giveHref }}" class="{{ $gold }}">{{ $p.give.label }}</a>
         </div>
-        <p class="mt-3 text-sm text-warm-600">{{ $p.give.note }}</p>
+        <p class="mt-3 text-sm text-warm-600">{{ partial "ugo-copy.html" $p.give.note }}</p>
       </div>
     </div>
   </section>
@@ -297,7 +289,7 @@
     <div class="{{ $section }}">
       <h2 id="field-heading" class="{{ $h2 }}">{{ $p.field.heading }}</h2>
       <p class="mt-3 max-w-prose leading-relaxed text-warm-800">
-        {{ $p.field.intro }}
+        {{ partial "ugo-copy.html" $p.field.intro }}
       </p>
       <div class="mt-8 grid gap-8 md:grid-cols-2 md:gap-4">
         {{ range $ugo.playlists }}
@@ -310,7 +302,7 @@
                  rest behind a small player menu, so name the whole list. */}}
             <a
               href="https://www.youtube.com/playlist?list={{ .list }}"
-              class="mt-3 inline-block rounded-eto font-semibold text-eto-600 underline underline-offset-2 hover:text-eto-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600"
+              class="mt-3 inline-block rounded-eto font-semibold text-eto-600 underline underline-offset-2 hover:text-eto-700 {{ $focus }}"
               >{{ $p.field.playlist_label }} →</a
             >
           </div>
@@ -331,7 +323,7 @@
       <div class="mt-16 flex flex-col gap-6 border-t border-warm-200 pt-10 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p class="text-xl font-semibold tracking-tight text-ink">
-            {{ $p.field.close }}
+            {{ partial "ugo-copy.html" $p.field.close }}
           </p>
           <div class="mt-4">
             <a href="{{ $giveHref }}" class="{{ $gold }}">{{ $p.give.label }}</a>
@@ -339,7 +331,7 @@
         </div>
         <a
           href="#top"
-          class="self-start rounded-eto font-semibold text-eto-600 hover:text-eto-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600 sm:self-end"
+          class="self-start rounded-eto font-semibold text-eto-600 hover:text-eto-700 {{ $focus }} sm:self-end"
           >Back to top ↑</a
         >
       </div>

@@ -1,0 +1,19 @@
+{{- /*
+  icon — inlines assets/img/<name>.svg so it inherits currentColor.
+
+  Decorative only: aria-hidden, because the surrounding text or link already
+  names it (and an icon's own <title> would announce a second name).
+
+  Params (dict):
+    name   (required) file basename, e.g. "icon-gift" or "social-youtube"
+    class  (required) classes for the <svg>, e.g. "size-6"
+*/ -}}
+{{- with resources.Get (printf "img/%s.svg" .name) -}}
+  {{- $attrs := printf `class="%s"` $.class -}}
+  {{- if not (strings.Contains .Content "aria-hidden") -}}
+    {{- $attrs = printf `aria-hidden="true" %s` $attrs -}}
+  {{- end -}}
+  {{- replaceRE `<svg ` (printf `<svg %s ` $attrs) .Content 1 | safeHTML -}}
+{{- else -}}
+  {{- errorf "icon: no assets/img/%s.svg" .name -}}
+{{- end -}}

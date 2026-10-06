@@ -101,13 +101,14 @@ involved:
     - heading: "Give"
       icon: gift
       body: "{box_price} puts one aid box — food and the Gospel — into a family's hands. Give once, or give monthly to help us prepare for the next trip."
-      label: "Give an aid box"
-      give: true
+      give: true # label and link come from give: below
 
 give:
   heading: "Fill a box for a family"
-  intro: "A single gift becomes food on a table and the Gospel in a family's hands — delivered in person by our own team. Here is what your giving does:"
-  text: "Give once, or give monthly — a recurring gift quietly adds up between trips, so the boxes are ready to load when the team heads south. Every gift directly purchases supplies, hand-delivered to Ukrainian families in need."
+  body: |
+    A single gift becomes food on a table and the Gospel in a family's hands — delivered in person by our own team. Here is what your giving does:
+
+    Give once, or give monthly — a recurring gift quietly adds up between trips, so the boxes are ready to load when the team heads south. Every gift directly purchases supplies, hand-delivered to Ukrainian families in need.
   label: "Give an aid box"
   note: "Your gift goes to the UGO aid-box fund."
 

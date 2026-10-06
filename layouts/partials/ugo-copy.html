@@ -7,7 +7,8 @@
     {trip_dates}  data/ugo.yaml trip         "October 17–26, 2026"
                                              "October 28 – November 3, 2026"
     {trip_year}   data/ugo.yaml trip.start   "2026"
-    {box_price}   data/designations.yaml     "$20" (cents only when present)
+    {box_price}   data/designations.yaml     "$20" (via usd.html), from the
+                  page's give_designation
 
   An unknown or misspelled token fails the build rather than shipping as
   literal braces.
@@ -31,10 +32,10 @@
 {{- else -}}
   {{- errorf "ugo-copy: data/ugo.yaml has no trip" -}}
 {{- end -}}
-{{- with index (where hugo.Data.designations "slug" "ugo-aid-boxes") 0 -}}
-  {{- $price := .box_price -}}
-  {{- $cents := cond (eq (math.Floor $price) (float $price)) 0 2 -}}
-  {{- $s = replace $s "{box_price}" (lang.FormatCurrency $cents "USD" $price) -}}
+{{- with index (where hugo.Data.designations "slug" page.Params.give_designation) 0 -}}
+  {{- $s = replace $s "{box_price}" (partial "usd.html" .box_price) -}}
+{{- else -}}
+  {{- errorf "ugo-copy: give_designation %q is not in data/designations.yaml" page.Params.give_designation -}}
 {{- end -}}
 {{- with findRE `\{[a-z_]+\}` $s 1 -}}
   {{- errorf "ugo-copy: unknown token %s in %q" (index . 0) $s -}}
