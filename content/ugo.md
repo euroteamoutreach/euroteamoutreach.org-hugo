@@ -27,7 +27,7 @@ hero:
   tagline: "Bringing Hope to Ukraine"
 
 stats:
-  heading: "Two trips. Real ground covered."
+  heading: "Real ground covered."
   text: "Years into the war, the cameras have moved on — but these families are still waiting, and the need is still real. We were able to go. So we did. And in {trip_year}, we're going back."
 
 what:
@@ -76,7 +76,7 @@ next:
   body: |
     The next UGO project runs **{trip_dates}** — the same core team, the same long drive south, into the de-occupied villages of the Mykolaiv region and beyond. These are the places where the war came closest, and where help is now hardest to find.
 
-    In one village last year, a woman told us the larger aid organizations had mostly stopped coming once the early years of the war had passed. We can't speak to anyone else's work — much of it did real good, on a scale we will never match. We can only tell you what we have seen with our own eyes: the families are still there, the winters are still hard, and the need has not eased. So we are going back.
+    In one village on an earlier trip, a woman told us the larger aid organizations had mostly stopped coming once the early years of the war had passed. We can't speak to anyone else's work — much of it did real good, on a scale we will never match. We can only tell you what we have seen with our own eyes: the families are still there, the winters are still hard, and the need has not eased. So we are going back.
 
     Every aid box has to be bought and packed before the team can hand it out, and each gift helps prepare the boxes for a trip south. {box_price} fills one box: food for a family, and the Gospel placed in their hands.
 
@@ -92,7 +92,7 @@ involved:
   doorways:
     - heading: "Pray"
       icon: hand-raised
-      body: "We need God's blessing, protection, and intervention. *\"Except the LORD build the house…\"* Please pray with us for safety on the roads, for open doors in the villages, and for the families who will hear the Gospel this fall. As the project draws near, we'll send you specific things to pray for."
+      body: "We need God's blessing, protection, and intervention. *\"Except the LORD build the house…\"* Please pray with us for safety on the roads, for open doors in the villages, and for the families who will hear the Gospel on the next trip. As the project draws near, we'll send you specific things to pray for."
       label: "Follow along and pray"
       href: "/subscribe/"
     - heading: "Go"
@@ -108,9 +108,12 @@ involved:
 give:
   heading: "Fill a box for a family"
   body: |
-    A single gift becomes food on a table and the Gospel in a family's hands — delivered in person by our own team. Here is what your giving does:
+    A single gift becomes food on a table and the Gospel in a family's hands — delivered in person by our own team.
 
     Give once, or give monthly — a recurring gift quietly adds up between trips, so the boxes are ready to load when the team heads south. Every gift directly purchases supplies, hand-delivered to Ukrainian families in need.
+  # Sits directly above the price table, so it introduces the table at
+  # every width (beside the body on desktop, below it on a phone).
+  table_label: "Here is what your giving does:"
   label: "Give an aid box"
   note: "Your gift goes to the UGO aid-box fund."
 

@@ -263,7 +263,10 @@
         </div>
       </div>
       <div class="md:pl-8">
-        <dl class="divide-y divide-warm-200 border-y border-warm-200">
+        <p id="give-table-label" class="mb-3 text-sm font-semibold text-warm-600">
+          {{ partial "ugo-copy.html" $p.give.table_label }}
+        </p>
+        <dl aria-labelledby="give-table-label" class="divide-y divide-warm-200 border-y border-warm-200">
           {{ range $ugo.give_band_boxes }}
             <div class="flex items-baseline justify-between gap-4 py-3">
               <dt class="text-2xl font-black tracking-tight text-ink tabular-nums">
