@@ -47,6 +47,10 @@ model:
     In each village, word goes out and people gather. We share the good news of Jesus, and everyone who comes goes home with their hands full — a box of food in one hand, a bundle of Bible literature in the other. The Gospel and the aid arrive together; that is the whole idea.
 
     For most of our years in Ukraine, we held to one task: preaching the Gospel and teaching the Bible. We were wary of handing out aid alongside it — afraid it might blur the message, or gather a crowd hungry only for what was in the box. Then came the war, and a scale of suffering we could not preach past. So we went back to Scripture. *"If a brother or sister be naked, and destitute of daily food,"* James asks, and you offer them only words — *"what doth it profit?"* We could no longer tell cold, hungry families to be warmed and filled and do nothing. So now we come with both: food for the body, and the good news that outlasts the war.
+  # KJV, verbatim (#45). The passage the paragraph above quotes in part.
+  scripture:
+    text: "If a brother or sister be naked, and destitute of daily food, And one of you say unto them, Depart in peace, be ye warmed and filled; notwithstanding ye give them not those things which are needful to the body; what doth it profit?"
+    ref: "James 2:15–16"
   # Gospel first, aid second (#46): the order of these two is the point.
   columns:
     - heading: "Gospel"
@@ -110,6 +114,8 @@ give:
 field:
   heading: "From the field"
   intro: "Short updates filmed on the road, and photos from the villages."
+  playlist_label: "Watch the full playlist on YouTube"
+  close: "Help fill the next box for a family."
 ---
 
 We carry the Gospel of Jesus Christ and practical, hand-delivered aid into Ukrainian communities near the front — village by village, box by box.
