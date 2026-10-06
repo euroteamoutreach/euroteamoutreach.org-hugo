@@ -292,6 +292,34 @@
             </div>
           {{ end }}
         </div>
+        {{/* The dark ground, from the footer (PR #19): eto-600 is 1.88:1 on
+             eto-900, so the blue button's edge vanishes and the primary role
+             turns white; focus rings turn white for the same reason. Gold
+             still means giving. No outline role is defined here yet. */}}
+        <div class="mt-5 rounded-eto-lg bg-eto-900 px-5 py-6">
+          <p class="text-xs font-semibold tracking-widest text-eto-200 uppercase">
+            On eto-900 — the footer and stat bands
+          </p>
+          <div class="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              class="rounded-eto bg-gold px-5 py-2.5 font-semibold text-ink transition-colors hover:bg-gold-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              Give
+            </button>
+            <button
+              type="button"
+              class="rounded-eto bg-white px-5 py-2.5 font-semibold text-eto-900 transition-colors hover:bg-eto-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              Subscribe
+            </button>
+          </div>
+          <p class="mt-4 max-w-prose text-sm leading-relaxed text-eto-200">
+            Blue primary becomes white here: eto-600 on eto-900 is 1.88:1, so
+            its edge disappears. Focus rings are white too, for the same
+            reason. Gold keeps its one meaning.
+          </p>
+        </div>
       </div>
     </section>
 
