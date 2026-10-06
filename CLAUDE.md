@@ -25,6 +25,8 @@ Both run the identical stack and conventions. **When you need a pattern — blog
 
 The **why** — and the full PRD — live in a separate **private** repo, `euroteamoutreach/eto-web-reboot` (locally the parent directory of this one). This repo is **public** (it deploys to Netlify); anything sensitive or tentative stays in the private repo.
 
+**Sessions start here, in this repo.** The planning repo is `..`, readable because `.claude/settings.local.json` grants it as an additional directory. Its **`../CLAUDE.md`** carries the current project status (phase, critical path, open real-world inputs), which this public file deliberately leaves out — read it at the start of a session. Commits to the planning repo (ROADMAP ticks, CHANGELOG entries) are made there, not here.
+
 - **`planning/prd/`** — the full PRD (overview, architecture, ROADMAP, per-feature specs). Relocated here when this repo went public (decision #55, revised). Available locally at **`docs/prd/`** via a gitignored symlink, so the old path and the workflow skills keep working unchanged.
 - **`planning/DECISIONS.md`** — the numbered decision log. **Read it first.** Nearly every question below ("why UGO at top level?", "why lowercase russia?", "why KJV?") is answered there with rationale.
 - `planning/sitemap.md` · `planning/content-model.md` · `planning/redirect-map.md` · `planning/donations-research.md`

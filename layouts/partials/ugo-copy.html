@@ -1,0 +1,49 @@
+{{- /*
+  ugo-copy — fills a UGO copy string's {tokens}, then renders it as markdown.
+
+  Copy in content/ugo.md never types a date or a price; it writes a token,
+  and this partial supplies the value from the one file that owns it:
+
+    {trip_dates}  data/ugo.yaml trip         "October 17–26, 2026"
+                                             "October 28 – November 3, 2026"
+                                             "December 28, 2026 – January 3, 2027"
+    {trip_year}   data/ugo.yaml trip.start   "2026"
+    {box_price}   data/designations.yaml     "$20" (via usd.html), from /ugo/'s
+                  give_designation, whichever page renders the copy
+
+  An unknown or misspelled token fails the build rather than shipping as
+  literal braces.
+
+  Usage: {{ partial "ugo-copy.html" .Params.next.body }}
+  Returns safe HTML. markdownify drops the <p> wrapper from a single
+  paragraph, so one-liners render inline and multi-paragraph copy as <p>s.
+*/ -}}
+{{- $s := . -}}
+{{- with hugo.Data.ugo.trip -}}
+  {{- $start := time.AsTime .start -}}
+  {{- $end := time.AsTime .end -}}
+  {{- $dates := "" -}}
+  {{- if eq ($start.Format "200601") ($end.Format "200601") -}}
+    {{- $dates = printf "%s–%s" ($start.Format "January 2") ($end.Format "2, 2006") -}}
+  {{- else if eq $start.Year $end.Year -}}
+    {{- $dates = printf "%s – %s" ($start.Format "January 2") ($end.Format "January 2, 2006") -}}
+  {{- else -}}
+    {{- $dates = printf "%s – %s" ($start.Format "January 2, 2006") ($end.Format "January 2, 2006") -}}
+  {{- end -}}
+  {{- $s = replace $s "{trip_dates}" $dates -}}
+  {{- $s = replace $s "{trip_year}" ($start.Format "2006") -}}
+{{- else -}}
+  {{- errorf "ugo-copy: data/ugo.yaml has no trip" -}}
+{{- end -}}
+{{- /* The /ugo/ page's fund, not the rendering page's: home (#28) shows UGO
+     copy too, and has no give_designation of its own. */ -}}
+{{- $slug := (site.GetPage "/ugo").Params.give_designation -}}
+{{- with index (where hugo.Data.designations "slug" $slug) 0 -}}
+  {{- $s = replace $s "{box_price}" (partial "usd.html" .box_price) -}}
+{{- else -}}
+  {{- errorf "ugo-copy: /ugo/ give_designation %q is not in data/designations.yaml" $slug -}}
+{{- end -}}
+{{- with findRE `\{[a-z_]+\}` $s 1 -}}
+  {{- errorf "ugo-copy: unknown token %s in %q" (index . 0) $s -}}
+{{- end -}}
+{{- return ($s | markdownify) -}}

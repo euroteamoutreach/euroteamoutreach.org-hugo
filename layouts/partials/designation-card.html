@@ -12,8 +12,7 @@
 */ -}}
 {{- $blurb := .blurb -}}
 {{- with .box_price -}}
-  {{- $cents := cond (eq (math.Floor .) (float .)) 0 2 -}}
-  {{- $blurb = replace $blurb "{box_price}" (lang.FormatCurrency $cents "USD" .) -}}
+  {{- $blurb = replace $blurb "{box_price}" (partial "usd.html" .) -}}
 {{- end -}}
 {{- if strings.Contains $blurb "{box_price}" -}}
   {{- errorf "designation-card: %q uses {box_price} but sets no box_price" .slug -}}
@@ -25,11 +24,7 @@
   <span
     class="flex size-10 shrink-0 items-center justify-center rounded-eto bg-eto-50 text-eto-600"
   >
-    {{- with resources.Get (printf "img/icon-%s.svg" .icon) -}}
-      {{ replaceRE `<svg ` `<svg class="size-6" ` .Content 1 | safeHTML }}
-    {{- else -}}
-      {{ errorf "designation-card: no assets/img/icon-%s.svg for %q" .icon .slug }}
-    {{- end -}}
+    {{- partial "icon.html" (dict "name" (printf "icon-%s" .icon) "class" "size-6") -}}
   </span>
   <div class="min-w-0">
     <h3 class="text-lg font-semibold tracking-tight text-ink">{{ .name }}</h3>

@@ -111,9 +111,7 @@
                      uses — sister-site parity is deliberate. aria-hidden on the
                      glyph because the <a> already carries the accessible name;
                      without it the icon's own <title> announces a second one. */}}
-                {{ with resources.Get (printf "img/social-%s.svg" .Params.icon) }}
-                  {{ replaceRE `<svg ` `<svg aria-hidden="true" class="size-5 fill-current" ` .Content 1 | safeHTML }}
-                {{ end }}
+                {{ partial "icon.html" (dict "name" (printf "social-%s" .Params.icon) "class" "size-5 fill-current") }}
               </a>
             </li>
           {{ end }}

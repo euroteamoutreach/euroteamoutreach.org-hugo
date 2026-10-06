@@ -1,0 +1,177 @@
+# UGO — the single source of truth for trip facts, stats, video, and photos.
+#
+# Read by /ugo/ (layouts/ugo.html) and, from #28, by the home page's featured
+# UGO band. Page prose lives in content/ugo.md; it reaches these values only
+# through the {tokens} that layouts/partials/ugo-copy.html replaces, so no
+# date or price is ever typed into copy (#54).
+
+# The next project. The ONLY place its dates exist. {trip_dates} renders as
+# "October 17–26, 2026"; a trip spanning two months renders both names.
+# ⚠️ After the team returns, the "next project" copy in content/ugo.md speaks
+# of a trip that is over. Update the dates and that copy together.
+trip:
+  start: 2026-10-17
+  end: 2026-10-26
+
+# The track-record band. Rounded ballparks for boxes and books; Nathan keeps
+# the precise records (planning/copy/ugo.md §2). Villages counts only the
+# de-occupied south (10 in 2024 + 11 in 2025); the Zhytomyr-area outreach is
+# well north of the front and deliberately not included.
+stats:
+  - value: "2"
+    label: "field projects since 2024"
+  - value: "21"
+    label: "villages reached near the front"
+  - value: "1,500"
+    label: "aid boxes placed in Ukrainian hands"
+  - value: "1,000+"
+    label: "*Good and Evil* books distributed"
+
+# Box counts for the give band. Each amount is box_price (data/designations.yaml)
+# times the count, so a price change rewrites the whole table.
+give_band_boxes: [1, 5, 10, 25]
+
+# YouTube playlists of short field updates, newest first.
+playlists:
+  - title: "UGO 2025"
+    list: PLwBim7LWPkXWNlbUWqyRbQACx3p7EG4Wt
+  - title: "UGO 2024"
+    list: PLwBim7LWPkXVHyH1OtgqtTQU0SyhVNBzn
+
+# Field photos. `id` is the Cloudinary public ID, verbatim: the uploader added
+# a random suffix to each. width/height are the delivered (EXIF-rotated)
+# dimensions, used to reserve layout space. Cloudinary applies EXIF orientation
+# on delivery, which the two portrait shots and three 180°-stored shots need
+# (checked 2026-10-06).
+#
+# `caption` is the visible figcaption (markdown, for the italic book title);
+# `alt` describes the image for someone who cannot see it. Published-copy
+# conventions apply: russia/russian lowercase, Lviv without an apostrophe.
+#
+# Slot → photo mapping: planning/copy/ugo.md §8. Rationale per photo:
+# assets/UGO/field-photos/photo-review.md (planning repo).
+photos:
+  featured:
+    hero:
+      id: ugo/IMG_7382_rhjbix
+      width: 3024
+      height: 4032
+      alt: "A smiling older woman holds an aid box with a loaf of bread on top in one arm and a bundle of Bible literature in the other."
+      caption: "A woman heads home with all she can carry — an aid box, a fresh loaf balanced on top, and a bundle of Bible literature."
+    what_is_ugo:
+      id: ugo/nathan-loading-van_sqdmxn
+      width: 5712
+      height: 4284
+      alt: "Nathan Day stacks cardboard aid boxes into the back of a van."
+      caption: "Nathan Day stacks the van with aid boxes before the day's run — every box headed for a family near the front."
+    gospel:
+      id: ugo/joshua-preaching-zhytomyr_pgk6xo
+      width: 4032
+      height: 3024
+      alt: "Joshua Steele preaches to a crowd pressed in close around him."
+      caption: "Joshua preaches the Gospel in Ukrainian to a crowd gathered in close in Zhytomyr."
+    aid:
+      id: ugo/IMG_3535_xo2lky
+      width: 5712
+      height: 4284
+      alt: "Team members hand out aid boxes from the open back of a loaded van as villagers queue."
+      caption: "The team works from the back of a loaded van, handing out aid box by box as a village gathers close."
+    next_banner:
+      id: ugo/IMG_3716_f1jv2o
+      width: 5712
+      height: 4284
+      alt: "A team member opens the side door of the van beside a shell-damaged house with a Ukrainian flag on its roof."
+      caption: "Beside a shelled house still flying Ukraine's flag, the team opens the van for another village stop."
+    next_inset:
+      id: ugo/joshua-mine-field_v21j5q
+      width: 2316
+      height: 3088
+      alt: "A hand-painted red sign at the edge of a field reads \"Stop — Mines\" in Ukrainian and russian."
+      caption: "\"Stop — Mines,\" lettered in Ukrainian and russian at the edge of a village field — the danger that still surrounds these communities."
+
+  gallery:
+    - id: ugo/IMG_7370_ticlpq
+      width: 5712
+      height: 4284
+      alt: "A crowd of villagers in bright coats queues beside a trailer of aid under a blue sky."
+      caption: "Under a bright autumn sky, a whole village turns out for aid handed down from the trailer."
+    - id: ugo/ben-good-evil-book-child_fmkj32
+      width: 5712
+      height: 4284
+      alt: "Ben Sargent crouches to hand a book to a small child in a winter coat."
+      caption: "Ben Sargent crouches to put a *Good and Evil* book into the hands of a cluster of bundled-up little ones."
+    - id: ugo/oleksandr-ben-preaching-van_gyyj40
+      width: 5712
+      height: 4284
+      alt: "Villagers gather around the team's van at dusk while a team member preaches."
+      caption: "At dusk a village gathers around the van to hear the Gospel before the aid goes out."
+    - id: ugo/IMG_3085_z7ljw5
+      width: 5712
+      height: 4284
+      alt: "Villagers walk toward the camera carrying aid boxes, with a crowd behind them."
+      caption: "Neighbors head home with aid boxes in their arms, the line still forming behind them."
+    - id: ugo/bombed-school_ffqnxg
+      width: 5712
+      height: 4284
+      alt: "The shell of a school building, its walls and roof torn open by shelling."
+      caption: "A village school gutted by russian shelling — the children who once filled it are long gone."
+    - id: ugo/IMG_3583_c0dycp
+      width: 5712
+      height: 4284
+      alt: "Close-up of Nathan Day's hand passing a book to a villager's outstretched hand."
+      caption: "Nathan hands a *Good and Evil* book across the crowd at a village stop."
+    - id: ugo/team-bread-bakers_r6ly2o
+      width: 4032
+      height: 3024
+      alt: "The team poses with a group of local bakers, several holding loaves of bread."
+      caption: "Our team with the local bakers who gave their time and ovens to bake bread for the villages."
+    - id: ugo/IMG_7437_pws0uj
+      width: 5712
+      height: 4284
+      alt: "Oleksandr Ilchenko speaks to a village crowd, with an open box of books in the foreground."
+      caption: "Oleksandr Ilchenko preaches to a village crowd, boxes of *Good and Evil* ready at his feet."
+    - id: ugo/IMG_3906_zyq9sl
+      width: 4032
+      height: 3024
+      alt: "Ben Sargent hands a loaf of bread to a mother holding a young child."
+      caption: "Ben Sargent passes a fresh loaf to a mother and her little one outside a village home."
+    - id: ugo/IMG_7631_aa1oxc
+      width: 5712
+      height: 4284
+      alt: "Team members talk with a family standing in front of their destroyed house."
+      caption: "The team stops to listen — the family that lived here stands before what a russian missile left of their home."
+    - id: ugo/good-evil-books-crowd-2_cuqxmc
+      width: 5712
+      height: 4284
+      alt: "Three team members stand behind a row of smiling children, each holding up a book."
+      caption: "A row of grinning kids holds up their own copies of *Good and Evil* after a village stop."
+    - id: ugo/IMG_7229_e6r11q
+      width: 5712
+      height: 4284
+      alt: "Ben Sargent and Nathan Day hand out bread and literature beside a row of open aid boxes."
+      caption: "Ben and Nathan hand out bread and literature from a row of open aid boxes."
+    - id: ugo/night-loading-van_bar3ie
+      width: 5712
+      height: 4284
+      alt: "At night, team members load large sacks of bread into the back of the van."
+      caption: "Late-night loading — sacks of fresh bread go into the van for the next morning's deliveries."
+    - id: ugo/joshua-lady-good-evil-book_n0n8iu
+      width: 4032
+      height: 3024
+      alt: "Joshua Steele and an older woman in a headscarf smile for a selfie as she holds up a book."
+      caption: "A village grandmother with her new copy of *Good and Evil*."
+    - id: ugo/IMG_7682_iwbbn8
+      width: 5712
+      height: 4284
+      alt: "A crowd of villagers, many holding up copies of the same book."
+      caption: "Hands go up across the crowd, each holding a copy of *Good and Evil* — the Gospel in pictures, a whole village at once."
+    - id: ugo/team-kherson-obl_cqlvtz
+      width: 4032
+      height: 3024
+      alt: "Four team members pose in front of the blue-and-yellow Kherson Oblast border sign."
+      caption: "The team at the Kherson oblast line — about as close to the front as the aid runs go."
+    - id: ugo/ukrainian-resilience_dzdsu3
+      width: 4032
+      height: 3024
+      alt: "An elderly woman walks with a walker past a ruined house."
+      caption: "An elderly woman makes her way to a meeting on her walker, past a house the war left in ruins."

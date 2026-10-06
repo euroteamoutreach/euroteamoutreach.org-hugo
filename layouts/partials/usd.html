@@ -1,0 +1,9 @@
+{{- /*
+  usd — formats a dollar amount: whole amounts as "$20", anything else with
+  cents ("$22.50"). The one place that rule lives; box prices on /give/ and
+  /ugo/ both pass through it.
+
+  Usage: {{ partial "usd.html" 20 }}
+*/ -}}
+{{- $cents := cond (eq (math.Floor .) (float .)) 0 2 -}}
+{{- return (lang.FormatCurrency $cents "USD" .) -}}
