@@ -1,0 +1,42 @@
+{{- /*
+  photo-figure — a captioned Cloudinary photo: <figure>, image, <figcaption>.
+
+  Takes one photo record from data/ugo.yaml (id, alt, caption, width,
+  height) and hands it to cloudinary-img.html, so every caption and alt text
+  comes from the data file, never from the template.
+
+  The image fills its frame with object-cover. Pass `frame` to fix the
+  aspect ratio, so a row of photos lines up even when their originals differ;
+  omit it and the photo keeps its own shape.
+
+  Params (dict):
+    photo    (required) a photo record from data/ugo.yaml
+    sizes    (required) the sizes attribute for its rendered width
+    frame    (optional) aspect-ratio classes, e.g. "aspect-4/3"
+    loading  (optional) "eager" for the one above-the-fold image
+    class    (optional) classes for the <figure>
+*/ -}}
+{{- $photo := .photo -}}
+{{- if not $photo -}}
+  {{- errorf "photo-figure: 'photo' is required" -}}
+{{- end -}}
+{{- if not $photo.alt -}}
+  {{- errorf "photo-figure: %q has no alt text" $photo.id -}}
+{{- end -}}
+{{- if not $photo.caption -}}
+  {{- errorf "photo-figure: %q has no caption" $photo.id -}}
+{{- end -}}
+<figure{{ with .class }} class="{{ . }}"{{ end }}>
+  {{ partial "cloudinary-img.html" (dict
+    "src" $photo.id
+    "alt" $photo.alt
+    "sizes" .sizes
+    "width" $photo.width
+    "height" $photo.height
+    "loading" .loading
+    "class" (printf "w-full rounded-eto bg-warm-100 object-cover %s" (.frame | default "h-auto"))
+  ) }}
+  <figcaption class="mt-2 text-sm leading-snug text-warm-600">
+    {{ $photo.caption | markdownify }}
+  </figcaption>
+</figure>
