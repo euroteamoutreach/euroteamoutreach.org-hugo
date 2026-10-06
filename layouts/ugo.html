@@ -29,9 +29,9 @@
         readable measure inside its column, but splits are two-column grids
         on the shared md centre line.
 
-     5. GIVE LINKS POINT AT THE UGO FUND'S CARD ON /give/ (#ugo-aid-boxes),
-        built from give_designation. When #26 lands Givebutter deep links,
-        swap $giveHref for the give-cta partial.
+     5. EVERY GIVE BUTTON DEEP-LINKS TO /give/ WITH THE UGO FUND
+        PRE-SELECTED, via give-cta.html from give_designation. The fund only:
+        the donor picks the amount.
      --------------------------------------------------------------------- */}}
 
 {{ define "main" }}
@@ -50,7 +50,7 @@
   {{ if not $fund }}
     {{ errorf "layouts/ugo.html: give_designation %q is not in data/designations.yaml" $p.give_designation }}
   {{ end }}
-  {{ $giveHref := printf "/give/#%s" $fund.slug }}
+  {{ $giveHref := partial "give-cta.html" $p.give_designation }}
 
   {{ $featured := $ugo.photos.featured }}
   {{ $hero := dict }}
