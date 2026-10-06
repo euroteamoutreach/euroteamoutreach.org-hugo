@@ -1,7 +1,7 @@
 # The four giving designations — the single source of truth (#40).
 #
-# Read by /give/ (layouts/give.html → designation-card.html) and, from #26, by
-# every program give-CTA. Never hard-code a designation in a template.
+# Read by /give/ (layouts/give.html → designation-card.html) and by every
+# program give-CTA (give-cta.html). Never hard-code a designation in a template.
 #
 # ⚠️ LEGALLY LOAD-BEARING (docs/prd/07-donations.md). Designations are always
 # CAUSE-framed, never earmarked to a named individual or family (IRS rules for a
@@ -18,30 +18,33 @@
 #                    box_price, so the price lives in one place.
 #   box_price        UGO only. $20 comes from 2025 totals and may rise once 2026
 #                    cost data is in — change it here and nowhere else.
-#   givebutter_param the fund's Code in Givebutter (Settings → Account → Funds).
-#                    The deep-link URL built from it is #26's job.
+#   givebutter_fund_id
+#                    Givebutter's NUMERIC fund ID (the dashboard's fund CSV
+#                    export), not the fund's custom Code: only the numeric ID
+#                    pre-selects a fund. give-cta.html builds the deep link
+#                    /give/?fund=<id>#give-online from it.
 
 - slug: ugo-aid-boxes
   name: "UGO Aid Boxes"
   icon: gift
   box_price: 20
   blurb: "{box_price} fills one box — food and essentials, hand-delivered with the Gospel to a Ukrainian family near the front. Boxes are packed ahead of each trip south, so a gift now helps make the next project possible."
-  givebutter_param: ugo-aid-boxes
+  givebutter_fund_id: 70451
 
 - slug: fallen-defender
   name: "Fallen Defender Fund"
   icon: heart
   blurb: "We walk alongside the widows and children of fallen Ukrainian defenders — families carrying a weight no one should bear alone. Gifts to this fund help us stand with them as God opens the way."
-  givebutter_param: fallen-defender
+  givebutter_fund_id: 70452
 
 - slug: good-and-evil-printing
   name: "Good & Evil (Ukrainian) Printing"
   icon: book-open
   blurb: "Fund the next printing of the *Good and Evil* book, the Bible's story told in illustrated form, which we translate and hand out across Ukraine. For many readers, it's the first time the whole story, and the Gospel at its heart, comes together."
-  givebutter_param: good-and-evil-printing
+  givebutter_fund_id: 70453
 
 - slug: general
   name: "Where Most Needed"
   icon: globe-europe-africa
   blurb: "Give to ETO's general fund and trust our team to direct it where the need is greatest."
-  givebutter_param: general
+  givebutter_fund_id: 70454

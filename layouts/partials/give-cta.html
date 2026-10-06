@@ -1,0 +1,25 @@
+{{- /*
+  give-cta — the link a program page's give button points at, for one fund
+  (docs/prd/07-donations.md §"Give-CTAs on Program Pages").
+
+  Returns a URL, not markup: each page keeps its own button role and label.
+
+    givebutter_fund_id set    /give/?fund=70451#give-online
+                              The Givebutter widget on /give/ reads ?fund= and
+                              opens with that fund pre-selected. Amount is
+                              deliberately left to the donor.
+    givebutter_fund_id empty  /give/#ugo-aid-boxes (the fund's card)
+
+  An unknown slug fails the build.
+
+  Usage: <a href="{{ partial "give-cta.html" .Params.give_designation }}">
+*/ -}}
+{{- $fund := index (where hugo.Data.designations "slug" .) 0 -}}
+{{- if not $fund -}}
+  {{- errorf "give-cta: designation %q is not in data/designations.yaml" . -}}
+{{- end -}}
+{{- $href := printf "/give/#%s" $fund.slug -}}
+{{- with $fund.givebutter_fund_id -}}
+  {{- $href = printf "/give/?fund=%v#give-online" . -}}
+{{- end -}}
+{{- return $href -}}
