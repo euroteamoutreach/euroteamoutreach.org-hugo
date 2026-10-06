@@ -114,3 +114,39 @@ html {
     0 0 0 5px var(--color-eto-100),
     0 0 0 9px var(--color-eto-50);
 }
+
+/* Text roles (#71 follow-up). Pages name what a paragraph IS — body, lede,
+   caption — instead of repeating size classes, so the reading size changes
+   here and nowhere else. Each role steps up one size from md: a phone is held
+   close to the eye, a desktop screen sits further back, and 16px body copy
+   read as small on a laptop. The steps are Tailwind's own scale (#71 keeps
+   it); this only decides which step each role uses.
+
+   Size and line height only. Colour belongs to the surface a paragraph sits
+   on (warm-800 on paper, eto-200 on eto-900), so it stays on the element. */
+@utility text-body {
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  @variant md {
+    font-size: var(--text-lg);
+  }
+}
+
+/* A page's opening paragraph: one step above body at every width, so it keeps
+   its lead when body grows. */
+@utility text-lede {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  @variant md {
+    font-size: var(--text-xl);
+  }
+}
+
+/* Captions, quote sources, notes, and fine print: one step below body. */
+@utility text-caption {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  @variant md {
+    font-size: var(--text-base);
+  }
+}

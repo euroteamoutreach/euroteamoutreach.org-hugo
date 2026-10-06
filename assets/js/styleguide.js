@@ -91,3 +91,20 @@ function renderContrastRatios() {
 
 renderTokenValues();
 renderContrastRatios();
+
+// Text roles step up a size at md, so their readout has to be live: it shows
+// what the sample is rendering at the current window width, and follows a
+// resize across the breakpoint.
+function renderTextRoles() {
+  document.querySelectorAll("[data-text-role]").forEach((block) => {
+    const sample = block.querySelector("[data-text-role-sample]");
+    const out = block.querySelector("[data-text-role-out]");
+    if (!sample || !out) return;
+    const { fontSize, lineHeight } = getComputedStyle(sample);
+    const ratio = parseFloat(lineHeight) / parseFloat(fontSize);
+    out.textContent = `now ${fontSize} · line height ${ratio.toFixed(3)}`;
+  });
+}
+
+renderTextRoles();
+window.addEventListener("resize", renderTextRoles);
