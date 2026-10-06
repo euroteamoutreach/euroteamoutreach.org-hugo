@@ -101,3 +101,16 @@
 html {
   scroll-padding-top: 5rem;
 }
+
+/* The hover and focus highlight for linked cards (the /give/ fund cards): a
+   dark border plus three blue bands, each lighter and wider than the last, so
+   the edge reads as a glow rather than a single recoloured line. Defined once
+   so hover and keyboard focus stay identical. Blue, never gold: the cards
+   route to the form, they are not the giving action (#64). Pair it with
+   border-eto-600 on the same state. */
+@utility card-glow {
+  box-shadow:
+    0 0 0 2px var(--color-eto-200),
+    0 0 0 5px var(--color-eto-100),
+    0 0 0 9px var(--color-eto-50);
+}
