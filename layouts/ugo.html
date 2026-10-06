@@ -1,0 +1,302 @@
+{{/* ---------------------------------------------------------------------
+     /ugo/ — Ukraine Gospel Outreach ★ (#27, docs/prd/05-templates.md
+     §"UGO (`/ugo/`) ★"). The page the field videos send people to.
+
+         hero → stat band → what UGO is → the model → the next project
+         → get involved → give band → from the field
+
+     Copy comes from content/ugo.md front matter (the hero lede is its body),
+     run through ugo-copy.html, which fills its {tokens}. Facts come from
+     data/ugo.yaml: trip dates, stats, playlists, and every photo with its
+     alt text and caption. The box price comes from data/designations.yaml.
+     Nothing in this template names a date, a price, or a photo.
+
+     RULES THIS FILE MUST KEEP:
+
+     1. GOLD MEANS GIVING (#64). The three "Give an aid box" buttons are gold;
+        every other button is blue or outline. The stat-band numerals are the
+        one sanctioned use of gold as text, on eto-900 only.
+
+     2. ONE HEAVY SURFACE MID-PAGE. The stat band is eto-900, the only other
+        place that ground appears besides the footer. The doorways sit on
+        eto-50; everything else alternates paper and white.
+
+     3. GOSPEL FIRST (#46). The model's two columns keep their order: Gospel,
+        then Aid.
+
+     4. EVERY SECTION SPANS THE FULL CONTAINER, as on /give/: prose keeps a
+        readable measure inside its column, but splits are two-column grids
+        on the shared md centre line.
+
+     5. GIVE LINKS POINT AT THE UGO FUND'S CARD ON /give/ (#ugo-aid-boxes),
+        built from give_designation. When #26 lands Givebutter deep links,
+        swap $giveHref for the give-cta partial.
+     --------------------------------------------------------------------- */}}
+
+{{ define "main" }}
+  {{ $p := .Params }}
+  {{ $ugo := hugo.Data.ugo }}
+  {{ $section := "mx-auto max-w-5xl px-6 py-12 sm:py-16" }}
+  {{ $h2 := "text-2xl font-semibold tracking-tight text-ink sm:text-3xl" }}
+  {{ $prose := "space-y-4 leading-relaxed text-warm-800" }}
+  {{ $btn := "inline-block rounded-eto px-5 py-2.5 font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
+  {{ $gold := printf "%s bg-gold text-ink hover:bg-gold-hover" $btn }}
+  {{ $primary := printf "%s bg-eto-600 text-white hover:bg-eto-700" $btn }}
+  {{ $outline := printf "%s border border-eto-600 text-eto-600 hover:bg-eto-50" $btn }}
+
+  {{ $fund := index (where hugo.Data.designations "slug" $p.give_designation) 0 }}
+  {{ if not $fund }}
+    {{ errorf "layouts/ugo.html: give_designation %q is not in data/designations.yaml" $p.give_designation }}
+  {{ end }}
+  {{ $giveHref := printf "/give/#%s" $fund.slug }}
+
+  {{ $featured := $ugo.photos.featured }}
+  {{ $hero := dict }}
+  {{ range $featured }}
+    {{ if eq .id $p.hero_image }}{{ $hero = . }}{{ end }}
+  {{ end }}
+  {{ if not $hero }}
+    {{ errorf "layouts/ugo.html: hero_image %q is not among data/ugo.yaml photos.featured" $p.hero_image }}
+  {{ end }}
+
+  {{/* ---------------- Hero ---------------- */}}
+  <section class="border-b border-warm-200 bg-white">
+    <div class="{{ $section }} grid items-center gap-10 md:grid-cols-5">
+      <div class="md:col-span-3">
+        <h1 class="text-4xl font-black tracking-tight text-eto-600 sm:text-5xl">
+          {{ .Title }}
+        </h1>
+        <p class="mt-2 text-xl font-semibold text-ink sm:text-2xl">
+          {{ $p.hero.tagline }}
+        </p>
+        <div class="mt-4 max-w-prose text-lg leading-relaxed text-warm-800">
+          {{ .Content }}
+        </div>
+        <div class="mt-8">
+          <a href="{{ $giveHref }}" class="{{ $gold }}">
+            {{ partial "ugo-copy.html" $p.give_cta_label }}
+          </a>
+        </div>
+      </div>
+      {{ partial "photo-figure.html" (dict
+        "photo" $hero
+        "sizes" "(min-width: 1024px) 384px, (min-width: 768px) 40vw, 100vw"
+        "loading" "eager"
+        "class" "mx-auto w-full max-w-sm md:col-span-2"
+      ) }}
+    </div>
+  </section>
+
+  {{/* ---------------- Track record ---------------- */}}
+  <section aria-labelledby="stats-heading" class="bg-eto-900 text-white">
+    <div class="{{ $section }}">
+      <h2 id="stats-heading" class="text-2xl font-semibold tracking-tight sm:text-3xl">
+        {{ $p.stats.heading }}
+      </h2>
+      <dl class="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4">
+        {{ range $ugo.stats }}
+          {{/* Value above label visually, label first in the DOM (dt
+               before dd). justify-end pins a reversed column to the TOP, so
+               numerals in a row line up when one label wraps. */}}
+          <div class="flex flex-col-reverse justify-end gap-1">
+            <dt class="text-sm leading-snug text-eto-200">
+              {{ .label | markdownify }}
+            </dt>
+            <dd class="text-4xl font-black tracking-tight text-gold tabular-nums sm:text-5xl">
+              {{ .value }}
+            </dd>
+          </div>
+        {{ end }}
+      </dl>
+      <p class="mt-10 max-w-prose leading-relaxed text-eto-100">
+        {{ partial "ugo-copy.html" $p.stats.text }}
+      </p>
+    </div>
+  </section>
+
+  {{/* ---------------- What is UGO? ---------------- */}}
+  <section aria-labelledby="what-heading">
+    <div class="{{ $section }} grid gap-10 md:grid-cols-2">
+      <div>
+        <h2 id="what-heading" class="{{ $h2 }}">{{ $p.what.heading }}</h2>
+        <div class="mt-4 {{ $prose }}">
+          {{ partial "ugo-copy.html" $p.what.body }}
+        </div>
+      </div>
+      <div class="space-y-8">
+        {{ partial "photo-figure.html" (dict
+          "photo" $featured.what_is_ugo
+          "sizes" "(min-width: 1024px) 464px, (min-width: 768px) 50vw, 100vw"
+          "frame" "aspect-4/3"
+        ) }}
+        <blockquote class="border-l-2 border-eto-600 pl-4">
+          <p class="font-serif text-lg leading-relaxed text-ink italic">
+            “{{ $p.what.quote }}”
+          </p>
+          <footer class="mt-2 text-sm text-warm-600">
+            — {{ $p.what.quote_source }}
+          </footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- The model: Gospel + Aid ---------------- */}}
+  <section aria-labelledby="model-heading" class="border-y border-warm-200 bg-white">
+    <div class="{{ $section }}">
+      <h2 id="model-heading" class="{{ $h2 }}">{{ $p.model.heading }}</h2>
+      <div class="mt-4 max-w-prose {{ $prose }}">
+        {{ partial "ugo-copy.html" $p.model.body }}
+      </div>
+      {{/* Subgrid rows, so the two headings line up even when the captions
+           above them wrap to different heights. */}}
+      <div class="mt-10 grid gap-x-4 gap-y-6 md:grid-cols-2">
+        {{ range $p.model.columns }}
+          <article class="row-span-2 grid grid-rows-subgrid">
+            {{ partial "photo-figure.html" (dict
+              "photo" (index $featured .photo)
+              "sizes" "(min-width: 1024px) 464px, (min-width: 768px) 50vw, 100vw"
+              "frame" "aspect-4/3"
+            ) }}
+            <div>
+              <h3 class="text-xl font-semibold tracking-tight text-ink">
+                {{ .heading }}
+              </h3>
+              <p class="mt-2 leading-relaxed text-warm-800">
+                {{ partial "ugo-copy.html" .body }}
+              </p>
+            </div>
+          </article>
+        {{ end }}
+      </div>
+      <div class="mt-10 flex flex-wrap gap-3">
+        {{ range $p.model.links }}
+          <a href="{{ .href }}" class="{{ $outline }}">{{ .label }} →</a>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- The next project ---------------- */}}
+  <section aria-labelledby="next-heading">
+    <div class="{{ $section }}">
+      {{ partial "photo-figure.html" (dict
+        "photo" $featured.next_banner
+        "sizes" "(min-width: 1024px) 976px, 100vw"
+        "frame" "aspect-4/3 sm:aspect-21/9"
+      ) }}
+      <div class="mt-10 grid gap-10 md:grid-cols-3">
+        <div class="md:col-span-2">
+          <h2 id="next-heading" class="{{ $h2 }}">{{ $p.next.heading }}</h2>
+          <div class="mt-4 max-w-prose {{ $prose }}">
+            {{ partial "ugo-copy.html" $p.next.body }}
+          </div>
+        </div>
+        {{ partial "photo-figure.html" (dict
+          "photo" $featured.next_inset
+          "sizes" "(min-width: 1024px) 304px, (min-width: 768px) 33vw, 100vw"
+          "class" "mx-auto w-full max-w-xs md:max-w-none"
+        ) }}
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- Get involved ---------------- */}}
+  <section aria-labelledby="involved-heading" class="bg-eto-50">
+    <div class="{{ $section }}">
+      <h2 id="involved-heading" class="{{ $h2 }}">{{ $p.involved.heading }}</h2>
+      <div class="mt-8 grid gap-4 md:grid-cols-3">
+        {{ range $p.involved.doorways }}
+          <div class="flex flex-col rounded-eto-lg border border-eto-100 bg-white p-6">
+            <span class="flex size-10 items-center justify-center rounded-eto bg-eto-50 text-eto-600">
+              {{ with resources.Get (printf "img/icon-%s.svg" .icon) }}
+                {{ replaceRE `<svg ` `<svg class="size-6" ` .Content 1 | safeHTML }}
+              {{ else }}
+                {{ errorf "layouts/ugo.html: no assets/img/icon-%s.svg" .icon }}
+              {{ end }}
+            </span>
+            <h3 class="mt-4 text-xl font-semibold tracking-tight text-ink">
+              {{ .heading }}
+            </h3>
+            <p class="mt-2 grow leading-relaxed text-warm-800">
+              {{ partial "ugo-copy.html" .body }}
+            </p>
+            <div class="mt-6">
+              {{ if .give }}
+                <a href="{{ $giveHref }}" class="{{ $gold }}">{{ .label }}</a>
+              {{ else }}
+                <a href="{{ .href }}" class="{{ $primary }}">{{ .label }} →</a>
+              {{ end }}
+            </div>
+          </div>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- Give band ---------------- */}}
+  <section aria-labelledby="give-heading" class="border-b border-warm-200 bg-white">
+    <div class="{{ $section }} grid gap-10 md:grid-cols-2 md:gap-4">
+      <div>
+        <h2 id="give-heading" class="{{ $h2 }}">{{ $p.give.heading }}</h2>
+        <p class="mt-4 max-w-prose leading-relaxed text-warm-800">
+          {{ $p.give.intro }}
+        </p>
+        <p class="mt-4 max-w-prose leading-relaxed text-warm-800">
+          {{ $p.give.text }}
+        </p>
+      </div>
+      <div class="md:pl-8">
+        <dl class="divide-y divide-warm-200 border-y border-warm-200">
+          {{ range $ugo.give_band_boxes }}
+            {{ $amount := mul . $fund.box_price }}
+            {{ $cents := cond (eq (math.Floor $amount) (float $amount)) 0 2 }}
+            <div class="flex items-baseline justify-between gap-4 py-3">
+              <dt class="text-2xl font-black tracking-tight text-ink tabular-nums">
+                {{ lang.FormatCurrency $cents "USD" $amount }}
+              </dt>
+              <dd class="text-warm-800">
+                {{ cond (eq . 1) "1 aid box" (printf "%d aid boxes" .) }}
+              </dd>
+            </div>
+          {{ end }}
+        </dl>
+        <div class="mt-6">
+          <a href="{{ $giveHref }}" class="{{ $gold }}">{{ $p.give.label }}</a>
+        </div>
+        <p class="mt-3 text-sm text-warm-600">{{ $p.give.note }}</p>
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- From the field ---------------- */}}
+  {{/* No lightbox yet (GLightbox is deferred until after UGO, #21): the
+       gallery is a plain captioned grid, which is also its no-JS form. */}}
+  <section aria-labelledby="field-heading">
+    <div class="{{ $section }}">
+      <h2 id="field-heading" class="{{ $h2 }}">{{ $p.field.heading }}</h2>
+      <p class="mt-3 max-w-prose leading-relaxed text-warm-800">
+        {{ $p.field.intro }}
+      </p>
+      <div class="mt-8 grid gap-8 md:grid-cols-2 md:gap-4">
+        {{ range $ugo.playlists }}
+          <div>
+            <h3 class="mb-3 text-lg font-semibold tracking-tight text-ink">
+              {{ .title }}
+            </h3>
+            {{ partial "youtube-playlist.html" . }}
+          </div>
+        {{ end }}
+      </div>
+      <div class="mt-12 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+        {{ range $ugo.photos.gallery }}
+          {{ partial "photo-figure.html" (dict
+            "photo" .
+            "sizes" "(min-width: 1024px) 315px, (min-width: 640px) 50vw, 100vw"
+            "frame" "aspect-4/3"
+          ) }}
+        {{ end }}
+      </div>
+    </div>
+  </section>
+{{ end }}
