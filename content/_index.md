@@ -39,6 +39,9 @@ hero:
 
 who:
   heading: "Who we are"
+  # An id from data/ugo.yaml photos.gallery, shown beside the text. Stands in
+  # until the Lviv panorama's original turns up.
+  photo: ugo/team-kherson-obl_cqlvtz
   body: |
     Euro Team Outreach is a Christian missions organization that has served in Ukraine since 2004 — a small, family-rooted team of American missionaries, working hand in hand with Ukrainian believers and local churches. For over two decades, we've had a singular focus, in changing forms: making Jesus Christ known — preaching the Gospel, teaching the Bible through our *Bible First* course, and discipling the next generation of laborers in the field.
 
@@ -103,8 +106,9 @@ work:
 
 involved:
   heading: "Three ways to stand with us"
-  # Background photo: an id from data/ugo.yaml photos.gallery.
-  photo: ugo/team-kherson-obl_cqlvtz
+  # Background photo: an id from data/ugo.yaml photos.gallery. A wide scene
+  # with no close faces, since the cards cover the middle of the frame.
+  photo: ugo/IMG_7370_ticlpq
   intro: "There are several ways to be part of what God is doing in Ukraine — and prayer comes first."
   doorways:
     - heading: "Pray & follow along"

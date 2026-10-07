@@ -86,12 +86,25 @@
   </section>
 
   {{/* ---------------- Who we are ---------------- */}}
+  {{/* Text beside a team photo, the same split as "What is UGO?", so the
+       section spans the full container instead of stopping at the measure. */}}
+  {{ $whoPhoto := index (where hugo.Data.ugo.photos.gallery "id" $p.who.photo) 0 }}
+  {{ if not $whoPhoto }}
+    {{ errorf "layouts/index.html: who.photo %q is not among data/ugo.yaml photos.gallery" $p.who.photo }}
+  {{ end }}
   <section aria-labelledby="who-heading">
-    <div class="{{ $section }}">
-      <h2 id="who-heading" class="{{ $h2 }}">{{ $p.who.heading }}</h2>
-      <div class="mt-4 max-w-prose md:mt-5 {{ $prose }}">
-        {{ $p.who.body | markdownify }}
+    <div class="{{ $section }} grid gap-10 md:grid-cols-2 md:items-center">
+      <div>
+        <h2 id="who-heading" class="{{ $h2 }}">{{ $p.who.heading }}</h2>
+        <div class="mt-4 md:mt-5 {{ $prose }}">
+          {{ $p.who.body | markdownify }}
+        </div>
       </div>
+      {{ partial "photo-figure.html" (dict
+        "photo" $whoPhoto
+        "sizes" "(min-width: 1024px) 464px, (min-width: 768px) 50vw, 100vw"
+        "frame" "aspect-4/3"
+      ) }}
     </div>
   </section>
 
@@ -204,8 +217,8 @@
   </section>
 
   {{/* ---------------- Three ways to stand with us ---------------- */}}
-  {{/* The team photo sits behind the cards under a light wash: texture and
-       a human face for the section, never competition for the cards. It is
+  {{/* A village scene sits behind the cards under a light wash: texture
+       and people for the section, never competition for the cards. It is
        decorative here (alt ""), since the cards carry all the content, and
        light so the page's one dark photo stays the hero. */}}
   {{ $involvedPhoto := index (where hugo.Data.ugo.photos.gallery "id" $p.involved.photo) 0 }}
