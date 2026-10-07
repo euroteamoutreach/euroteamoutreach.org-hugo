@@ -36,10 +36,9 @@
      eto-600 on eto-900 is 1.88:1, an invisible focus indicator, which is a
      WCAG 1.4.11 failure and not a cosmetic one.
 
-     max-w-5xl matches header.html and /styleguide/. ⚠️ Phase 7 settles the
-     page container; if it lands on something other than max-w-5xl, the
-     header, this file, and layouts/give.html move together — content follows the container,
-     the chrome follows content.
+     max-w-5xl is the page container, settled by the home page (#28) and
+     shared by the header and every page template. Change it everywhere at
+     once or not at all.
      --------------------------------------------------------------------- */}}
 
 {{/* Shared link vocabulary, defined once so the three link contexts below

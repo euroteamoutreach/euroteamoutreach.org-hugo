@@ -1,18 +1,269 @@
+{{/* ---------------------------------------------------------------------
+     Home (`/`) — #28, docs/prd/05-templates.md §"Home (`/`)".
+
+         hero → who we are → what we do → three ways to stand with us
+
+     "Meet the families" and "latest from the blog" join when /team/ and the
+     blog are built. Copy comes from content/_index.md front matter; UGO
+     facts come from data/ugo.yaml through ugo-copy.html, so no date, price
+     or stat is typed here.
+
+     RULES THIS FILE MUST KEEP:
+
+     1. ETO IS MORE THAN UGO. "What we do" gives every ministry a card of
+        its own. UGO leads because it is the work in the field now, but
+        Bible First, Good and Evil and CMO stay first-class: a first-time
+        visitor must not read ETO as an aid-box operation.
+
+     2. THE MISSION STATEMENT CARRIES OVER from the legacy home, along with
+        its cover photo. Long-time supporters should recognise the place.
+
+     3. GOLD MEANS GIVING (#64). Only the two Give buttons are gold. The
+        hero's dark wash is a tinted photo, not an eto-900 surface: the
+        footer and the UGO stat band remain the only flat dark grounds.
+
+     4. PRAY, GO, GIVE, in that order, everywhere they appear (#5).
+     --------------------------------------------------------------------- */}}
+
 {{ define "main" }}
-  {{/* Throwaway Phase 0 home — proves the pipeline emits CSS (text-eto-600 is
-       a token-generated utility) and, next seam, that Alpine initializes. The
-       real Home is Phase 7. */}}
-  <section class="mx-auto max-w-2xl px-6 py-16">
-    <h1 class="text-4xl font-bold text-eto-600">Euro Team Outreach</h1>
-    <p class="mt-4 text-lg text-gray-700">
-      Phase 0 scaffold — Hugo, Tailwind v4, and Alpine are wired up.
-    </p>
-    {{/* Proves Alpine initializes (toggle) and the x-cloak CSS rule works. */}}
-    <div x-data="{ open: false }" class="mt-8">
-      <button @click="open = !open" class="rounded bg-eto-600 px-4 py-2 font-semibold text-white">
-        Toggle Alpine
-      </button>
-      <p x-show="open" x-cloak class="mt-3 text-gray-700">Alpine is working.</p>
+  {{ $p := .Params }}
+  {{ $section := "mx-auto max-w-5xl px-6 py-12 sm:py-16 md:py-20" }}
+  {{ $h2 := "text-heading text-ink" }}
+  {{ $prose := "space-y-4 text-body text-warm-800 md:space-y-5" }}
+  {{ $focus := "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
+  {{/* On the hero's dark wash an eto-600 ring would vanish (1.88:1 against
+       eto-900), so the ring goes white there, as in the footer. */}}
+  {{ $focusOnDark := "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" }}
+  {{ $btnBase := "inline-block rounded-eto px-5 py-2.5 font-semibold transition-colors" }}
+  {{ $goldFill := "bg-gold text-ink hover:bg-gold-hover" }}
+  {{ $gold := printf "%s %s %s" $btnBase $focus $goldFill }}
+  {{ $primary := printf "%s %s bg-eto-600 text-white hover:bg-eto-700" $btnBase $focus }}
+  {{/* The hero's routing buttons go white outline, since a blue fill would
+       vanish on the wash too. */}}
+  {{ $heroGold := printf "%s %s %s" $btnBase $focusOnDark $goldFill }}
+  {{ $heroOutline := printf "%s %s border border-white/70 text-white hover:bg-white/10" $btnBase $focusOnDark }}
+
+  {{/* ---------------- Hero ---------------- */}}
+  <section class="relative isolate overflow-hidden bg-eto-900 text-white">
+    {{ partial "photo-backdrop.html" (dict
+      "photo" $p.hero.photo
+      "wash" "bg-eto-900/75 md:bg-transparent md:bg-linear-to-r md:from-eto-900/90 md:via-eto-900/70 md:to-eto-900/40"
+      "position" "object-top"
+    ) }}
+    <div class="mx-auto max-w-5xl px-6 py-20 sm:py-24 md:py-32">
+      <div class="max-w-2xl">
+        <h1 class="text-4xl font-black tracking-tight sm:text-5xl md:text-6xl">
+          {{ .Title }}
+        </h1>
+        {{/* The mission statement reads as a motto under the name, not as a
+             second paragraph: small, uppercase and tracked, where the lede
+             below is sentence case at lede size. Size alone was not enough
+             to tell the two apart. The short bar closes the name-and-motto
+             block before the lede opens. */}}
+        {{/* Stacked until lg, then one line: the row runs wider than the
+             hero's text column (w-max), because a wrapped row strands a
+             separator at the start of its second line. */}}
+        <ul class="mt-4 flex flex-col gap-1.5 text-sm font-semibold tracking-wider text-eto-100 uppercase md:text-base lg:w-max lg:flex-row lg:gap-x-3">
+          {{ range $i, $line := $p.hero.mission }}
+            <li class="flex items-center gap-x-3">
+              {{ if $i }}<span aria-hidden="true" class="hidden text-eto-400 lg:inline">·</span>{{ end }}
+              {{ $line }}
+            </li>
+          {{ end }}
+        </ul>
+        <div aria-hidden="true" class="mt-6 h-0.5 w-16 bg-white/40 md:mt-8"></div>
+        <p class="mt-6 max-w-prose text-lede text-eto-50 md:mt-8">
+          {{ $p.hero.lede }}
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          {{ range $p.hero.actions }}
+            {{ if .give }}
+              <a href="{{ .href }}" class="{{ $heroGold }}">{{ .label }}</a>
+            {{ else }}
+              <a href="{{ .href }}" class="{{ $heroOutline }}">{{ .label }}</a>
+            {{ end }}
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- Who we are ---------------- */}}
+  {{/* Text beside a team photo, the same split as "What is UGO?", so the
+       section spans the full container instead of stopping at the measure. */}}
+  {{ $whoPhoto := index (where hugo.Data.ugo.photos.gallery "id" $p.who.photo) 0 }}
+  {{ if not $whoPhoto }}
+    {{ errorf "layouts/index.html: who.photo %q is not among data/ugo.yaml photos.gallery" $p.who.photo }}
+  {{ end }}
+  <section aria-labelledby="who-heading">
+    <div class="{{ $section }} grid gap-10 md:grid-cols-2 md:items-center">
+      <div>
+        <h2 id="who-heading" class="{{ $h2 }}">{{ $p.who.heading }}</h2>
+        <div class="mt-4 md:mt-5 {{ $prose }}">
+          {{ $p.who.body | markdownify }}
+        </div>
+      </div>
+      {{ partial "photo-figure.html" (dict
+        "photo" $whoPhoto
+        "sizes" "(min-width: 1024px) 464px, (min-width: 768px) 50vw, 100vw"
+        "frame" "aspect-4/3"
+      ) }}
+    </div>
+  </section>
+
+  {{/* ---------------- What we do ---------------- */}}
+  {{ $work := $p.work }}
+  {{ $lead := $work.lead }}
+  {{ $leadPhoto := index hugo.Data.ugo.photos.featured $lead.photo }}
+  {{ if not $leadPhoto }}
+    {{ errorf "layouts/index.html: work.lead.photo %q is not among data/ugo.yaml photos.featured" $lead.photo }}
+  {{ end }}
+  {{/* Linked cards, as on /give/: the <a> sits on the title and an ::after
+       overlay stretches it over the card, so a screen reader names the link
+       by the ministry. Hover and focus share card-glow. */}}
+  {{ $card := "relative flex flex-col rounded-eto-lg border border-warm-200 bg-white transition hover:border-eto-600 hover:card-glow has-[a:focus-visible]:border-eto-600 has-[a:focus-visible]:card-glow" }}
+  {{ $stretch := "after:absolute after:inset-0 after:rounded-eto-lg focus-visible:outline-none" }}
+  {{/* Eyebrows, link cues and secondary links share one accent caption. */}}
+  {{ $accent := "text-caption font-semibold text-eto-600" }}
+  <section aria-labelledby="work-heading" class="border-y border-warm-200 bg-white">
+    <div class="{{ $section }}">
+      <h2 id="work-heading" class="{{ $h2 }}">{{ $work.heading }}</h2>
+      <p class="mt-4 max-w-prose text-body text-warm-800 md:mt-5">{{ $work.intro }}</p>
+
+      {{/* UGO, the lead: photo beside text on the shared md centre line. */}}
+      <article class="{{ $card }} mt-8 overflow-hidden bg-paper md:grid md:grid-cols-2">
+        {{ partial "cloudinary-img.html" (dict
+          "src" $leadPhoto.id
+          "alt" $leadPhoto.alt
+          "width" $leadPhoto.width
+          "height" $leadPhoto.height
+          "sizes" "(min-width: 1024px) 488px, (min-width: 768px) 50vw, 100vw"
+          "class" "aspect-4/3 size-full bg-warm-100 object-cover md:aspect-auto"
+        ) }}
+        <div class="flex flex-col p-6 md:p-8">
+          <p class="{{ $accent }}">{{ partial "ugo-copy.html" $lead.eyebrow }}</p>
+          <h3 class="mt-2 text-subheading text-ink">
+            <a href="{{ $lead.href }}" class="{{ $stretch }}">{{ $lead.heading }}</a>
+          </h3>
+          <p class="mt-2 text-body text-warm-800 md:mt-3">
+            {{ partial "ugo-copy.html" $lead.body }}
+          </p>
+          <dl class="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-warm-200 pt-6">
+            {{ range hugo.Data.ugo.stats }}
+              <div class="flex flex-col-reverse justify-end gap-0.5">
+                <dt class="text-sm leading-snug text-warm-600">{{ .label | markdownify }}</dt>
+                <dd class="text-2xl font-black tracking-tight text-eto-600 tabular-nums">{{ .value }}</dd>
+              </div>
+            {{ end }}
+          </dl>
+          <p aria-hidden="true" class="{{ $accent }} mt-4 md:mt-auto md:pt-6">{{ $lead.label }} →</p>
+        </div>
+      </article>
+
+      {{/* Each card opens on its logo, on a paper strip of fixed height, so
+           a wide wordmark, a round emblem and a tall book still line up and
+           the cards start level. The first of .links is the card's own link;
+           any after it sit above the stretched overlay (relative z-10) as
+           links of their own, so a card can offer two destinations and
+           still be clickable as a whole. Every link here leaves the site
+           for now, and the ↗ says so. */}}
+      <div class="mt-4 grid gap-4 md:mt-6 md:gap-6 md:grid-cols-3">
+        {{ range $work.ministries }}
+          {{ $main := index .links 0 }}
+          <article class="{{ $card }} overflow-hidden">
+            <div class="flex h-40 items-center justify-center border-b border-warm-200 bg-paper p-4">
+              {{ $alt := .logo_alt }}
+              {{/* Marks differ in shape, so each sets its own height: a wide
+                   wordmark needs less than a tall book to read the same. */}}
+              {{ $size := .logo_class | default "h-full" }}
+              {{ with resources.Get .logo }}
+                {{ $raster := ne .MediaType.SubType "svg" }}
+                {{ $img := . }}
+                {{ if $raster }}{{ $img = .Resize "x240 webp" }}{{ else }}{{ $img = . | minify | fingerprint }}{{ end }}
+                <img
+                  src="{{ $img.RelPermalink }}"
+                  alt="{{ $alt }}"
+                  {{ if $raster }}width="{{ $img.Width }}" height="{{ $img.Height }}"{{ end }}
+                  loading="lazy"
+                  class="{{ $size }} w-auto max-w-full object-contain"
+                >
+              {{ else }}
+                {{ errorf "layouts/index.html: logo %q is not in assets/" .logo }}
+              {{ end }}
+            </div>
+            <div class="flex grow flex-col p-6">
+              <p class="{{ $accent }}">{{ .eyebrow }}</p>
+              <h3 class="mt-2 text-lg font-semibold tracking-tight text-ink md:text-xl">
+                <a href="{{ $main.href }}" class="{{ $stretch }}">{{ .heading }}</a>
+              </h3>
+              <p class="mt-2 grow text-body text-warm-800">{{ .body | markdownify }}</p>
+              <div class="mt-4 flex flex-col gap-2">
+                <p aria-hidden="true" class="{{ $accent }}">{{ $main.label }} ↗</p>
+                {{/* The badge sits beside the link, not inside it, so hover
+                     underlines only the link text. Above the card's stretched
+                     overlay too (z-10), so a click on it does not open the
+                     card's main link. */}}
+                {{ range after 1 .links }}
+                  <div class="flex flex-wrap items-center gap-2">
+                    <a
+                      href="{{ .href }}"
+                      {{ with .lang }}hreflang="{{ . }}"{{ end }}
+                      class="relative z-10 rounded-eto {{ $accent }} underline-offset-2 hover:text-eto-700 hover:underline {{ $focus }}"
+                      >{{ .label }} ↗</a
+                    >
+                    {{ with .lang }}
+                      {{ $badge := index (dict "uk" "In Ukrainian") . }}
+                      {{ if not $badge }}{{ errorf "layouts/index.html: no badge text for lang %q" . }}{{ end }}
+                      <span class="relative z-10 rounded-full bg-eto-50 px-2 py-0.5 text-xs font-semibold text-eto-700">{{ $badge }}</span>
+                    {{ end }}
+                  </div>
+                {{ end }}
+              </div>
+            </div>
+          </article>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- Three ways to stand with us ---------------- */}}
+  {{/* A village scene sits behind the cards under a light wash: texture
+       and people for the section, never competition for the cards. It is
+       decorative here (alt ""), since the cards carry all the content, and
+       light so the page's one dark photo stays the hero. */}}
+  {{ $involvedPhoto := index (where hugo.Data.ugo.photos.gallery "id" $p.involved.photo) 0 }}
+  {{ if not $involvedPhoto }}
+    {{ errorf "layouts/index.html: involved.photo %q is not among data/ugo.yaml photos.gallery" $p.involved.photo }}
+  {{ end }}
+  <section aria-labelledby="involved-heading" class="relative isolate overflow-hidden bg-eto-50">
+    {{ partial "photo-backdrop.html" (dict
+      "photo" $involvedPhoto
+      "wash" "bg-eto-50/85"
+      "loading" "lazy"
+      "decorative" true
+      "sizes" "50vw"
+    ) }}
+    <div class="{{ $section }}">
+      <h2 id="involved-heading" class="{{ $h2 }}">{{ $p.involved.heading }}</h2>
+      <p class="mt-4 max-w-prose text-body text-warm-800 md:mt-5">{{ $p.involved.intro }}</p>
+      <div class="mt-8 grid gap-4 md:gap-6 md:grid-cols-3">
+        {{ range $p.involved.doorways }}
+          <div class="flex flex-col rounded-eto-lg border border-eto-100 bg-white p-6">
+            <span class="flex size-10 items-center justify-center rounded-eto bg-eto-50 text-eto-600">
+              {{ partial "icon.html" (dict "name" (printf "icon-%s" .icon) "class" "size-6") }}
+            </span>
+            <h3 class="mt-4 text-subheading text-ink">{{ .heading }}</h3>
+            <p class="mt-2 grow text-body text-warm-800 md:mt-3">{{ .body | markdownify }}</p>
+            <div class="mt-6">
+              {{ if .give }}
+                <a href="{{ .href }}" class="{{ $gold }}">{{ .label }}</a>
+              {{ else }}
+                <a href="{{ .href }}" class="{{ $primary }}">{{ .label }} →</a>
+              {{ end }}
+            </div>
+          </div>
+        {{ end }}
+      </div>
     </div>
   </section>
 {{ end }}
