@@ -199,19 +199,24 @@
               <p class="mt-2 grow text-body text-warm-800">{{ .body | markdownify }}</p>
               <div class="mt-4 flex flex-col gap-2">
                 <p aria-hidden="true" class="{{ $accent }}">{{ $main.label }} ↗</p>
+                {{/* The badge sits beside the link, not inside it, so hover
+                     underlines only the link text. Above the card's stretched
+                     overlay too (z-10), so a click on it does not open the
+                     card's main link. */}}
                 {{ range after 1 .links }}
-                  <a
-                    href="{{ .href }}"
-                    {{ with .lang }}hreflang="{{ . }}"{{ end }}
-                    class="relative z-10 flex flex-wrap items-center gap-2 self-start rounded-eto {{ $accent }} underline-offset-2 hover:text-eto-700 hover:underline {{ $focus }}"
-                  >
-                    <span>{{ .label }} ↗</span>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <a
+                      href="{{ .href }}"
+                      {{ with .lang }}hreflang="{{ . }}"{{ end }}
+                      class="relative z-10 rounded-eto {{ $accent }} underline-offset-2 hover:text-eto-700 hover:underline {{ $focus }}"
+                      >{{ .label }} ↗</a
+                    >
                     {{ with .lang }}
                       {{ $badge := index (dict "uk" "In Ukrainian") . }}
                       {{ if not $badge }}{{ errorf "layouts/index.html: no badge text for lang %q" . }}{{ end }}
-                      <span class="rounded-full bg-eto-50 px-2 py-0.5 text-xs font-semibold text-eto-700 no-underline">{{ $badge }}</span>
+                      <span class="relative z-10 rounded-full bg-eto-50 px-2 py-0.5 text-xs font-semibold text-eto-700">{{ $badge }}</span>
                     {{ end }}
-                  </a>
+                  </div>
                 {{ end }}
               </div>
             </div>

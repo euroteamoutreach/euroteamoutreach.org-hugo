@@ -91,7 +91,7 @@ work:
       links:
         - label: "About the book"
           href: "https://goodandevilbook.com/"
-        - label: "Our Ukrainian site"
+        - label: "dobroizlo.com.ua"
           href: "https://dobroizlo.com.ua/"
           lang: uk
     - eyebrow: "2006–2023"
