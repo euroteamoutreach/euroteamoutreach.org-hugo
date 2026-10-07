@@ -57,30 +57,54 @@ work:
     body: "Our largest effort today reaches the de-occupied villages of southern Ukraine — places the russian army once held, where help is now hardest to find. We go village by village with the Gospel and a box of food, hand-delivered to families who are still holding on. And in {trip_year}, we're going back."
     label: "Learn about UGO"
     href: "/ugo/"
-  # Pre-UGO track (#21): none of these has an on-site page yet. Bible First's
-  # own site is live; /good-and-evil/ goes through the fallback proxy to a
-  # legacy redirect stub for goodandevilbook.com; cmoproject.org is live but
-  # out of date and never says the project is retired, so the card does.
-  # All three move to on-site pages in Phase 2.
+  # Pre-UGO track (#21): none of these has an on-site page yet, so every
+  # card links off-site. cmoproject.org is live but out of date and never
+  # says the project is retired, so the card does. All three move to on-site
+  # pages in Phase 2.
+  #
+  # logo: a file under assets/ (brand assets go through Hugo's pipeline, not
+  # Cloudinary); logo_class sets its height in the strip (default h-full).
+  # links: the first is the card's own link, stretched over the
+  # whole card; any after it sit above that overlay as links of their own.
+  # lang marks a link to a page in another language.
   ministries:
     - eyebrow: "Since 2006"
       heading: "Bible First"
       body: "A free evangelistic Bible course that takes students chronologically through the book of Genesis, pointing to Jesus at every turn. Over twenty lessons, studied on paper or online, students meet the Gospel and every major doctrine of Scripture."
-      label: "Visit getbiblefirst.com"
-      href: "https://getbiblefirst.com/"
+      logo: img/ministries/bible-first.svg
+      logo_alt: "Bible First"
+      logo_class: "h-16"
+      links:
+        - label: "Visit getbiblefirst.com"
+          href: "https://getbiblefirst.com/"
     - eyebrow: "Since 2008"
       heading: "Good and Evil"
       body: "The Bible's story told in illustrated form, which we translate into Ukrainian and put into people's hands. Since the war began, tens of thousands of copies have gone into war-affected regions, many of them hand-delivered on UGO trips."
-      label: "Learn about Good and Evil"
-      href: "/good-and-evil/"
+      logo: img/ministries/good-and-evil-uk-3d.png
+      logo_alt: "The Ukrainian edition of Good and Evil, titled Добро і зло"
+      # Two links: the publisher's English site explains the book; ours shows
+      # the Ukrainian work itself, flagged so a donor expects a page they
+      # cannot read.
+      links:
+        - label: "About the book"
+          href: "https://goodandevilbook.com/"
+        - label: "Our Ukrainian site"
+          href: "https://dobroizlo.com.ua/"
+          lang: uk
     - eyebrow: "2006–2023"
       heading: "Carpathian Mountain Outreach"
       body: "For seventeen years, summer teams went into the villages of the Carpathian mountains to show Gospel films, preach, and hand out literature. Thirteen projects brought more than sixty young people to Ukraine to learn the work of a missionary by doing it. CMO has finished; UGO carries its purpose forward."
-      label: "Visit the CMO archive"
-      href: "https://cmoproject.org/"
+      logo: img/ministries/cmo.svg
+      logo_alt: "Carpathian Mountain Outreach"
+      logo_class: "h-28"
+      links:
+        - label: "Visit the CMO archive"
+          href: "https://cmoproject.org/"
 
 involved:
   heading: "Three ways to stand with us"
+  # Background photo: an id from data/ugo.yaml photos.gallery.
+  photo: ugo/team-kherson-obl_cqlvtz
   intro: "There are several ways to be part of what God is doing in Ukraine — and prayer comes first."
   doorways:
     - heading: "Pray & follow along"

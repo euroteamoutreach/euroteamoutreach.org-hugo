@@ -52,15 +52,24 @@
         <h1 class="text-4xl font-black tracking-tight sm:text-5xl md:text-6xl">
           {{ .Title }}
         </h1>
-        <ul class="mt-4 flex flex-col gap-1 text-lg font-semibold text-eto-100 sm:flex-row sm:flex-wrap sm:gap-x-3 md:text-xl">
+        {{/* The mission statement reads as a motto under the name, not as a
+             second paragraph: small, uppercase and tracked, where the lede
+             below is sentence case at lede size. Size alone was not enough
+             to tell the two apart. The short bar closes the name-and-motto
+             block before the lede opens. */}}
+        {{/* Stacked until lg, then one line: the row runs wider than the
+             hero's text column (w-max), because a wrapped row strands a
+             separator at the start of its second line. */}}
+        <ul class="mt-4 flex flex-col gap-1.5 text-sm font-semibold tracking-wider text-eto-100 uppercase md:text-base lg:w-max lg:flex-row lg:gap-x-3">
           {{ range $i, $line := $p.hero.mission }}
             <li class="flex items-center gap-x-3">
-              {{ if $i }}<span aria-hidden="true" class="hidden text-eto-300 sm:inline">·</span>{{ end }}
+              {{ if $i }}<span aria-hidden="true" class="hidden text-eto-400 lg:inline">·</span>{{ end }}
               {{ $line }}
             </li>
           {{ end }}
         </ul>
-        <p class="mt-6 max-w-prose text-lede text-eto-50">
+        <div aria-hidden="true" class="mt-6 h-0.5 w-16 bg-white/40 md:mt-8"></div>
+        <p class="mt-6 max-w-prose text-lede text-eto-50 md:mt-8">
           {{ $p.hero.lede }}
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
@@ -135,18 +144,59 @@
         </div>
       </article>
 
+      {{/* Each card opens on its logo, on a paper strip of fixed height, so
+           a wide wordmark, a round emblem and a tall book still line up and
+           the cards start level. The first of .links is the card's own link;
+           any after it sit above the stretched overlay (relative z-10) as
+           links of their own, so a card can offer two destinations and
+           still be clickable as a whole. Every link here leaves the site
+           for now, and the ↗ says so. */}}
       <div class="mt-4 grid gap-4 md:grid-cols-3">
         {{ range $work.ministries }}
-          {{ $external := strings.HasPrefix .href "http" }}
-          <article class="{{ $card }} p-6">
-            <p class="{{ $eyebrow }}">{{ .eyebrow }}</p>
-            <h3 class="mt-2 text-lg font-semibold tracking-tight text-ink md:text-xl">
-              <a href="{{ .href }}" class="{{ $stretch }}">{{ .heading }}</a>
-            </h3>
-            <p class="mt-2 grow text-body text-warm-800">{{ .body | markdownify }}</p>
-            <p aria-hidden="true" class="{{ $cue }}">
-              {{ .label }} {{ if $external }}↗{{ else }}→{{ end }}
-            </p>
+          {{ $main := index .links 0 }}
+          <article class="{{ $card }} overflow-hidden">
+            <div class="flex h-40 items-center justify-center border-b border-warm-200 bg-paper p-4">
+              {{ $alt := .logo_alt }}
+              {{/* Marks differ in shape, so each sets its own height: a wide
+                   wordmark needs less than a tall book to read the same. */}}
+              {{ $size := .logo_class | default "h-full" }}
+              {{ with resources.Get .logo }}
+                {{ $raster := ne .MediaType.SubType "svg" }}
+                {{ $img := . }}
+                {{ if $raster }}{{ $img = .Resize "x240 webp" }}{{ end }}
+                <img
+                  src="{{ $img.RelPermalink }}"
+                  alt="{{ $alt }}"
+                  {{ if $raster }}width="{{ $img.Width }}" height="{{ $img.Height }}"{{ end }}
+                  loading="lazy"
+                  class="{{ $size }} w-auto max-w-full object-contain"
+                >
+              {{ else }}
+                {{ errorf "layouts/index.html: logo %q is not in assets/" .logo }}
+              {{ end }}
+            </div>
+            <div class="flex grow flex-col p-6">
+              <p class="{{ $eyebrow }}">{{ .eyebrow }}</p>
+              <h3 class="mt-2 text-lg font-semibold tracking-tight text-ink md:text-xl">
+                <a href="{{ $main.href }}" class="{{ $stretch }}">{{ .heading }}</a>
+              </h3>
+              <p class="mt-2 grow text-body text-warm-800">{{ .body | markdownify }}</p>
+              <div class="mt-4 flex flex-col gap-2">
+                <p aria-hidden="true" class="text-caption font-semibold text-eto-600">{{ $main.label }} ↗</p>
+                {{ range after 1 .links }}
+                  <a
+                    href="{{ .href }}"
+                    {{ with .lang }}hreflang="{{ . }}"{{ end }}
+                    class="relative z-10 flex flex-wrap items-center gap-2 self-start rounded-eto text-caption font-semibold text-eto-600 underline-offset-2 hover:text-eto-700 hover:underline {{ $focus }}"
+                  >
+                    <span>{{ .label }} ↗</span>
+                    {{ if eq .lang "uk" }}
+                      <span class="rounded-full bg-eto-50 px-2 py-0.5 text-xs font-semibold text-eto-700 no-underline">In Ukrainian</span>
+                    {{ end }}
+                  </a>
+                {{ end }}
+              </div>
+            </div>
           </article>
         {{ end }}
       </div>
@@ -154,7 +204,20 @@
   </section>
 
   {{/* ---------------- Three ways to stand with us ---------------- */}}
-  <section aria-labelledby="involved-heading" class="bg-eto-50">
+  {{/* The team photo sits behind the cards under a light wash: texture and
+       a human face for the section, never competition for the cards. It is
+       decorative here (alt ""), since the cards carry all the content, and
+       light so the page's one dark photo stays the hero. */}}
+  {{ $involvedPhoto := index (where hugo.Data.ugo.photos.gallery "id" $p.involved.photo) 0 }}
+  {{ if not $involvedPhoto }}
+    {{ errorf "layouts/index.html: involved.photo %q is not among data/ugo.yaml photos.gallery" $p.involved.photo }}
+  {{ end }}
+  <section aria-labelledby="involved-heading" class="relative isolate overflow-hidden bg-eto-50">
+    {{ partial "photo-backdrop.html" (dict
+      "photo" (merge $involvedPhoto (dict "alt" ""))
+      "wash" "bg-eto-50/85"
+      "loading" "lazy"
+    ) }}
     <div class="{{ $section }}">
       <h2 id="involved-heading" class="{{ $h2 }}">{{ $p.involved.heading }}</h2>
       <p class="mt-4 max-w-prose text-body text-warm-800 md:mt-5">{{ $p.involved.intro }}</p>
