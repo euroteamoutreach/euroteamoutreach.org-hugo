@@ -18,6 +18,10 @@
     wash      (required) classes for the overlay, e.g. "bg-eto-900/70"
     position  (optional) object-position classes; default "object-center"
     loading   (optional) "eager" (default, for a hero) or "lazy" further down
+    decorative (optional) true renders alt "", for a photo that only adds
+              texture behind content that carries the meaning
+    sizes     (optional) default "100vw". Under a heavy wash detail is lost
+              anyway, so a smaller value (e.g. "50vw") saves bytes unseen
 */ -}}
 {{- $photo := .photo -}}
 {{- if not $photo -}}
@@ -29,7 +33,8 @@
 <div class="absolute inset-0 -z-10">
   {{ partial "cloudinary-img.html" (dict
     "src" $photo.id
-    "alt" $photo.alt
+    "alt" (cond (.decorative | default false) "" $photo.alt)
+    "sizes" (.sizes | default "100vw")
     "width" $photo.width
     "height" $photo.height
     "loading" (.loading | default "eager")
