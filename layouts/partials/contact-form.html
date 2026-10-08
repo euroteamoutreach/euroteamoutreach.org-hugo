@@ -1,0 +1,151 @@
+{{/* ---------------------------------------------------------------------
+     contact-form.html — the Connect form on Netlify Forms (#29,
+     docs/prd/08-forms.md §"Shared Implementation"). Lifted from ofreport's
+     contact-form.html; the Alpine inline success state is new here.
+
+     Context: the /contact/ page's params (error copy). The success copy is the
+     /thank-you/ page's title and body, so the inline confirmation and the no-JS
+     page say the same thing from one source.
+
+     ⚠️ LOAD-BEARING — the form is an interface (08-forms.md). Fields,
+     submit behaviour, and the notification recipient are stop-and-ask.
+
+     Netlify wiring (do not remove):
+       - name="contact" + the hidden form-name input tie a submission to the
+         "contact" form. Netlify registers the form by scanning the deployed
+         HTML for data-netlify, so it exists only once a deploy has shipped it.
+       - netlify-honeypot="bot-field" + the hidden bot-field input: Netlify
+         silently drops any submission that fills it. No reCAPTCHA (08-forms.md
+         §"Out of Scope").
+       - action="/thank-you/" is the NO-JS PATH: a plain POST, after which
+         Netlify serves that page.
+
+     With JavaScript, the netlifyForm component (assets/js/main.js) posts the
+     same fields via fetch and swaps the form for the inline confirmation, so
+     the visitor never leaves the page. Both paths submit identical data.
+
+     Netlify Forms only work on Netlify deploys. Under `hugo server` the fetch
+     fails and the form shows its error state — expected, not a bug.
+     --------------------------------------------------------------------- */}}
+
+{{ $label := "block font-semibold text-ink" }}
+{{/* Validation is the browser's: required, type="email", and maxlength
+     block the submit and the browser supplies the message. The user-invalid:
+     classes add the visual half in CSS alone. :user-invalid matches only
+     after the visitor has edited the field or tried to submit, so an
+     untouched form never opens in red. red-600 clears WCAG 1.4.11's 3:1
+     non-text floor on white (4.83:1). Custom Alpine messages were weighed and
+     not built (planning/prd/CHANGELOG.md, 2026-10-08). */}}
+{{ $input := "mt-2 block w-full rounded-eto border border-warm-300 bg-white px-4 py-2.5 text-ink transition-colors placeholder:text-warm-600 focus-visible:border-eto-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600 user-invalid:border-red-600 user-invalid:focus-visible:border-red-600 user-invalid:focus-visible:outline-red-600" }}
+
+{{ $thanks := site.GetPage "/thank-you" }}
+{{ if not $thanks }}
+  {{ errorf "contact-form.html: content/thank-you.md is missing — it is the form's action and its success copy" }}
+{{ end }}
+
+<div x-data="netlifyForm">
+  <form
+    name="contact"
+    method="POST"
+    action="/thank-you/"
+    data-netlify="true"
+    netlify-honeypot="bot-field"
+    x-show="status !== 'sent'"
+    @submit.prevent="submit"
+    class="space-y-6"
+  >
+    <input type="hidden" name="form-name" value="contact">
+
+    {{/* Netlify uses a field named "subject" as the notification email's
+         subject line, and a form-supplied value beats the dashboard setting,
+         so it lives in version control. Only %{formName}, %{siteName}, and
+         %{submissionId} interpolate; submitted fields cannot. */}}
+    <input
+      type="hidden"
+      name="subject"
+      value="New contact form message — euroteamoutreach.org"
+    >
+
+    {{/* Honeypot — hidden from real visitors; Netlify drops any submission
+         that fills it. Do not remove. */}}
+    <p class="hidden" aria-hidden="true">
+      <label
+        >Don’t fill this out if you’re human:
+        <input name="bot-field" tabindex="-1" autocomplete="off"
+      ></label>
+    </p>
+
+    <div>
+      <label for="contact-name" class="{{ $label }}">Name</label>
+      <input
+        id="contact-name"
+        type="text"
+        name="name"
+        maxlength="100"
+        autocomplete="name"
+        required
+        class="{{ $input }}"
+      >
+    </div>
+
+    <div>
+      <label for="contact-email" class="{{ $label }}">Email</label>
+      <input
+        id="contact-email"
+        type="email"
+        name="email"
+        maxlength="100"
+        placeholder="you@example.com"
+        autocomplete="email"
+        required
+        class="{{ $input }}"
+      >
+    </div>
+
+    <div>
+      <label for="contact-message" class="{{ $label }}">Your message</label>
+      <textarea
+        id="contact-message"
+        name="message"
+        rows="8"
+        maxlength="3000"
+        required
+        class="{{ $input }} resize-y"
+      ></textarea>
+    </div>
+
+    {{/* Blue primary, not gold: gold means a giving action and nothing else
+         (#64). */}}
+    <button
+      type="submit"
+      :disabled="status === 'sending'"
+      x-text="status === 'sending' ? 'Sending…' : 'Send'"
+      class="inline-block cursor-pointer rounded-eto bg-eto-600 px-5 py-2.5 font-semibold text-white transition-colors hover:bg-eto-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600 disabled:cursor-wait disabled:opacity-60"
+    >
+      Send
+    </button>
+
+    <p
+      x-show="status === 'error'"
+      x-cloak
+      role="alert"
+      class="text-body text-red-700"
+    >
+      {{ .error }}
+    </p>
+  </form>
+
+  {{/* Focus moves here on success (tabindex -1 makes it focusable without
+       adding a tab stop), so screen readers announce it and keyboard users
+       aren't left on a control that just vanished. */}}
+  <div
+    x-show="status === 'sent'"
+    x-cloak
+    x-ref="success"
+    tabindex="-1"
+    class="rounded-eto-lg border border-warm-200 bg-paper p-6 focus:outline-none"
+  >
+    <h2 class="text-subheading text-ink">{{ $thanks.Title }}</h2>
+    <div class="mt-2 text-body text-warm-800">{{ $thanks.Content }}</div>
+  </div>
+</div>

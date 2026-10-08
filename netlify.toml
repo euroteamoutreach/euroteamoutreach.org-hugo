@@ -75,6 +75,14 @@
   status = 301
   force = true
 
+# The legacy Formspree confirmation page → the Connect form's no-JS fallback
+# (08-forms.md). Above the fall-through for the same reason as the rules above.
+[[redirects]]
+  from = "/contact/thanks"
+  to = "/thank-you/"
+  status = 301
+  force = true
+
 # ─────────────────────────────────────────────────────────────────────────────
 # TEMPORARY — legacy fall-through for the pre-UGO launch track (#21).
 #

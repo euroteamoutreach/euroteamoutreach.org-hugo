@@ -1,0 +1,51 @@
+{{/* ---------------------------------------------------------------------
+     /contact/ — the Connect form (#29, docs/prd/08-forms.md §"`/contact/` —
+     the Connect form").
+
+         hero + form → other ways to reach us
+
+     ⚠️ LOAD-BEARING. What the form collects, what happens on submit, and who
+     gets notified are stop-and-ask (08-forms.md). The form itself lives in
+     contact-form.html; the notification recipient is set in the Netlify UI.
+
+     Copy comes from content/contact.md front matter (the hero is its body).
+
+     Form left, other ways to reach us right, on the same md centre line as
+     /give/'s two-column sections. Form first in source order, so phones reach
+     it before the alternatives.
+     --------------------------------------------------------------------- */}}
+
+{{ define "main" }}
+  {{ $p := .Params }}
+  {{ $section := "mx-auto max-w-5xl px-6 py-12 sm:py-16 md:py-20" }}
+
+  <section class="bg-white">
+    <div class="{{ $section }}">
+      <h1 class="text-4xl font-black tracking-tight text-eto-600 sm:text-5xl">
+        {{ .Title }}
+      </h1>
+      <div class="mt-4 max-w-prose text-lede text-warm-800">
+        {{ .Content }}
+      </div>
+      <div class="mt-10 grid gap-12 md:grid-cols-2 md:gap-4">
+        {{ partial "contact-form.html" $p }}
+        <aside
+          aria-labelledby="other-heading"
+          class="text-body text-warm-800 md:pl-8"
+        >
+          <h2 id="other-heading" class="text-subheading text-ink">
+            {{ $p.other.heading }}
+          </h2>
+          <h3 class="mt-6 font-semibold text-ink">{{ $p.other.team.heading }}</h3>
+          <p class="mt-1 [&_a]:font-semibold [&_a]:text-eto-600 [&_a]:underline [&_a]:underline-offset-2 [&_a]:hover:text-eto-700">
+            {{ $p.other.team.text | markdownify }}
+          </p>
+          <h3 class="mt-6 font-semibold text-ink">{{ $p.other.mail.heading }}</h3>
+          <address class="mt-2 border-l-2 border-warm-200 pl-4 text-ink not-italic">
+            {{ delimit $p.other.mail.address "<br>" | safeHTML }}
+          </address>
+        </aside>
+      </div>
+    </div>
+  </section>
+{{ end }}
