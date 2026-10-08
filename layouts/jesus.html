@@ -1,0 +1,88 @@
+{{/* ---------------------------------------------------------------------
+     Meet Jesus (`/jesus/`) — #50, docs/prd/05-templates.md
+     §"Meet Jesus (`/jesus/`) · Doctrine (`/doctrine/`)".
+
+         hero → intro → the sections, in alternating bands
+
+     ⚠️ A FAITHFUL PORT: the text lives in content/jesus/ (index.md for the
+     intro, sections/ for the rest) and is not reworded or softened here.
+     This template only arranges it.
+
+     RULES THIS FILE MUST KEEP:
+
+     1. ONE READING COLUMN. Every paragraph sits left-aligned in the same
+        measure (max-w-prose). The legacy page centred some passages and
+        swapped illustrations from side to side; that read as a jumble.
+
+     2. ILLUSTRATIONS ON THE RIGHT, ALWAYS. The illustration shortcode hangs
+        them in the margin beside the column from lg, so the column needs
+        the room to its right: keep it left-aligned in the max-w-5xl
+        container, never centred. flow-root keeps a figure inside its band.
+
+     3. CENTRED TEXT TWICE ONLY: the hero, and the "Forgiven!" climax. Each
+        is a moment because nothing else on the page is centred.
+     --------------------------------------------------------------------- */}}
+
+{{ define "main" }}
+  {{ $p := .Params }}
+  {{ $sections := sort (.Resources.Match "sections/*.md") "Name" }}
+  {{ if not $sections }}
+    {{ errorf "layouts/jesus.html: no section files in content/jesus/sections/" }}
+  {{ end }}
+  {{ $section := "mx-auto max-w-5xl px-6 py-12 sm:py-16 md:py-20" }}
+  {{/* Sub-headings (the "Who is Jesus Christ?" claims) and links come from
+       the Markdown, so they are styled from the column. */}}
+  {{ $prose := "flow-root max-w-prose space-y-4 text-body text-warm-800 md:space-y-5 [&_a]:font-semibold [&_a]:text-eto-600 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-eto-700 [&_h3]:pt-6 [&_h3]:text-subheading [&_h3]:text-ink [&_strong]:text-ink" }}
+
+  {{/* ---------------- Hero ---------------- */}}
+  <section class="relative isolate overflow-hidden bg-eto-900 text-white">
+    {{ partial "photo-backdrop.html" (dict
+      "photo" $p.hero.photo
+      "wash" "bg-eto-900/40"
+      "position" "object-[30%_top]"
+    ) }}
+    <div class="mx-auto max-w-5xl px-6 py-20 text-center sm:py-24 md:py-32">
+      <h1 class="text-4xl font-black tracking-tight sm:text-5xl md:text-6xl">
+        {{ .Title }}
+      </h1>
+      <p class="mt-4 text-lede text-eto-50 md:mt-6">
+        {{ $p.hero.lede | .RenderString }}
+      </p>
+    </div>
+  </section>
+
+  {{/* ---------------- Intro ---------------- */}}
+  <section class="border-b border-warm-200 bg-white">
+    <div class="{{ $section }}">
+      <div class="{{ $prose }}">
+        {{ .Content }}
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- The sections ----------------
+       Bands alternate paper and white, starting on paper below the white
+       intro. */}}
+  {{ range $i, $s := $sections }}
+    {{ $white := modBool $i 2 | not }}
+    {{ $id := strings.TrimLeft "0123456789-" (path.BaseName $s.Name) }}
+    <section
+      {{ if ne $s.Params.heading false }}aria-labelledby="{{ $id }}"{{ end }}
+      class="{{ if $white }}border-y border-warm-200 bg-white{{ end }}"
+    >
+      <div class="{{ $section }}">
+        {{ if ne $s.Params.heading false }}
+          <h2 id="{{ $id }}" class="max-w-prose text-heading text-ink">{{ $s.Title }}</h2>
+        {{ end }}
+        <div class="{{ if ne $s.Params.heading false }}mt-6 md:mt-8{{ end }} {{ $prose }}">
+          {{ $s.Content }}
+        </div>
+        {{ with $s.Params.climax }}
+          <p class="mt-10 max-w-prose text-center font-serif text-5xl font-semibold tracking-tight text-eto-600 md:mt-14 md:text-6xl">
+            {{ . }}
+          </p>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+{{ end }}
