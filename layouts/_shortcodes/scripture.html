@@ -1,0 +1,26 @@
+{{- /*
+  scripture — a block quotation of Scripture with its reference beneath.
+
+  The same face as /ugo/'s pull quotes (serif, a blue bar at the left), so a
+  quoted verse looks the same wherever it appears. Verses quoted mid-sentence
+  stay inline italics in the Markdown; this is for the ones set apart.
+
+  Params:
+    ref  (required) the reference, e.g. "John 3:16". KJV is implied, so the
+         version is never written out.
+
+  Usage:
+    {{< scripture ref="John 8:12" >}}
+    "Then spake Jesus again unto them…"
+    {{< /scripture >}}
+*/ -}}
+{{- $ref := .Get "ref" -}}
+{{- if not $ref -}}
+  {{- errorf "scripture: 'ref' is required (%s)" .Position -}}
+{{- end -}}
+<figure class="scripture my-6 border-l-2 border-eto-600 pl-4 md:my-8 md:pl-5">
+  <blockquote class="font-serif text-lg leading-relaxed text-ink italic md:text-xl">
+    {{ .Inner | strings.TrimSpace | .Page.RenderString (dict "display" "block") }}
+  </blockquote>
+  <figcaption class="mt-2 text-caption text-warm-600">{{ $ref }}</figcaption>
+</figure>

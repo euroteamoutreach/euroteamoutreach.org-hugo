@@ -1,0 +1,62 @@
+{{- /*
+  illustration — one of the page's SVG illustrations, from assets/img/<page>/.
+
+  Two placements:
+    default  floated right beside the paragraphs that follow it. From lg the
+             figure hangs in the margin to the right of the reading column, so
+             the text keeps its full measure; at md it floats inside the column
+             and the text wraps; on phones it stacks, centred, above the text.
+    wide     a figure of its own across the whole reading column, for a
+             diagram too wide to sit beside text.
+
+  An <img>, not inlined: the artwork has its lettering drawn as paths, so the
+  alt text carries the words, and the files stay out of the HTML.
+
+  Params:
+    src    (required) file basename under assets/img/<page section>/
+    alt    (required) what the illustration says
+    width  (floated only) its width beside the text, e.g. "10rem". Each piece
+           has its own shape, so this is set per illustration; phones get
+           three quarters of it, and a caption may run wider than the art.
+    wide   "true" for the full-column placement
+
+  An optional caption goes between the tags (Markdown).
+*/ -}}
+{{- $src := .Get "src" -}}
+{{- $alt := .Get "alt" -}}
+{{- if or (not $src) (not $alt) -}}
+  {{- errorf "illustration: 'src' and 'alt' are required (%s)" .Position -}}
+{{- end -}}
+{{- $path := printf "img/%s/%s.svg" .Page.Section $src -}}
+{{- $img := resources.Get $path -}}
+{{- if not $img -}}
+  {{- errorf "illustration: no assets/%s (%s)" $path .Position -}}
+{{- end -}}
+{{- $img = $img | minify | fingerprint -}}
+{{- $wide := eq (.Get "wide") "true" -}}
+{{- $caption := "" -}}
+{{- with .Inner -}}
+  {{- $caption = . | strings.TrimSpace | $.Page.RenderString -}}
+{{- end -}}
+
+{{- if $wide -}}
+  <figure class="my-8 md:my-10">
+    <img src="{{ $img.RelPermalink }}" alt="{{ $alt }}" class="mx-auto w-full max-w-xl" loading="lazy" decoding="async">
+    {{- with $caption }}<figcaption class="mt-3 text-center text-caption text-warm-600">{{ . }}</figcaption>{{ end }}
+  </figure>
+{{- else -}}
+  {{- $width := .Get "width" -}}
+  {{- if not $width -}}
+    {{- errorf "illustration: a floated illustration needs 'width' (%s)" .Position -}}
+  {{- end -}}
+  {{/* The lg margin hang: a right margin of minus (width + left margin)
+       takes the float's whole box out of the line box, so the text runs
+       full measure and the figure sits in the gutter beside it. */}}
+  <figure
+    style="--fig-w: {{ $width }}"
+    class="mx-auto mb-6 w-fit max-w-full md:float-right md:clear-right md:mt-1 md:mb-4 md:ml-8 md:w-(--fig-w) lg:ml-12 lg:-mr-[calc(var(--fig-w)+3rem)]"
+  >
+    <img src="{{ $img.RelPermalink }}" alt="{{ $alt }}" class="mx-auto w-[calc(var(--fig-w)*0.75)] md:w-full" loading="lazy" decoding="async">
+    {{- with $caption }}<figcaption class="mx-auto mt-3 max-w-64 text-center text-caption text-warm-600 md:max-w-none md:text-left">{{ . }}</figcaption>{{ end }}
+  </figure>
+{{- end -}}
