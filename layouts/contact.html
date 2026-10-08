@@ -37,13 +37,8 @@
             {{ $p.other.heading }}
           </h2>
           <h3 class="mt-6 font-semibold text-ink">{{ $p.other.team.heading }}</h3>
-          <p class="mt-1">
-            {{ $p.other.team.text }}
-            <a
-              href="{{ $p.other.team.href }}"
-              class="font-semibold text-eto-600 underline underline-offset-2 hover:text-eto-700"
-              >{{ $p.other.team.link }}</a
-            >.
+          <p class="mt-1 [&_a]:font-semibold [&_a]:text-eto-600 [&_a]:underline [&_a]:underline-offset-2 [&_a]:hover:text-eto-700">
+            {{ $p.other.team.text | markdownify }}
           </p>
           <h3 class="mt-6 font-semibold text-ink">{{ $p.other.mail.heading }}</h3>
           <address class="mt-2 border-l-2 border-warm-200 pl-4 text-ink not-italic">

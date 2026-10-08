@@ -3,7 +3,9 @@
      docs/prd/08-forms.md §"Shared Implementation"). Lifted from ofreport's
      contact-form.html; the Alpine inline success state is new here.
 
-     Context: the /contact/ page's params (success, error copy).
+     Context: the /contact/ page's params (error copy). The success copy is the
+     /thank-you/ page's title and body, so the inline confirmation and the no-JS
+     page say the same thing from one source.
 
      ⚠️ LOAD-BEARING — the form is an interface (08-forms.md). Fields,
      submit behaviour, and the notification recipient are stop-and-ask.
@@ -18,7 +20,7 @@
        - action="/thank-you/" is the NO-JS PATH: a plain POST, after which
          Netlify serves that page.
 
-     With JavaScript, the contactForm component (assets/js/main.js) posts the
+     With JavaScript, the netlifyForm component (assets/js/main.js) posts the
      same fields via fetch and swaps the form for the inline confirmation, so
      the visitor never leaves the page. Both paths submit identical data.
 
@@ -29,7 +31,12 @@
 {{ $label := "block font-semibold text-ink" }}
 {{ $input := "mt-2 block w-full rounded-eto border border-warm-300 bg-white px-4 py-2.5 text-ink transition-colors placeholder:text-warm-600 focus-visible:border-eto-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
 
-<div x-data="contactForm">
+{{ $thanks := site.GetPage "/thank-you" }}
+{{ if not $thanks }}
+  {{ errorf "contact-form.html: content/thank-you.md is missing — it is the form's action and its success copy" }}
+{{ end }}
+
+<div x-data="netlifyForm">
   <form
     name="contact"
     method="POST"
@@ -102,15 +109,14 @@
 
     {{/* Blue primary, not gold: gold means a giving action and nothing else
          (#64). */}}
-    <div>
-      <button
-        type="submit"
-        :disabled="status === 'sending'"
-        class="inline-block cursor-pointer rounded-eto bg-eto-600 px-5 py-2.5 font-semibold text-white transition-colors hover:bg-eto-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600 disabled:cursor-wait disabled:opacity-60"
-      >
-        <span x-text="status === 'sending' ? 'Sending…' : 'Send'">Send</span>
-      </button>
-    </div>
+    <button
+      type="submit"
+      :disabled="status === 'sending'"
+      x-text="status === 'sending' ? 'Sending…' : 'Send'"
+      class="inline-block cursor-pointer rounded-eto bg-eto-600 px-5 py-2.5 font-semibold text-white transition-colors hover:bg-eto-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600 disabled:cursor-wait disabled:opacity-60"
+    >
+      Send
+    </button>
 
     <p
       x-show="status === 'error'"
@@ -132,7 +138,7 @@
     tabindex="-1"
     class="rounded-eto-lg border border-warm-200 bg-paper p-6 focus:outline-none"
   >
-    <h2 class="text-subheading text-ink">{{ .success.heading }}</h2>
-    <p class="mt-2 text-body text-warm-800">{{ .success.text }}</p>
+    <h2 class="text-subheading text-ink">{{ $thanks.Title }}</h2>
+    <div class="mt-2 text-body text-warm-800">{{ $thanks.Content }}</div>
   </div>
 </div>

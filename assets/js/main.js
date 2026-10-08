@@ -1,29 +1,31 @@
 import Alpine from "alpinejs";
 
-// The Connect form's inline submit (layouts/partials/contact-form.html). Posts
-// the form's own fields to Netlify as urlencoded data — the same payload as the
-// no-JS POST — then swaps in the confirmation. Netlify accepts an AJAX
+// Inline submit for a Netlify form (first user: contact-form.html; the /serve/
+// gateway form will share it). Posts the form's own fields to Netlify as
+// urlencoded data — the same payload as the no-JS POST — then swaps in the
+// confirmation, which the form marks with x-ref="success". Netlify accepts an AJAX
 // submission at "/" and routes it by the form-name field. HTML5 validation
 // still runs first: @submit.prevent only fires once the browser's required and
 // type="email" checks pass.
-Alpine.data("contactForm", () => ({
+Alpine.data("netlifyForm", () => ({
   status: "idle", // idle → sending → sent | error
 
   async submit(event) {
     this.status = "sending";
     try {
+      // A URLSearchParams body makes fetch send it urlencoded, header included.
       const response = await fetch("/", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(new FormData(event.target)).toString(),
+        body: new URLSearchParams(new FormData(event.target)),
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      this.status = "sent";
-      this.$nextTick(() => this.$refs.success.focus());
+      this.status = response.ok ? "sent" : "error";
     } catch {
-      // Entries stay in the fields, so the visitor can just press Send again.
-      this.status = "error";
+      this.status = "error"; // network failure
     }
+    // On error the entries stay in the fields, so the visitor can just press
+    // Send again.
+    if (this.status === "sent")
+      this.$nextTick(() => this.$refs.success.focus());
   },
 }));
 
