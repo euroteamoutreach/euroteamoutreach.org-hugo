@@ -59,7 +59,7 @@
         <div class="min-w-0">
           {{ range $i, $s := $sections }}
             <section
-              id="{{ partial "inline/doctrine-id.html" $s }}"
+              id="{{ partial "section-id.html" $s }}"
               data-spy
               class="{{ if $i }}mt-10 border-t border-warm-200 pt-10{{ end }}"
             >
@@ -85,17 +85,12 @@
   </section>
 {{ end }}
 
-{{/* A section's id: its file name minus the NN- order prefix. */}}
-{{ define "_partials/inline/doctrine-id.html" }}
-  {{- return strings.TrimLeft "0123456789-" (path.BaseName .Name) -}}
-{{ end }}
-
 {{/* The contents list, shared by the phone and desktop wrappers. scrollSpy
      (main.js) marks the current section aria-current="location". */}}
 {{ define "_partials/inline/doctrine-toc.html" }}
   <ol>
     {{ range .sections }}
-      {{ $id := partial "inline/doctrine-id.html" . }}
+      {{ $id := partial "section-id.html" . }}
       <li>
         <a
           href="#{{ $id }}"

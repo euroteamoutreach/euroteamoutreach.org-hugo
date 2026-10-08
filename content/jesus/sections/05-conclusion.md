@@ -1,8 +1,6 @@
 ---
-title: "Believest thou this?"
-# No heading on the page: the legacy conclusion runs straight on from the
-# climax. The title only names the file.
-heading: false
+# No title: the legacy conclusion runs straight on from the climax, with no
+# heading of its own.
 ---
 
 Here is a personal message from Jesus Christ to you:

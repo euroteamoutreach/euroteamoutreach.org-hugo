@@ -1,23 +1,21 @@
 {{- /*
-  illustration — one of the page's SVG illustrations, from assets/img/<page>/.
+  illustration — an SVG illustration from assets/img/<page section>/.
 
-  Two placements:
-    default  floated right beside the paragraphs that follow it. From lg the
-             figure hangs in the margin to the right of the reading column, so
-             the text keeps its full measure; at md it floats inside the column
-             and the text wraps; on phones it stacks, centred, above the text.
-    wide     a figure of its own across the whole reading column, for a
-             diagram too wide to sit beside text.
+  Floated right beside the paragraphs that follow it, or stacked and centred
+  on phones. With wide="true" it is a figure of its own across the column, for
+  a diagram too wide to sit beside text. The figure carries the class
+  "illustration" so a page with room to its right can hang it in the margin
+  (layouts/jesus.html).
 
-  An <img>, not inlined: the artwork has its lettering drawn as paths, so the
-  alt text carries the words, and the files stay out of the HTML.
+  An <img>, not inlined: the artwork's lettering is drawn as paths, so the alt
+  text carries the words. Its width and height come from the SVG's viewBox,
+  so the space is reserved before the lazy load.
 
   Params:
-    src    (required) file basename under assets/img/<page section>/
+    src    (required) file basename
     alt    (required) what the illustration says
-    width  (floated only) its width beside the text, e.g. "10rem". Each piece
-           has its own shape, so this is set per illustration; phones get
-           three quarters of it, and a caption may run wider than the art.
+    width  (floated only) its width beside the text, e.g. "10rem"; phones get
+           three quarters of it, and a caption may run wider than the art
     wide   "true" for the full-column placement
 
   An optional caption goes between the tags (Markdown).
@@ -32,31 +30,32 @@
 {{- if not $img -}}
   {{- errorf "illustration: no assets/%s (%s)" $path .Position -}}
 {{- end -}}
+{{- $box := index (findRESubmatch `viewBox="[\d.]+ [\d.]+ ([\d.]+) ([\d.]+)"` $img.Content 1) 0 -}}
 {{- $img = $img | minify | fingerprint -}}
 {{- $wide := eq (.Get "wide") "true" -}}
-{{- $caption := "" -}}
-{{- with .Inner -}}
-  {{- $caption = . | strings.TrimSpace | $.Page.RenderString -}}
+{{- $width := .Get "width" -}}
+{{- if and (not $wide) (not $width) -}}
+  {{- errorf "illustration: a floated illustration needs 'width' (%s)" .Position -}}
 {{- end -}}
 
+{{- $figure := "illustration mx-auto mb-6 w-fit max-w-full md:float-right md:clear-right md:mt-1 md:mb-4 md:ml-8 md:w-(--fig-w) lg:ml-12" -}}
+{{- $art := "mx-auto w-[calc(var(--fig-w)*0.75)] md:w-full" -}}
 {{- if $wide -}}
-  <figure class="my-8 md:my-10">
-    <img src="{{ $img.RelPermalink }}" alt="{{ $alt }}" class="mx-auto w-full max-w-xl" loading="lazy" decoding="async">
-    {{- with $caption }}<figcaption class="mt-3 text-center text-caption text-warm-600">{{ . }}</figcaption>{{ end }}
-  </figure>
-{{- else -}}
-  {{- $width := .Get "width" -}}
-  {{- if not $width -}}
-    {{- errorf "illustration: a floated illustration needs 'width' (%s)" .Position -}}
-  {{- end -}}
-  {{/* The lg margin hang: a right margin of minus (width + left margin)
-       takes the float's whole box out of the line box, so the text runs
-       full measure and the figure sits in the gutter beside it. */}}
-  <figure
-    style="--fig-w: {{ $width }}"
-    class="mx-auto mb-6 w-fit max-w-full md:float-right md:clear-right md:mt-1 md:mb-4 md:ml-8 md:w-(--fig-w) lg:ml-12 lg:-mr-[calc(var(--fig-w)+3rem)]"
-  >
-    <img src="{{ $img.RelPermalink }}" alt="{{ $alt }}" class="mx-auto w-[calc(var(--fig-w)*0.75)] md:w-full" loading="lazy" decoding="async">
-    {{- with $caption }}<figcaption class="mx-auto mt-3 max-w-64 text-center text-caption text-warm-600 md:max-w-none md:text-left">{{ . }}</figcaption>{{ end }}
-  </figure>
+  {{- $figure = "my-8 md:my-10" -}}
+  {{- $art = "mx-auto w-full max-w-xl" -}}
 {{- end -}}
+<figure {{ with $width }}style="--fig-w: {{ . }}" {{ end }}class="{{ $figure }}">
+  <img
+    src="{{ $img.RelPermalink }}"
+    alt="{{ $alt }}"
+    width="{{ index $box 1 | math.Round }}"
+    height="{{ index $box 2 | math.Round }}"
+    class="{{ $art }} h-auto"
+    loading="lazy"
+    decoding="async">
+  {{- with .Inner }}
+    <figcaption class="mx-auto mt-2 max-w-64 text-center text-caption text-warm-600 md:max-w-none md:text-left">
+      {{ . | strings.TrimSpace | $.Page.RenderString }}
+    </figcaption>
+  {{- end }}
+</figure>

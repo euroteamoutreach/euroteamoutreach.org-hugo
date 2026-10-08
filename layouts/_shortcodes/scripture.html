@@ -18,9 +18,9 @@
 {{- if not $ref -}}
   {{- errorf "scripture: 'ref' is required (%s)" .Position -}}
 {{- end -}}
-<figure class="scripture my-6 border-l-2 border-eto-600 pl-4 md:my-8 md:pl-5">
+<figure class="scripture my-6 border-l-2 border-eto-600 pl-4 md:my-8">
   <blockquote class="font-serif text-lg leading-relaxed text-ink italic md:text-xl">
     {{ .Inner | strings.TrimSpace | .Page.RenderString (dict "display" "block") }}
   </blockquote>
-  <figcaption class="mt-2 text-caption text-warm-600">{{ $ref }}</figcaption>
+  <figcaption class="mt-3 text-caption text-warm-600">{{ $ref }}</figcaption>
 </figure>
