@@ -1,0 +1,64 @@
+{{- /* ---------------------------------------------------------------------
+     seo.html — title, description, canonical, robots, Open Graph, and
+     Twitter cards (#30, docs/prd/05-templates.md §"seo.html"). Lifted from
+     ofreport's seo.html. The single source of truth for these tags:
+     head.html includes it and defines none of them itself.
+
+     THREE THINGS THIS FILE MUST KEEP:
+
+     1. ROBOTS GATE ON hugo.IsProduction. Deploy previews and branch deploys
+        build with HUGO_ENVIRONMENT = "preview" (netlify.toml), so they always
+        emit noindex,nofollow. `noindex: true` in front matter opts a single
+        page out in production too (/styleguide/, /thank-you/).
+        → docs/prd/11-deployment.md §"Robots on previews"
+
+     2. CANONICAL IS ALWAYS THE PRODUCTION HOST. Previews build with
+        `-b $DEPLOY_PRIME_URL`, so .Permalink is the *.netlify.app address
+        there. The canonical link is rebuilt on params.canonicalBaseURL so a
+        preview can never declare itself canonical.
+
+        og:url, by contrast, stays .Permalink: Facebook re-scrapes whatever
+        og:url names, so pointing it at production from a preview would make
+        the Sharing Debugger show the legacy site instead of the page under
+        test. In production the two are identical.
+
+     3. SHARE IMAGE: a Cloudinary public ID from the page's own photo field
+        (`cover` on blog posts, `hero_image` on program pages such as /ugo/),
+        else params.ogImage. Cropped to Facebook's 1200×630 with c_fill. f_jpg
+        rather than the spec's f_auto: f_auto picks the format from the
+        requester's Accept header, and a crawler that advertises WebP or AVIF
+        would cache a format some share surfaces still don't render.
+     --------------------------------------------------------------------- */ -}}
+{{- /* One title for the tab and the share cards: on a Facebook card a bare
+       "Give" says nothing about whose page it is. */ -}}
+{{- $title := cond .IsHome site.Title (printf "%s · %s" .Title site.Title) -}}
+{{- $description := or .Description site.Params.description -}}
+{{- $canonical := urls.JoinPath site.Params.canonicalBaseURL .RelPermalink -}}
+{{- $image := or .Params.cover .Params.hero_image site.Params.ogImage -}}
+{{- $ogImage := printf "%s/image/upload/c_fill,f_jpg,q_auto,w_1200,h_630/%s" site.Params.cloudinaryBase $image -}}
+
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $description }}">
+<link rel="canonical" href="{{ $canonical }}">
+{{- if and hugo.IsProduction (not .Params.noindex) }}
+<meta name="robots" content="index,follow">
+{{- else }}
+<meta name="robots" content="noindex,nofollow">
+{{- end }}
+
+{{/* Open Graph */}}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:locale" content="{{ replace site.Language.Locale "-" "_" }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:image" content="{{ $ogImage }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+{{/* Twitter / X card */}}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ $title }}">
+<meta name="twitter:description" content="{{ $description }}">
+<meta name="twitter:image" content="{{ $ogImage }}">
