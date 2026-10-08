@@ -27,10 +27,9 @@
   </main>
   {{ partial "footer.html" . }}
   {{ partial "scripts.html" . }}
-  {{/* Phase 12 — analytics.html goes here. params.umami.websiteId is
-       deliberately empty until the Phase 14 cutover, and the partial must emit
-       nothing while it is, so this stays a comment rather than an inert file.
-       → docs/prd/02-architecture.md §"Analytics" */}}
+  {{/* Umami — emits nothing until the cutover sets params.umami.websiteId,
+       and never outside production. → docs/prd/02-architecture.md §"Analytics" */}}
+  {{ partial "analytics.html" . }}
   {{/* Per-page scripts, so the global bundle above stays lean. Our own JS is
        bundled via js.Build with fingerprinting + SRI; a third-party embed
        (Givebutter on /give/) is a plain tag, with SRI where the vendor allows.
