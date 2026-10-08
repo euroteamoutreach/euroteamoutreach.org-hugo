@@ -1,0 +1,136 @@
+{{/* ---------------------------------------------------------------------
+     /doctrine/ — the statement of faith (#49, docs/prd/05-templates.md
+     §"Meet Jesus (`/jesus/`) · Doctrine (`/doctrine/`)").
+
+         intro + PDF → contents | the sections
+
+     ⚠️ VERBATIM text, one file per section in content/doctrine/sections/ —
+     see the note in content/doctrine/index.md. This template only arranges
+     it. A section's id is its file name minus the NN- prefix: the legacy
+     anchor, so /doctrine#holy-spirit still lands.
+
+     The contents collapse into a <details> on phones and stick beside the
+     text from md up, their top on the 5rem line anchor jumps land on
+     (scroll-padding-top, main.css).
+     --------------------------------------------------------------------- */}}
+
+{{ define "main" }}
+  {{ $sections := sort (.Resources.Match "sections/*.md") "Name" }}
+  {{ if not $sections }}
+    {{ errorf "layouts/doctrine.html: no section files in content/doctrine/sections/" }}
+  {{ end }}
+  {{ $focus := "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
+  {{ $link := printf "font-semibold text-eto-600 underline underline-offset-2 hover:text-eto-700 %s" $focus }}
+
+  <section class="bg-white">
+    <div class="mx-auto max-w-5xl px-6 py-12 sm:py-16 md:py-20">
+      <h1 class="text-4xl font-black tracking-tight text-eto-600 sm:text-5xl">
+        {{ .Title }}
+      </h1>
+      <div class="mt-4 max-w-prose text-lede text-warm-800">
+        {{ .Content }}
+      </div>
+      <p class="mt-6 text-body">
+        {{/* scripts/doctrine-pdf.sh writes this file. */}}
+        <a href="/pdf/doctrine.pdf" class="{{ $link }}">Download PDF</a>
+      </p>
+
+      <div
+        x-data="scrollSpy"
+        class="mt-10 grid gap-8 md:mt-14 md:grid-cols-[13rem_1fr] md:gap-12"
+      >
+        <details class="rounded-eto border border-warm-200 md:hidden">
+          <summary class="cursor-pointer px-4 py-3 font-semibold text-ink {{ $focus }}">
+            Contents
+          </summary>
+          <nav aria-label="Contents" class="border-t border-warm-200 px-4 py-2 text-body">
+            {{ partial "inline/doctrine-toc.html" (dict "sections" $sections "focus" $focus) }}
+          </nav>
+        </details>
+
+        {{/* Scrolls on its own if the window is shorter than the list. */}}
+        <nav
+          aria-label="Contents"
+          class="hidden text-caption md:sticky md:top-20 md:block md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto"
+        >
+          {{ partial "inline/doctrine-toc.html" (dict "sections" $sections "focus" $focus) }}
+        </nav>
+
+        <div class="min-w-0">
+          {{ range $i, $s := $sections }}
+            <section
+              id="{{ partial "inline/doctrine-id.html" $s }}"
+              data-spy
+              class="{{ if $i }}mt-10 border-t border-warm-200 pt-10{{ end }}"
+            >
+              <h2 class="text-subheading text-ink">{{ $s.Title }}</h2>
+              <div
+                class="mt-4 max-w-prose space-y-4 text-body text-warm-800 [&_a]:underline [&_a]:decoration-eto-300 [&_a]:decoration-dotted [&_a]:underline-offset-4 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-6 sm:[&_ul]:columns-2"
+              >
+                {{ $s.Content }}
+              </div>
+              {{/* Same face as /ugo/'s back-to-top link. */}}
+              <p class="mt-6 text-right text-caption">
+                <a
+                  href="#top"
+                  class="rounded-eto font-semibold text-eto-600 hover:text-eto-700 {{ $focus }}"
+                  >Back to top ↑</a
+                >
+              </p>
+            </section>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </section>
+{{ end }}
+
+{{/* A section's id: its file name minus the NN- order prefix. */}}
+{{ define "_partials/inline/doctrine-id.html" }}
+  {{- return strings.TrimLeft "0123456789-" (path.BaseName .Name) -}}
+{{ end }}
+
+{{/* The contents list, shared by the phone and desktop wrappers. scrollSpy
+     (main.js) marks the current section aria-current="location". */}}
+{{ define "_partials/inline/doctrine-toc.html" }}
+  <ol>
+    {{ range .sections }}
+      {{ $id := partial "inline/doctrine-id.html" . }}
+      <li>
+        <a
+          href="#{{ $id }}"
+          class="block border-l-2 border-transparent py-1.5 pl-3 text-warm-800 hover:text-eto-600 aria-[current=location]:border-eto-600 aria-[current=location]:font-semibold aria-[current=location]:text-eto-600 {{ $.focus }}"
+          :aria-current="active === '{{ $id }}' && 'location'"
+          >{{ .Title }}</a
+        >
+      </li>
+    {{ end }}
+  </ol>
+{{ end }}
+
+{{ define "scripts" }}
+  {{/* RefTagger: Logos's current embed (logos.com/reftagger, checked
+       2026-10-08; still v2), plus two settings the legacy page set: no
+       social-share buttons, and the "more" link in the house blue, read
+       from the eto-600 token. Logos's snippet also forwards a CSP nonce;
+       this site sends no CSP, so that part is left out. KJV is a settled
+       conviction (decision 45), not a default to revisit. */}}
+  <script>
+    var refTagger = {
+      settings: {
+        bibleVersion: "KJV",
+        socialSharing: [],
+        customStyle: {
+          body: {
+            moreLink: {
+              color: getComputedStyle(document.documentElement)
+                .getPropertyValue("--color-eto-600")
+                .trim(),
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <script async src="https://api.reftagger.com/v2/RefTagger.js"></script>
+{{ end }}

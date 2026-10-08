@@ -29,6 +29,31 @@ Alpine.data("netlifyForm", () => ({
   },
 }));
 
+// Marks which [data-spy] section the reader is in (first user: the /doctrine/
+// contents). `active` holds the id of the last section whose top has scrolled
+// past a line a quarter of the way down the window; that line sits below the
+// 5rem where anchor jumps land, so a clicked section counts as current. At the
+// very bottom the last section wins, even if it is too short to reach the line.
+Alpine.data("scrollSpy", () => ({
+  active: "",
+
+  init() {
+    const sections = [...this.$root.querySelectorAll("[data-spy]")];
+    const update = () => {
+      const line = window.innerHeight / 4;
+      const atBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 2;
+      const current = atBottom
+        ? sections.at(-1)
+        : sections.findLast((s) => s.getBoundingClientRect().top <= line);
+      this.active = current?.id ?? "";
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+  },
+}));
+
 // Bundled into the site via Hugo's js.Build (esbuild resolves this import from
 // node_modules) — self-hosted, fingerprinted, and SRI-verified, rather than
 // pulled from a CDN. Exposing window.Alpine is Alpine's documented ESM setup.
