@@ -1,0 +1,19 @@
+{{/* The print rendering of /doctrine/ that scripts/doctrine-pdf.sh turns into
+     static/pdf/doctrine.pdf. Built only in the pdf environment
+     (config/pdf/hugo.toml). Same sections, same renderer as the page; styled by
+     scripts/doctrine-pdf.css. */}}
+<!DOCTYPE html>
+<html lang="{{ or site.Language.Locale site.Language.Lang }}">
+<head>
+  <meta charset="utf-8">
+  <title>{{ .Title }} — {{ site.Title }}</title>
+</head>
+<body>
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+  {{ range sort (.Resources.Match "sections/*.md") "Name" }}
+    <h2>{{ .Title }}</h2>
+    {{ .Content }}
+  {{ end }}
+</body>
+</html>

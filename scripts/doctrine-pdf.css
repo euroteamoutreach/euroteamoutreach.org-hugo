@@ -1,6 +1,7 @@
 /* Print styles for scripts/doctrine-pdf.sh. Same faces as the site (the
    self-hosted Source Serif 4 / Source Sans 3 in static/fonts/), house blue
-   headings, US Letter like the 2016 original. */
+   headings, US Letter like the 2016 original. The hex values mirror the
+   main.css tokens: #0d47a1 eto-600, #2d3748 ink, #6f6a60 warm-600. */
 
 @font-face {
   font-family: "Source Serif 4";

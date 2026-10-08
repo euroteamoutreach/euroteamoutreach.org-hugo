@@ -1,32 +1,19 @@
 #!/usr/bin/env bash
 # Regenerates static/pdf/doctrine.pdf (the /doctrine/ "Download PDF") from the
-# same section files the page renders, so the two can never drift apart. Run it
-# after any change under content/doctrine/ and commit the PDF with that change.
+# same section files, through the same Hugo renderer, as the page — so the two
+# can never drift apart. Run it after any change under content/doctrine/ and
+# commit the PDF with that change.
 #
-# Needs pandoc and weasyprint (local only; neither runs in CI or on Netlify).
+# Hugo's pdf environment (config/pdf/hugo.toml) adds a print rendering of the
+# page; weasyprint lays it out with scripts/doctrine-pdf.css. Needs weasyprint
+# (local only; this never runs in CI or on Netlify).
 # Usage: scripts/doctrine-pdf.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-src=content/doctrine
-out=static/pdf/doctrine.pdf
+build=tmp/pdf-build # tmp/ is git-ignored
+hugo --environment pdf --quiet -d "$build"
+weasyprint --base-url "$PWD/static/" -s scripts/doctrine-pdf.css \
+  "$build/doctrine/print.html" static/pdf/doctrine.pdf
 
-# Front matter off: the body of a file, i.e. everything after its second ---.
-body() { awk 'n >= 2 { print } /^---$/ { n++ }' "$1"; }
-title() { sed -n 's/^title: "\(.*\)"$/\1/p' "$1" | head -1; }
-
-{
-  printf '# %s\n\n' "$(title "$src/index.md")"
-  body "$src/index.md"
-  for f in "$src"/sections/*.md; do
-    printf '\n## %s\n' "$(title "$f")"
-    body "$f"
-  done
-} |
-  # +smart gives the same curly quotes and ellipses as Hugo's typographer.
-  pandoc -f markdown+smart -t html5 --standalone \
-    --metadata pagetitle="Doctrine — Euro Team Outreach" \
-    --css "$PWD/scripts/doctrine-pdf.css" |
-  weasyprint --base-url "$PWD/static/" - "$out"
-
-echo "Wrote $out"
+echo "Wrote static/pdf/doctrine.pdf"

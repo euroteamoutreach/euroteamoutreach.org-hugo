@@ -1,0 +1,14 @@
+# Build-only environment for scripts/doctrine-pdf.sh: `hugo --environment pdf`
+# adds a print rendering of /doctrine/ (layouts/doctrine.print.html) that
+# weasyprint turns into static/pdf/doctrine.pdf. Never used for the site build,
+# so /doctrine/print.html is never published.
+[outputFormats.print]
+  mediaType = "text/html"
+  baseName = "print"
+  isPlainText = false
+  notAlternative = true
+
+[[cascade]]
+  outputs = ["html", "print"]
+  [cascade.target]
+    path = "/doctrine"
