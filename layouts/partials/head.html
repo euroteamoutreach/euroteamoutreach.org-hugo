@@ -19,12 +19,18 @@
      first paint actually needs is a Phase 12 performance question, measured
      against a real page — not something to guess at here. */}}
 
-{{/* Favicons, from the round mini mark (assets/ETO/eto-logo-mini.svg in
-     the planning repo). The SVG serves every current browser; the .ico is
-     the fallback older ones and some crawlers request by path. iOS ignores
-     both and wants a 180×180 PNG, opaque, since it fills transparency with
-     black. No web manifest: nothing here is installable, so it would be an
-     empty promise. */}}
+{{/* Favicons, from two purpose-drawn Sketch exports in the planning repo's
+     assets/ETO/ — not the standard mini logo, whose thin border blurs at
+     tab size:
+       eto-favicon.svg           → favicon.svg + the 16/32 favicon.ico. The
+                                    bold-bordered square mark, the same
+                                    design as the legacy site's favicon.
+       eto-apple-touch-icon.svg  → apple-touch-icon.png (180×180). The badge
+                                    with the full name on an opaque white
+                                    tile; iOS fills transparency with black.
+     The SVG serves current browsers; the .ico is the fallback older ones
+     and some crawlers request by path. No web manifest: nothing here is
+     installable. */}}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
