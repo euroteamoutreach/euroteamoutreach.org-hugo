@@ -1,33 +1,25 @@
 {{- /* ---------------------------------------------------------------------
-     seo.html — title, description, canonical, robots, Open Graph, and
-     Twitter cards (#30, docs/prd/05-templates.md §"seo.html"). Lifted from
-     ofreport's seo.html. The single source of truth for these tags:
-     head.html includes it and defines none of them itself.
+     seo.html — title, description, canonical, robots, Open Graph, and the
+     X card (#30, docs/prd/05-templates.md §"seo.html").
 
-     THREE THINGS THIS FILE MUST KEEP:
+     1. ROBOTS: noindex,nofollow everywhere but production (the "preview"
+        environment, netlify.toml), and on any page with `noindex: true`.
 
-     1. ROBOTS GATE ON hugo.IsProduction. Deploy previews and branch deploys
-        build with HUGO_ENVIRONMENT = "preview" (netlify.toml), so they always
-        emit noindex,nofollow. `noindex: true` in front matter opts a single
-        page out in production too (/styleguide/, /thank-you/).
-        → docs/prd/11-deployment.md §"Robots on previews"
+     2. CANONICAL is always the production host, built on
+        params.canonicalBaseURL: previews build with -b $DEPLOY_PRIME_URL, so
+        .Permalink there is the *.netlify.app address. og:url deliberately
+        stays .Permalink — Facebook re-scrapes whatever og:url names, so a
+        production og:url would make the Sharing Debugger show the legacy site
+        instead of the preview under test. In production the two match.
 
-     2. CANONICAL IS ALWAYS THE PRODUCTION HOST. Previews build with
-        `-b $DEPLOY_PRIME_URL`, so .Permalink is the *.netlify.app address
-        there. The canonical link is rebuilt on params.canonicalBaseURL so a
-        preview can never declare itself canonical.
+     3. SHARE IMAGE: the page's own photo (`cover` on blog posts, `hero_image`
+        on program pages), else params.ogImage, cropped to 1200×630. f_jpg,
+        not the spec's f_auto: f_auto follows the requester's Accept header,
+        and a crawler advertising WebP or AVIF would cache a format some share
+        surfaces don't render.
 
-        og:url, by contrast, stays .Permalink: Facebook re-scrapes whatever
-        og:url names, so pointing it at production from a preview would make
-        the Sharing Debugger show the legacy site instead of the page under
-        test. In production the two are identical.
-
-     3. SHARE IMAGE: a Cloudinary public ID from the page's own photo field
-        (`cover` on blog posts, `hero_image` on program pages such as /ugo/),
-        else params.ogImage. Cropped to Facebook's 1200×630 with c_fill. f_jpg
-        rather than the spec's f_auto: f_auto picks the format from the
-        requester's Accept header, and a crawler that advertises WebP or AVIF
-        would cache a format some share surfaces still don't render.
+     X reads og:title, og:description, and og:image, so twitter:card is the
+     only twitter: tag needed.
      --------------------------------------------------------------------- */ -}}
 {{- /* One title for the tab and the share cards: on a Facebook card a bare
        "Give" says nothing about whose page it is. */ -}}
@@ -57,8 +49,4 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 
-{{/* Twitter / X card */}}
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{{ $title }}">
-<meta name="twitter:description" content="{{ $description }}">
-<meta name="twitter:image" content="{{ $ogImage }}">

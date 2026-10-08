@@ -1,28 +1,16 @@
 {{/* ---------------------------------------------------------------------
-     analytics.html — Umami, self-hosted at lens.euroteamoutreach.org (#30).
-     Lifted from ofreport's analytics.html. Not Google Analytics.
-
-     Gated twice, so it stays inert until the cutover (#31):
-       1. hugo.IsProduction — deploy previews and branch deploys build with
-          HUGO_ENVIRONMENT = "preview" (netlify.toml), the same gate as the
-          robots meta in seo.html. Local `hugo server` is development.
-       2. A non-empty params.umami.websiteId. It stays blank until cutover,
-          when a NEW website record is created for euroteamoutreach.org in the
-          shared Umami instance (unlike ofreport, which reused one).
-          → docs/prd/12-risks-and-open-items.md §"Umami website ID"
-
-     data-domains scopes tracking to the canonical host as a last safeguard,
-     so a stray *.netlify.app load can never count against the site.
+     analytics.html — Umami at lens.euroteamoutreach.org (#30). Emits only in
+     production and only once params.umami.websiteId is set (see hugo.toml).
+     data-domains, derived from the canonical host, is the last safeguard: a
+     stray *.netlify.app load can never count against the site.
      --------------------------------------------------------------------- */}}
-{{- if hugo.IsProduction }}
-  {{- with site.Params.umami }}
-    {{- if and .scriptUrl .websiteId }}
-      <script
-        defer
-        src="{{ .scriptUrl }}"
-        data-website-id="{{ .websiteId }}"
-        data-domains="euroteamoutreach.org"
-      ></script>
-    {{- end }}
+{{- with site.Params.umami }}
+  {{- if and hugo.IsProduction .websiteId }}
+    <script
+      defer
+      src="{{ .scriptUrl }}"
+      data-website-id="{{ .websiteId }}"
+      data-domains="{{ (urls.Parse site.Params.canonicalBaseURL).Hostname }}"
+    ></script>
   {{- end }}
 {{- end }}

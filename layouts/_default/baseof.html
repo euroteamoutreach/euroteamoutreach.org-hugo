@@ -27,8 +27,6 @@
   </main>
   {{ partial "footer.html" . }}
   {{ partial "scripts.html" . }}
-  {{/* Umami — emits nothing until the cutover sets params.umami.websiteId,
-       and never outside production. → docs/prd/02-architecture.md §"Analytics" */}}
   {{ partial "analytics.html" . }}
   {{/* Per-page scripts, so the global bundle above stays lean. Our own JS is
        bundled via js.Build with fingerprinting + SRI; a third-party embed
