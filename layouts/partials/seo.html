@@ -1,0 +1,52 @@
+{{- /* ---------------------------------------------------------------------
+     seo.html — title, description, canonical, robots, Open Graph, and the
+     X card (#30, docs/prd/05-templates.md §"seo.html").
+
+     1. ROBOTS: noindex,nofollow everywhere but production (the "preview"
+        environment, netlify.toml), and on any page with `noindex: true`.
+
+     2. CANONICAL is always the production host, built on
+        params.canonicalBaseURL: previews build with -b $DEPLOY_PRIME_URL, so
+        .Permalink there is the *.netlify.app address. og:url deliberately
+        stays .Permalink — Facebook re-scrapes whatever og:url names, so a
+        production og:url would make the Sharing Debugger show the legacy site
+        instead of the preview under test. In production the two match.
+
+     3. SHARE IMAGE: the page's own photo (`cover` on blog posts, `hero_image`
+        on program pages), else params.ogImage, cropped to 1200×630. f_jpg,
+        not the spec's f_auto: f_auto follows the requester's Accept header,
+        and a crawler advertising WebP or AVIF would cache a format some share
+        surfaces don't render.
+
+     X reads og:title, og:description, and og:image, so twitter:card is the
+     only twitter: tag needed.
+     --------------------------------------------------------------------- */ -}}
+{{- /* One title for the tab and the share cards: on a Facebook card a bare
+       "Give" says nothing about whose page it is. */ -}}
+{{- $title := cond .IsHome site.Title (printf "%s · %s" .Title site.Title) -}}
+{{- $description := or .Description site.Params.description -}}
+{{- $canonical := urls.JoinPath site.Params.canonicalBaseURL .RelPermalink -}}
+{{- $image := or .Params.cover .Params.hero_image site.Params.ogImage -}}
+{{- $ogImage := printf "%s/image/upload/c_fill,f_jpg,q_auto,w_1200,h_630/%s" site.Params.cloudinaryBase $image -}}
+
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $description }}">
+<link rel="canonical" href="{{ $canonical }}">
+{{- if and hugo.IsProduction (not .Params.noindex) }}
+<meta name="robots" content="index,follow">
+{{- else }}
+<meta name="robots" content="noindex,nofollow">
+{{- end }}
+
+{{/* Open Graph */}}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:locale" content="{{ replace site.Language.Locale "-" "_" }}">
+<meta property="og:title" content="{{ $title }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:image" content="{{ $ogImage }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<meta name="twitter:card" content="summary_large_image">

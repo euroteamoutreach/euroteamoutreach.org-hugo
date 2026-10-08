@@ -9,23 +9,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
-<link rel="canonical" href="{{ .Permalink }}">
-
-{{/* Per-page noindex escape hatch. Phase 12's seo.html owns robots properly
-     — it gates on hugo.IsProduction (#62) AND honors this same
-     `.Params.noindex`. Emitted here now so /styleguide/ stays out of the
-     index in PRODUCTION builds too, where the IsProduction gate would let
-     it through. When seo.html lands, move this line into it; do not add a
-     second robots meta alongside it. */}}
-{{ if .Params.noindex }}<meta name="robots" content="noindex, nofollow">{{ end }}
-
-{{/* Phase 12 — seo.html goes HERE, not in baseof.html: Open Graph, Twitter
-     cards, meta description, and the environment-gated robots meta. It also
-     absorbs the canonical and noindex lines above, which is why they sit
-     adjacent. Nothing is stubbed for it — a partial that renders nothing is
-     something a reviewer has to open to discover it does nothing.
-     → docs/prd/05-templates.md §"seo.html" */}}
+{{/* Title, description, canonical, robots, Open Graph, X cards. */}}
+{{ partial "seo.html" . }}
 
 {{/* No font <link> here by design. Source Sans 3 and Source Serif 4 are
      self-hosted and declared via @font-face in assets/css/fonts.css, so they
@@ -34,11 +19,21 @@
      first paint actually needs is a Phase 12 performance question, measured
      against a real page — not something to guess at here. */}}
 
-{{/* TODO(favicons): none exist in the repo. The only mark we have is
-     assets/img/eto-logo-full.svg — a 500×290 LOCKUP (badge + wordmark), not a
-     square icon. Cropping it to 1:1 is a design decision, so it is left for a
-     follow-up rather than invented here. When it lands, this is where the
-     icon / apple-touch-icon / manifest links go. */}}
+{{/* Favicons, from two purpose-drawn Sketch exports in the planning repo's
+     assets/ETO/ — not the standard mini logo, whose thin border blurs at
+     tab size:
+       eto-favicon.svg           → favicon.svg + the 16/32 favicon.ico. The
+                                    bold-bordered square mark, the same
+                                    design as the legacy site's favicon.
+       eto-apple-touch-icon.svg  → apple-touch-icon.png (180×180). The badge
+                                    with the full name on an opaque white
+                                    tile; iOS fills transparency with black.
+     The SVG serves current browsers; the .ico is the fallback older ones
+     and some crawlers request by path. No web manifest: nothing here is
+     installable. */}}
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 {{/* The RSS <link rel="alternate"> lands with the blog (Phase 10), when the
      feed has posts in it. ⚠️ MailChimp's RSS automation is wired to that feed

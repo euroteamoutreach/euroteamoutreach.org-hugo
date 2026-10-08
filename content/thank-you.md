@@ -10,7 +10,7 @@ description: "Confirmation that your message to Euro Team Outreach was sent."
 # legacy /contact/thanks/ 301s here (netlify.toml).
 #
 # Not a destination anyone should reach from search: out of the sitemap, and
-# `noindex` emits a robots meta (head.html).
+# `noindex` keeps it out of the index in production too (seo.html).
 noindex: true
 sitemap:
   disable: true

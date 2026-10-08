@@ -71,10 +71,22 @@ enableRobotsTXT = true
   # The API key/secret are needed only to UPLOAD and never enter the repo (#60).
   cloudinaryBase = "https://res.cloudinary.com/euro-team-outreach"
 
-  # Umami analytics. Left blank until the Phase 14 production cutover; the
-  # analytics.html partial (Phase 12) emits nothing while websiteId is empty,
-  # so it stays inert on every build. euroteamoutreach.org needs a NEW website
-  # record in the shared Umami instance (unlike ofreport, which reused one).
+  # The production origin, for canonical links (seo.html) and Umami's
+  # data-domains. Keep it equal to baseURL above, but never swap baseURL in for
+  # it in templates: deploy previews build with -b $DEPLOY_PRIME_URL, which
+  # rewrites baseURL to the *.netlify.app host, and a preview must never
+  # declare itself canonical.
+  canonicalBaseURL = "https://euroteamoutreach.org/"
+
+  # Default share image (Open Graph / X cards) for any page without a photo of
+  # its own: the legacy home cover photo, as on the home hero. Cloudinary
+  # public ID; seo.html crops it to 1200×630.
+  ogImage = "eto/eto-cover-2018_kp06lc"
+
+  # Umami analytics. websiteId stays blank until the production cutover (#31),
+  # when euroteamoutreach.org gets a NEW website record in the shared Umami
+  # instance (unlike ofreport, which reused one). analytics.html emits nothing
+  # while it is empty, or outside production.
   [params.umami]
     scriptUrl = "https://lens.euroteamoutreach.org/script.js"
     websiteId = ""

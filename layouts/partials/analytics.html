@@ -1,0 +1,16 @@
+{{/* ---------------------------------------------------------------------
+     analytics.html — Umami at lens.euroteamoutreach.org (#30). Emits only in
+     production and only once params.umami.websiteId is set (see hugo.toml).
+     data-domains, derived from the canonical host, is the last safeguard: a
+     stray *.netlify.app load can never count against the site.
+     --------------------------------------------------------------------- */}}
+{{- with site.Params.umami }}
+  {{- if and hugo.IsProduction .websiteId }}
+    <script
+      defer
+      src="{{ .scriptUrl }}"
+      data-website-id="{{ .websiteId }}"
+      data-domains="{{ (urls.Parse site.Params.canonicalBaseURL).Hostname }}"
+    ></script>
+  {{- end }}
+{{- end }}
