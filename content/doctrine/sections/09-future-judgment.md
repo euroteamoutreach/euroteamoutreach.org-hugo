@@ -1,6 +1,5 @@
 ---
 title: "Future Judgment"
-anchor: "future-judgment"
 ---
 
 We believe that there is an appointed day in which every man and woman will stand before God and give account of their deeds, whether good or evil. The righteous will be rewarded with life eternal, and the wicked will be damned to everlasting torment in the lake of fire.

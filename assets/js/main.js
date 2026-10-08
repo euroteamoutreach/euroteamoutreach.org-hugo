@@ -41,13 +41,13 @@ Alpine.data("scrollSpy", () => ({
     const sections = [...this.$root.querySelectorAll("[data-spy]")];
     const update = () => {
       const line = window.innerHeight / 4;
-      let current = "";
-      for (const section of sections)
-        if (section.getBoundingClientRect().top <= line) current = section.id;
       const atBottom =
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 2;
-      this.active = atBottom ? sections.at(-1).id : current;
+      const current = atBottom
+        ? sections.at(-1)
+        : sections.findLast((s) => s.getBoundingClientRect().top <= line);
+      this.active = current?.id ?? "";
     };
     update();
     window.addEventListener("scroll", update, { passive: true });

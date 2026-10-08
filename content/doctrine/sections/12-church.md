@@ -1,6 +1,5 @@
 ---
 title: "The Church"
-anchor: "church"
 ---
 
 We believe that the Church is the body of our Lord Jesus Christ, made up of all those who have believed on His Name.

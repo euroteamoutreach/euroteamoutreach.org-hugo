@@ -1,6 +1,5 @@
 ---
 title: "Creation"
-anchor: "creation"
 ---
 
 We believe that the universe was created in six, literal, twenty-four hour days by the Word of God, in accordance with the account given in Genesis chapter one.

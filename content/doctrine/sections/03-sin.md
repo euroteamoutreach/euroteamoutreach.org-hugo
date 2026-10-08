@@ -1,6 +1,5 @@
 ---
 title: "Sin"
-anchor: "sin"
 ---
 
 We believe that sin is the willful act of transgressing the eternal Law of God, which Law is inherent within every human being.

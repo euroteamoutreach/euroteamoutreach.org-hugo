@@ -1,6 +1,5 @@
 ---
 title: "God"
-anchor: "god"
 ---
 
 We believe in the One True and Living God, Creator of all that is. We believe that He is Father, Son, and Holy Ghost — three distinct persons and yet one God.

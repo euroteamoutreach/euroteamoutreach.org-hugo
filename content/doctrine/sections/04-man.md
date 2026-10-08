@@ -1,6 +1,5 @@
 ---
 title: "Man"
-anchor: "man"
 ---
 
 We believe that man was created by God, in God’s image, for God’s glory, and given freedom to choose between good and evil. In the garden of Eden, Adam made a choice to turn away from God and follow Satan. That day, through the offense of one man, all men were separated from God, and from all the blessings of His divine presence.

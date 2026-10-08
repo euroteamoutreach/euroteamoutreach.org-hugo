@@ -1,6 +1,5 @@
 ---
 title: "Scripture"
-anchor: "scripture"
 ---
 
 We believe that the sixty-six books of the King James Holy Bible constitute the perfectly preserved, inspired, and infallible Word of God to English speaking people. As such, we hold it to be the highest authority for our lives.

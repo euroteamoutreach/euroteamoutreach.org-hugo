@@ -1,6 +1,5 @@
 ---
 title: "Salvation"
-anchor: "salvation"
 ---
 
 We believe that through His love for the world, God has provided one way for sinners to be cleansed from their sin, and thus delivered from impending damnation in hell. Jesus Christ, the only begotten Son of God, was born of a virgin, lived a sinless life, and died on a Roman cross, shedding His innocent blood as a substitute for sinners. This blood was then placed on the heavenly mercy seat before God as the final atonement for the sins of all mankind.

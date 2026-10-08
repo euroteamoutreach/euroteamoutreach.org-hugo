@@ -1,6 +1,5 @@
 ---
 title: "Security of the Believer"
-anchor: "security-of-the-believer"
 ---
 
 We hold that all believers, and only believers, have eternal security, being kept by the power of their Savior, Jesus Christ.

@@ -1,6 +1,5 @@
 ---
 title: "Hell"
-anchor: "hell"
 ---
 
 We believe that hell is a literal place of eternal judgment and torment created by God for the devil and his angels. All men and women who have sinned against God, and who refuse to believe the Gospel of Jesus Christ, will be condemned to hell without hope of deliverance.

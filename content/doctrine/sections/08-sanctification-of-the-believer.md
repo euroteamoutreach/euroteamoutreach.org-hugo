@@ -1,6 +1,5 @@
 ---
 title: "Sanctification of the Believer"
-anchor: "sanctification-of-the-believer"
 ---
 
 We believe that sanctification — that is the separation of a believer to holy living — is by faith in the finished work of Jesus Christ. All believers, regardless of their understanding or experience, are forever free from all sin based on the death, burial, and resurrection of Jesus Christ.

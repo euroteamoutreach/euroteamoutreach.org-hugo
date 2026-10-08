@@ -1,6 +1,5 @@
 ---
 title: "Heaven"
-anchor: "heaven"
 ---
 
 We believe that heaven is a literal place where God dwells, and where believers will one day be united with Him. It is a place of indescribable beauty, free of all evil and sadness.

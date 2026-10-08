@@ -2,36 +2,25 @@
      /doctrine/ — the statement of faith (#49, docs/prd/05-templates.md
      §"Meet Jesus (`/jesus/`) · Doctrine (`/doctrine/`)").
 
-         intro + PDF → contents | the 15 sections
+         intro + PDF → contents | the sections
 
-     ⚠️ VERBATIM. The text lives in content/doctrine/sections/, one file per
-     section, ported word for word from the legacy partials. This template
-     only arranges it; it never adds or rewords doctrinal copy.
+     ⚠️ VERBATIM text, one file per section in content/doctrine/sections/ —
+     see the note in content/doctrine/index.md. This template only arranges
+     it. A section's id is its file name minus the NN- prefix: the legacy
+     anchor, so /doctrine#holy-spirit still lands.
 
-     Each section's id is its legacy anchor (front matter `anchor`), so links
-     into the old page (/doctrine#holy-spirit) still land. The order is the
-     file-name order (01- … 15-), which is the legacy order.
-
-     Contents, three ways:
-       - phones: a <details> disclosure, closed, so the text starts on the
-         first screen instead of after fifteen links;
-       - md and up: a sticky column beside the text, its top on the same
-         5rem line that anchor jumps land on (scroll-padding-top, main.css);
-       - the current section is marked aria-current="location" by the
-         scrollSpy component in main.js, and styled off that attribute.
-
-     RefTagger (Logos) turns the Scripture references into KJV hover text.
-     It loads on this page only, in the scripts block below.
+     The contents collapse into a <details> on phones and stick beside the
+     text from md up, their top on the 5rem line anchor jumps land on
+     (scroll-padding-top, main.css).
      --------------------------------------------------------------------- */}}
 
 {{ define "main" }}
   {{ $sections := sort (.Resources.Match "sections/*.md") "Name" }}
-  {{ if ne (len $sections) 15 }}
-    {{ errorf "layouts/doctrine.html: expected 15 doctrine sections, found %d" (len $sections) }}
+  {{ if not $sections }}
+    {{ errorf "layouts/doctrine.html: no section files in content/doctrine/sections/" }}
   {{ end }}
   {{ $focus := "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
   {{ $link := printf "font-semibold text-eto-600 underline underline-offset-2 hover:text-eto-700 %s" $focus }}
-  {{ $tocLink := printf "block border-l-2 border-transparent py-1.5 pl-3 text-warm-800 hover:text-eto-600 aria-[current=location]:border-eto-600 aria-[current=location]:font-semibold aria-[current=location]:text-eto-600 %s" $focus }}
 
   <section class="bg-white">
     <div class="mx-auto max-w-5xl px-6 py-12 sm:py-16 md:py-20">
@@ -42,51 +31,35 @@
         {{ .Content }}
       </div>
       <p class="mt-6 text-body">
-        <a href="{{ .Params.pdf }}" class="{{ $link }}">Download PDF</a>
+        {{/* scripts/doctrine-pdf.sh writes this file. */}}
+        <a href="/pdf/doctrine.pdf" class="{{ $link }}">Download PDF</a>
       </p>
 
       <div
         x-data="scrollSpy"
         class="mt-10 grid gap-8 md:mt-14 md:grid-cols-[13rem_1fr] md:gap-12"
       >
-        {{/* Phones: collapsed contents. */}}
         <details class="rounded-eto border border-warm-200 md:hidden">
           <summary class="cursor-pointer px-4 py-3 font-semibold text-ink {{ $focus }}">
             Contents
           </summary>
           <nav aria-label="Contents" class="border-t border-warm-200 px-4 py-2 text-body">
-            <ol>
-              {{ range $sections }}
-                <li><a href="#{{ .Params.anchor }}" class="{{ $tocLink }}">{{ .Title }}</a></li>
-              {{ end }}
-            </ol>
+            {{ partial "inline/doctrine-toc.html" (dict "sections" $sections "focus" $focus) }}
           </nav>
         </details>
 
-        {{/* md and up: sticky contents, scrolling on its own if the window
-             is shorter than the list. */}}
+        {{/* Scrolls on its own if the window is shorter than the list. */}}
         <nav
           aria-label="Contents"
-          class="hidden md:sticky md:top-20 md:block md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto"
+          class="hidden text-caption md:sticky md:top-20 md:block md:max-h-[calc(100vh-6rem)] md:self-start md:overflow-y-auto"
         >
-          <ol class="text-caption">
-            {{ range $sections }}
-              <li>
-                <a
-                  href="#{{ .Params.anchor }}"
-                  class="{{ $tocLink }}"
-                  :aria-current="active === '{{ .Params.anchor }}' && 'location'"
-                  >{{ .Title }}</a
-                >
-              </li>
-            {{ end }}
-          </ol>
+          {{ partial "inline/doctrine-toc.html" (dict "sections" $sections "focus" $focus) }}
         </nav>
 
         <div class="min-w-0">
           {{ range $i, $s := $sections }}
             <section
-              id="{{ $s.Params.anchor }}"
+              id="{{ partial "inline/doctrine-id.html" $s }}"
               data-spy
               class="{{ if $i }}mt-10 border-t border-warm-200 pt-10{{ end }}"
             >
@@ -96,8 +69,13 @@
               >
                 {{ $s.Content }}
               </div>
+              {{/* Same face as /ugo/'s back-to-top link. */}}
               <p class="mt-6 text-right text-caption">
-                <a href="#top" class="{{ $link }}"><span aria-hidden="true">↑</span> Back to top</a>
+                <a
+                  href="#top"
+                  class="rounded-eto font-semibold text-eto-600 hover:text-eto-700 {{ $focus }}"
+                  >Back to top ↑</a
+                >
               </p>
             </section>
           {{ end }}
@@ -107,28 +85,52 @@
   </section>
 {{ end }}
 
+{{/* A section's id: its file name minus the NN- order prefix. */}}
+{{ define "_partials/inline/doctrine-id.html" }}
+  {{- return strings.TrimLeft "0123456789-" (path.BaseName .Name) -}}
+{{ end }}
+
+{{/* The contents list, shared by the phone and desktop wrappers. scrollSpy
+     (main.js) marks the current section aria-current="location". */}}
+{{ define "_partials/inline/doctrine-toc.html" }}
+  <ol>
+    {{ range .sections }}
+      {{ $id := partial "inline/doctrine-id.html" . }}
+      <li>
+        <a
+          href="#{{ $id }}"
+          class="block border-l-2 border-transparent py-1.5 pl-3 text-warm-800 hover:text-eto-600 aria-[current=location]:border-eto-600 aria-[current=location]:font-semibold aria-[current=location]:text-eto-600 {{ $.focus }}"
+          :aria-current="active === '{{ $id }}' && 'location'"
+          >{{ .Title }}</a
+        >
+      </li>
+    {{ end }}
+  </ol>
+{{ end }}
+
 {{ define "scripts" }}
   {{/* RefTagger: Logos's current embed (logos.com/reftagger, checked
        2026-10-08; still v2), plus two settings the legacy page set: no
-       social-share buttons, and the "more" link in the house blue
-       (eto-600). KJV is a settled conviction (decision 45), not a
-       default to revisit. */}}
+       social-share buttons, and the "more" link in the house blue, read
+       from the eto-600 token. Logos's snippet also forwards a CSP nonce;
+       this site sends no CSP, so that part is left out. KJV is a settled
+       conviction (decision 45), not a default to revisit. */}}
   <script>
     var refTagger = {
       settings: {
         bibleVersion: "KJV",
         socialSharing: [],
-        customStyle: { body: { moreLink: { color: "#0d47a1" } } },
+        customStyle: {
+          body: {
+            moreLink: {
+              color: getComputedStyle(document.documentElement)
+                .getPropertyValue("--color-eto-600")
+                .trim(),
+            },
+          },
+        },
       },
     };
-    (function (d, t) {
-      var n = d.querySelector("[nonce]");
-      refTagger.settings.nonce = n && (n.nonce || n.getAttribute("nonce"));
-      var g = d.createElement(t),
-        s = d.getElementsByTagName(t)[0];
-      g.src = "https://api.reftagger.com/v2/RefTagger.js";
-      g.nonce = refTagger.settings.nonce;
-      s.parentNode.insertBefore(g, s);
-    })(document, "script");
   </script>
+  <script async src="https://api.reftagger.com/v2/RefTagger.js"></script>
 {{ end }}
