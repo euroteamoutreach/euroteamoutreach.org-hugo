@@ -11,7 +11,7 @@ description: "You know all about Him. But do you know Him? A presentation of the
 hero:
   lede: "You know all *about* Him. But do you *know* Him?"
   photo:
-    id: eto/jesus-hero
+    id: eto/jesus-hero-1000w_cqcjls
     width: 1000
     height: 379
     alt: ""
