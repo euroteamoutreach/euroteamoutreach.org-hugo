@@ -1,0 +1,86 @@
+{{/* ---------------------------------------------------------------------
+     Team (`/team/`) — #51, docs/prd/05-templates.md §"Team (`/team/`) + bios".
+
+         hero → intro → the families → supporting a family → accountability
+
+     Copy comes from content/team/_index.md; each card reads its bio's front
+     matter (title, role, photo).
+
+     RULES THIS FILE MUST KEEP:
+
+     1. CURRENT FAMILIES ONLY. The grid takes `status: active` pages and
+        nothing else. "Those who have served" is omitted entirely, not
+        rendered empty (#52).
+
+     2. ONE FRAME FOR EVERY PHOTO. Cards crop to 4:3 whatever the
+        original's shape, so a family of eight and a single portrait still
+        line up. Each bio sets its own crop with `photo.position`.
+
+     3. TWO COLUMNS, NOT FOUR. Four across would shrink a family of eight
+        to a thumbnail; 2×2 gives each photo room and suits four cards.
+     --------------------------------------------------------------------- */}}
+
+{{ define "main" }}
+  {{ $p := .Params }}
+  {{ $section := "mx-auto max-w-5xl px-6 py-12 sm:py-16 md:py-20" }}
+  {{ $prose := "mx-auto max-w-prose space-y-4 text-body text-warm-800 md:space-y-5 [&_a]:font-semibold [&_a]:text-eto-600 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-eto-700 focus-visible:[&_a]:outline-2 focus-visible:[&_a]:outline-offset-2 focus-visible:[&_a]:outline-eto-600" }}
+  {{/* Linked cards, as on home and /give/: the <a> sits on the name and an
+       ::after overlay stretches it over the card. */}}
+  {{ $card := "relative flex flex-col overflow-hidden rounded-eto-lg border border-warm-200 bg-white transition hover:border-eto-600 hover:card-glow has-[a:focus-visible]:border-eto-600 has-[a:focus-visible]:card-glow" }}
+  {{ $stretch := "after:absolute after:inset-0 after:rounded-eto-lg focus-visible:outline-none" }}
+  {{ $families := where .Pages "Params.status" "active" }}
+
+  {{/* ---------------- Hero + intro ---------------- */}}
+  <section class="border-b border-warm-200 bg-white">
+    <div class="{{ $section }}">
+      {{/* One wrapper at body size: max-w-prose is measured in ch, so a
+           heading block at another size would set a different column edge. */}}
+      <div class="mx-auto max-w-prose text-body">
+        <h1 class="text-4xl font-black tracking-tight text-eto-600 sm:text-5xl">
+          {{ .Title }}
+        </h1>
+        <p class="mt-4 text-lede text-warm-800">{{ $p.lede }}</p>
+        <div class="mt-8 md:mt-10 {{ $prose }}">
+          {{ .Content }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- The team ---------------- */}}
+  <section aria-label="The team">
+    <div class="{{ $section }}">
+      <ul class="grid gap-6 md:grid-cols-2 md:gap-8">
+        {{ range sort $families "Params.order" }}
+          {{ $photo := .Params.photo }}
+          <li class="{{ $card }}">
+            {{ partial "team-photo.html" (dict
+              "page" .
+              "sizes" "(min-width: 1024px) 456px, (min-width: 768px) 50vw, 100vw"
+              "class" (printf "aspect-4/3 w-full object-cover %s" ($photo.position | default "object-center"))
+            ) }}
+            <div class="p-6">
+              <h2 class="text-subheading text-ink">
+                <a href="{{ .RelPermalink }}" class="{{ $stretch }}">{{ .Title }}</a>
+              </h2>
+              {{ with .Params.role }}
+                <p class="mt-1 text-caption text-warm-600">{{ . }}</p>
+              {{ end }}
+            </div>
+          </li>
+        {{ end }}
+      </ul>
+    </div>
+  </section>
+
+  {{/* ---------------- Supporting a family · accountability ---------------- */}}
+  <section aria-labelledby="support-heading" class="border-t border-warm-200 bg-white">
+    <div class="{{ $section }}">
+      <div class="{{ $prose }}">
+        <h2 id="support-heading" class="text-heading text-ink">{{ $p.support.heading }}</h2>
+        {{ .RenderString (dict "display" "block") $p.support.body }}
+        <p class="border-t border-warm-200 pt-4 text-caption text-warm-600 md:pt-5">{{ $p.accountability }}</p>
+      </div>
+    </div>
+  </section>
+{{ end }}

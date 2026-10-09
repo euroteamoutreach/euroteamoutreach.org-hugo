@@ -1,0 +1,41 @@
+{{- /*
+  team-photo — a team member's photo from their bio's front matter, shared by
+  the /team/ hub card and the bio page.
+
+  Until a photo is on Cloudinary (`photo.id` empty), it renders a blank
+  warm-100 frame of the same shape and warns at build time, so the layout
+  can be reviewed before the photos land without anything shipping silently.
+  The frame takes the photo's own shape unless `class` sets an aspect ratio.
+
+  Params (dict):
+    page     (required) the bio page
+    sizes    (required) the sizes attribute for its rendered width
+    class    (required) classes for the <img> (or the placeholder)
+    loading  (optional) "eager" for the bio's above-the-fold photo
+*/ -}}
+{{- $page := .page -}}
+{{- $photo := $page.Params.photo -}}
+{{- if not $photo.alt -}}
+  {{- errorf "team-photo: %s has no photo.alt" $page.File.Path -}}
+{{- end -}}
+{{- with $photo.id -}}
+  {{ partial "cloudinary-img.html" (dict
+    "src" .
+    "alt" $photo.alt
+    "sizes" $.sizes
+    "width" $photo.width
+    "height" $photo.height
+    "loading" $.loading
+    "class" (printf "bg-warm-100 %s" $.class)
+  ) }}
+{{- else -}}
+  {{- warnf "team-photo: %s has no photo.id yet; rendering a placeholder" $page.File.Path -}}
+  <div
+    role="img"
+    aria-label="{{ $photo.alt }}"
+    class="bg-warm-100 {{ $.class }} w-full"
+    {{- if not (strings.Contains $.class "aspect-") }}
+    style="aspect-ratio: {{ $photo.width }} / {{ $photo.height }}"
+    {{- end }}
+  ></div>
+{{- end -}}
