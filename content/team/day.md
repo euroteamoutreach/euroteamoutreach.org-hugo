@@ -8,7 +8,6 @@ photo:
   alt: "The Day family, Nathan and Katelin with their children, standing together under the trees"
   width: 3000
   height: 2000
-  position: "object-center"
 donate_url: "https://daysinukraine.com/donate/"
 contact_url: "https://daysinukraine.com/contact/"
 links:

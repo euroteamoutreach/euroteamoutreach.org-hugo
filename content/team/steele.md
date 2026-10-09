@@ -8,7 +8,6 @@ photo:
   alt: "The Steele family, Joshua and Kelsie with their six children, sitting together on the grass in a park"
   width: 3755
   height: 2816
-  position: "object-center"
   # Hub card only: zoom in ~1.25x so faces match the Days' closer shot,
   # framed so the seated group sits centred with less foreground grass. Same
   # 4:3 shape as the original, so width/height above still hold.

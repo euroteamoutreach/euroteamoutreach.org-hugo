@@ -8,8 +8,8 @@ photo:
   alt: ""
   width:
   height:
-  position: "object-center"
-  card_crop: ""  # optional Cloudinary crop for the hub card only
+  # position: "object-top"  # optional hub-card crop anchor; default object-center
+  # card_crop: ""            # optional Cloudinary crop for the hub card only
 # Field missionaries only (#10): their own donate and contact pages. Omit
 # both for anyone who is not raising personal support.
 donate_url: ""

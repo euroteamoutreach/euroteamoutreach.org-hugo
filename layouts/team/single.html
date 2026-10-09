@@ -40,6 +40,9 @@
   {{ $support := printf "Support %s" $name }}
   {{ $contact := printf "Contact %s" $name }}
   {{ $church := $p.sending_church }}
+  {{/* The photo's rendered width on a wide screen: the 768px column, or less
+       for a portrait, which hits the 36rem (576px) height cap first. */}}
+  {{ $photoWidth := math.Min 768 (math.Round (div (mul 576.0 $p.photo.width) $p.photo.height)) }}
 
   {{/* ---------------- Photo · name · support ---------------- */}}
   <section class="border-b border-warm-200 bg-white">
@@ -49,7 +52,7 @@
         <div class="mt-6 flex justify-center md:mt-8">
           {{ partial "team-photo.html" (dict
             "page" .
-            "sizes" "(min-width: 816px) 768px, 100vw"
+            "sizes" (printf "(min-width: 816px) %.0fpx, calc(100vw - 48px)" $photoWidth)
             "loading" "eager"
             "class" "h-auto max-h-[36rem] w-auto max-w-full rounded-eto-lg"
           ) }}
