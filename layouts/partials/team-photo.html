@@ -12,6 +12,8 @@
     sizes    (required) the sizes attribute for its rendered width
     class    (required) classes for the <img> (or the placeholder)
     loading  (optional) "eager" for the bio's above-the-fold photo
+    crop     (optional) passed to cloudinary-img; the hub sends the bio's
+             `photo.card_crop`
 */ -}}
 {{- $page := .page -}}
 {{- $photo := $page.Params.photo -}}
@@ -26,6 +28,7 @@
     "width" $photo.width
     "height" $photo.height
     "loading" $.loading
+    "crop" $.crop
     "class" (printf "bg-warm-100 %s" $.class)
   ) }}
 {{- else -}}

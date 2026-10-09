@@ -9,6 +9,9 @@ photo:
   width: 3755
   height: 2816
   position: "object-center"
+  # Hub card only: zoom in ~1.33x so faces match the Days' closer shot. Same
+  # 4:3 shape as the original, so width/height above still hold.
+  card_crop: "c_crop,x_563,y_526,w_2816,h_2112"
 donate_url: "https://ofreport.com/donate/"
 contact_url: "https://ofreport.com/contact/"
 links:

@@ -20,6 +20,10 @@
     height   (optional) intrinsic height
     loading  (optional) "lazy" (default) or "eager". Use eager for the one
              above-the-fold hero; it also sets fetchpriority="high".
+    crop     (optional) a Cloudinary transformation applied before the
+             resize, e.g. "c_crop,x_563,y_526,w_2816,h_2112", to frame part of
+             the original. Cropping here, not with a CSS zoom, keeps the
+             delivered pixels at full sharpness.
 
   Usage:
     {{ partial "cloudinary-img.html" (dict
@@ -39,11 +43,12 @@
        screen. The fallback src uses 1024, a sensible middle for browsers that
        ignore srcset. */ -}}
 {{- $widths := slice 480 768 1024 1536 2048 -}}
+{{- $crop := cond (ne (.crop | default "") "") (printf "%s/" .crop) "" -}}
 {{- $srcset := slice -}}
 {{- range $widths -}}
-  {{- $srcset = $srcset | append (printf "%s/image/upload/c_limit,f_auto,q_auto,w_%d/%s %dw" site.Params.cloudinaryBase . $src .) -}}
+  {{- $srcset = $srcset | append (printf "%s/image/upload/%sc_limit,f_auto,q_auto,w_%d/%s %dw" site.Params.cloudinaryBase $crop . $src .) -}}
 {{- end -}}
-{{- $fallback := printf "%s/image/upload/c_limit,f_auto,q_auto,w_1024/%s" site.Params.cloudinaryBase $src -}}
+{{- $fallback := printf "%s/image/upload/%sc_limit,f_auto,q_auto,w_1024/%s" site.Params.cloudinaryBase $crop $src -}}
 {{- $loading := .loading | default "lazy" -}}
 
 <img
