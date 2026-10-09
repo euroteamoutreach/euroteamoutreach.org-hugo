@@ -1,16 +1,15 @@
 ---
-name: ""
-slug: patricia
-role: ""
-photo: ""
-sending_church:
-  name: ""
-  url: ""
-support_site_url: ""
-contact_email: ""
+title: "Patricia Rebsch"
+description: "Patricia Rebsch, the stateside secretary of Euro Team Outreach."
+role: "Stateside secretary"
+photo:
+  id: ""
+  alt: "Portrait of Patricia Rebsch"
+  width: 500
+  height: 584
+  position: "object-top"
 order: 4
 status: active
-draft: false
 ---
 
-<!-- TODO: bio copy is added in a later phase; structure-only stub. Source draft: planning/copy/team.md -->
+We are very blessed to have Patricia Rebsch serving as our secretary. Pat handles the majority of ETO's mailouts, correspondence, and many other office tasks. Since most of our staff live overseas, she also plays an extremely important role as our stateside liaison. She donates her time freely as a service to ETO, and ultimately to the Lord.
