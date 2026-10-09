@@ -82,6 +82,32 @@
   status = 301
   force = true
 
+# Legacy team bios lived at the root; they now nest under /team/
+# (10-url-preservation.md). Above the fall-through, like the rules above.
+# /chepara is deliberately ABSENT: it keeps falling through to the legacy
+# page until the memorial publishes, then 301s to /team/chepara/
+# (decision 74). Do not add it here before then.
+[[redirects]]
+  from = "/day"
+  to = "/team/day/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/steele"
+  to = "/team/steele/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/sargent"
+  to = "/team/sargent/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "/patricia"
+  to = "/team/patricia/"
+  status = 301
+  force = true
+
 # ─────────────────────────────────────────────────────────────────────────────
 # TEMPORARY — legacy fall-through for the pre-UGO launch track (#21).
 #
