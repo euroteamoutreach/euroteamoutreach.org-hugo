@@ -1,0 +1,23 @@
+{{- /*
+  scripture — a set-apart verse in Markdown, via partials/scripture-quote.html.
+  Verses quoted mid-sentence stay inline italics; this is for the ones set
+  apart.
+
+  Params:
+    ref  (required) the reference, e.g. "John 3:16"
+
+  Usage:
+    {{< scripture ref="John 8:12" >}}
+    "Then spake Jesus again unto them…"
+    {{< /scripture >}}
+*/ -}}
+{{- $ref := .Get "ref" -}}
+{{- if not $ref -}}
+  {{- errorf "scripture: 'ref' is required (%s)" .Position -}}
+{{- end -}}
+<div class="my-6 md:my-8">
+  {{ partial "scripture-quote.html" (dict
+    "text" (.Inner | strings.TrimSpace | .Page.RenderString (dict "display" "block"))
+    "ref" $ref
+  ) }}
+</div>
