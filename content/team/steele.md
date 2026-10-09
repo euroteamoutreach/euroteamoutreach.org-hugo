@@ -1,13 +1,13 @@
 ---
 title: "The Steeles"
-description: "Joshua and Kelsie Steele, founding members of Euro Team Outreach, serving the Lord in Lviv, Ukraine, since 2004."
+description: "Joshua and Kelsie Steele, founding members of Euro Team Outreach, serving the Lord in Lviv, Ukraine, since 2001."
 members: "Joshua & Kelsie, with Abigail, Rebekah, Hosanna, Kathryn, David, and Mia"
-role: "Missionaries in Lviv since 2004"
+role: "Missionaries in Lviv since 2001"
 photo:
-  id: ""
-  alt: "The Steele family, Joshua and Kelsie with their six children, outdoors in Lviv"
-  width: 1000
-  height: 615
+  id: "eto/steele-family_qbans3"
+  alt: "The Steele family, Joshua and Kelsie with their six children, sitting together on the grass in a park"
+  width: 3755
+  height: 2816
   position: "object-center"
 donate_url: "https://ofreport.com/donate/"
 contact_url: "https://ofreport.com/contact/"

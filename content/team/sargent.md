@@ -1,8 +1,8 @@
 ---
 title: "The Sargents"
-description: "Ben and Karen Sargent of Leicester, North Carolina. Ben serves on the board of Euro Team Outreach and has taken part in its outreaches in Ukraine."
+description: "Ben and Karen Sargent. Ben serves on the board of Euro Team Outreach and has taken part in its outreaches in Ukraine."
 members: "Ben & Karen"
-role: "Board of directors · North Carolina"
+role: "Board of directors · Virginia"
 photo:
   id: ""
   alt: "Ben and Karen Sargent smiling in a pasture, with cattle behind them"
