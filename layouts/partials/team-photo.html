@@ -1,0 +1,31 @@
+{{- /*
+  team-photo — a team member's photo from their bio's front matter, shared by
+  the /team/ hub card and the bio page. Every published bio needs a photo:
+  a missing id or alt fails the build.
+
+  Params (dict):
+    page     (required) the bio page
+    sizes    (required) the sizes attribute for its rendered width
+    class    (required) classes for the <img>
+    loading  (optional) "eager" for the bio's above-the-fold photo
+    crop     (optional) passed to cloudinary-img; the hub sends the bio's
+             `photo.card_crop`
+*/ -}}
+{{- $page := .page -}}
+{{- $photo := $page.Params.photo -}}
+{{- if not $photo.id -}}
+  {{- errorf "team-photo: %s has no photo.id" $page.File.Path -}}
+{{- end -}}
+{{- if not $photo.alt -}}
+  {{- errorf "team-photo: %s has no photo.alt" $page.File.Path -}}
+{{- end -}}
+{{ partial "cloudinary-img.html" (dict
+  "src" $photo.id
+  "alt" $photo.alt
+  "sizes" .sizes
+  "width" $photo.width
+  "height" $photo.height
+  "loading" .loading
+  "crop" .crop
+  "class" (printf "bg-warm-100 %s" .class)
+) }}

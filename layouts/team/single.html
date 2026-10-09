@@ -1,0 +1,122 @@
+{{/* ---------------------------------------------------------------------
+     Team bio (`/team/{slug}/`) — #51, docs/prd/05-templates.md
+     §"Team (`/team/`) + bios".
+
+         photo → name → members → support and contact → bio → connect
+
+     Text from the bio's Markdown; everything else from its front matter.
+     Bios are family-owned: the template arranges them and adds no copy of
+     its own beyond the button and card labels.
+
+     RULES THIS FILE MUST KEEP:
+
+     1. SUPPORT GOES TO THE FAMILY'S OWN SITE (#10). Only missionaries in
+        the field carry `donate_url`, and only they get the gold button,
+        shown twice: under the name, for the visitor who came to give, and
+        again after the bio. GOLD MEANS GIVING (#64), and this is giving.
+        No ETO give band here: a donor must not mistake ETO's general fund
+        for support of this family.
+
+     2. NOTHING PRINTS THAT THE BIO DOES NOT SET. A bio with no links, no
+        contact and no church (the Sargents, Patricia) shows no Connect
+        card at all, never an empty one. Patricia asked that no direct
+        contact details be published.
+
+     3. ONE CENTRED COLUMN (decision 75): left-aligned text at the measure,
+        centred on the page under a centred name. The photo keeps its own
+        shape, capped in height, so a portrait does not fill the screen.
+     --------------------------------------------------------------------- */}}
+
+{{ define "main" }}
+  {{ $p := .Params }}
+  {{ $focus := "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-eto-600" }}
+  {{ $btnBase := printf "inline-block rounded-eto px-5 py-2.5 font-semibold transition-colors %s" $focus }}
+  {{ $gold := printf "%s bg-gold text-ink hover:bg-gold-hover" $btnBase }}
+  {{ $outline := printf "%s border border-eto-600 text-eto-600 hover:bg-eto-50" $btnBase }}
+  {{ $link := printf "rounded-eto font-semibold text-eto-600 underline underline-offset-2 hover:text-eto-700 %s" $focus }}
+  {{ $prose := "mx-auto max-w-prose space-y-4 text-body text-warm-800 md:space-y-5" }}
+  {{/* The name mid-sentence: "Support the Steeles", not "The Steeles". */}}
+  {{ $name := replaceRE "^The " "the " .Title }}
+  {{ $support := printf "Support %s" $name }}
+  {{ $contact := printf "Contact %s" $name }}
+  {{ $church := $p.sending_church }}
+  {{/* The photo's rendered width on a wide screen: the 768px column, or less
+       for a portrait, which hits the 36rem (576px) height cap first. */}}
+  {{ $photoWidth := math.Min 768 (math.Round (div (mul 576.0 $p.photo.width) $p.photo.height)) }}
+
+  {{/* ---------------- Photo · name · support ---------------- */}}
+  <section class="border-b border-warm-200 bg-white">
+    <div class="mx-auto max-w-5xl px-6 pt-6 pb-12 sm:pb-16 md:pt-8 md:pb-20">
+      <div class="mx-auto max-w-3xl">
+        <a href="{{ .Parent.RelPermalink }}" class="rounded-eto text-caption font-semibold text-eto-600 underline-offset-2 hover:text-eto-700 hover:underline {{ $focus }}">← {{ .Parent.Title }}</a>
+        <div class="mt-6 flex justify-center md:mt-8">
+          {{ partial "team-photo.html" (dict
+            "page" .
+            "sizes" (printf "(min-width: 816px) %.0fpx, calc(100vw - 48px)" $photoWidth)
+            "loading" "eager"
+            "class" "h-auto max-h-[36rem] w-auto max-w-full rounded-eto-lg"
+          ) }}
+        </div>
+      </div>
+      <div class="mx-auto mt-8 max-w-prose text-center md:mt-10">
+        <h1 class="text-4xl font-black tracking-tight text-eto-600 sm:text-5xl">{{ .Title }}</h1>
+        {{ with $p.members }}
+          <p class="mt-3 text-lede text-warm-800 md:mt-4">{{ . }}</p>
+        {{ end }}
+        {{ if or $p.donate_url $p.contact_url }}
+          <div class="mt-8 flex flex-wrap justify-center gap-3">
+            {{ with $p.donate_url }}<a href="{{ . }}" class="{{ $gold }}">{{ $support }} ↗</a>{{ end }}
+            {{ with $p.contact_url }}<a href="{{ . }}" class="{{ $outline }}">{{ $contact }} ↗</a>{{ end }}
+          </div>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  {{/* ---------------- Bio · connect ---------------- */}}
+  <section aria-label="About {{ .Title }}">
+    <div class="mx-auto max-w-5xl px-6 py-12 sm:py-16 md:py-20">
+      <div class="{{ $prose }}">
+        {{ .Content }}
+      </div>
+
+      {{ if or $p.links $church $p.donate_url }}
+        <aside aria-labelledby="connect-heading" class="mx-auto mt-12 max-w-prose text-body rounded-eto-lg border border-warm-200 bg-white p-6 md:mt-16 md:p-8">
+          <h2 id="connect-heading" class="text-subheading text-ink">Connect with {{ $name }}</h2>
+          <dl class="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
+            {{ range $p.links }}
+              <div>
+                <dt class="text-caption text-warm-600">{{ .label }}</dt>
+                <dd class="mt-0.5 text-body"><a href="{{ .url }}" class="{{ $link }}">{{ .text }}&nbsp;↗</a></dd>
+              </div>
+            {{ end }}
+            {{ with $church }}
+              <div>
+                <dt class="text-caption text-warm-600">Sending church</dt>
+                <dd class="mt-0.5 text-body text-warm-800">
+                  <p class="font-semibold text-ink">{{ .name }}</p>
+                  {{ with .address }}
+                    <address class="not-italic">
+                      {{ range . }}{{ . }}<br>{{ end }}
+                    </address>
+                  {{ end }}
+                  {{ with .url }}
+                    <a href="{{ . }}" class="{{ $link }}">{{ (urls.Parse .).Host | strings.TrimPrefix "www." }}&nbsp;↗</a>
+                  {{ end }}
+                </dd>
+              </div>
+            {{ end }}
+          </dl>
+          {{ with $p.donate_url }}
+            <div class="mt-8 border-t border-warm-200 pt-6">
+              <p class="text-body text-warm-800">
+                Gifts to {{ $name }} go through their own site.
+              </p>
+              <a href="{{ . }}" class="{{ $gold }} mt-4">{{ $support }} ↗</a>
+            </div>
+          {{ end }}
+        </aside>
+      {{ end }}
+    </div>
+  </section>
+{{ end }}
