@@ -83,13 +83,16 @@ enableRobotsTXT = true
   # public ID; seo.html crops it to 1200×630.
   ogImage = "eto/eto-cover-2018_kp06lc"
 
-  # Umami analytics. websiteId stays blank until the production cutover (#31),
-  # when euroteamoutreach.org gets a NEW website record in the shared Umami
-  # instance (unlike ofreport, which reused one). analytics.html emits nothing
-  # while it is empty, or outside production.
+  # Umami analytics — this site's own website record in the shared Umami
+  # instance (unlike ofreport, which reused one). The ID is public: it ships in
+  # every page's source. Set ahead of the DNS cutover (#31) on purpose: the
+  # script loads on the *.netlify.app production URL too, but analytics.html's
+  # data-domains makes Umami count only euroteamoutreach.org, so nothing is
+  # recorded until DNS points here. analytics.html emits nothing outside
+  # production.
   [params.umami]
     scriptUrl = "https://lens.euroteamoutreach.org/script.js"
-    websiteId = ""
+    websiteId = "c4fe717a-afe9-475f-a5f3-bd0784bdc40e"
 
   # Givebutter (#12, #51) — the /give/ donation form. All PUBLIC values: the
   # account key and widget ID appear in the page source of any site that embeds
