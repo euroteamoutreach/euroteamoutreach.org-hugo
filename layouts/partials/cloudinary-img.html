@@ -41,14 +41,28 @@
 
 {{- /* Widths cover phone at 1x through a full-bleed hero on a 1024px-wide 2x
        screen. The fallback src uses 1024, a sensible middle for browsers that
-       ignore srcset. */ -}}
+       ignore srcset.
+
+       With a known width, candidates stop at the original's own width:
+       c_limit never upscales, so a larger candidate would return the same
+       pixels under a false "w" descriptor, and the browser, trusting it,
+       would draw a w-auto image at a fraction of its size on a 2x screen. */ -}}
 {{- $widths := slice 480 768 1024 1536 2048 -}}
-{{- $crop := cond (ne (.crop | default "") "") (printf "%s/" .crop) "" -}}
+{{- with .width -}}
+  {{- $max := int . -}}
+  {{- if lt $max 2048 -}}
+    {{- $capped := slice -}}
+    {{- range $widths }}{{ if lt . $max }}{{ $capped = $capped | append . }}{{ end }}{{ end -}}
+    {{- $widths = $capped | append $max -}}
+  {{- end -}}
+{{- end -}}
+{{- $crop := "" -}}
+{{- with .crop }}{{ $crop = printf "%s/" . }}{{ end -}}
 {{- $srcset := slice -}}
 {{- range $widths -}}
   {{- $srcset = $srcset | append (printf "%s/image/upload/%sc_limit,f_auto,q_auto,w_%d/%s %dw" site.Params.cloudinaryBase $crop . $src .) -}}
 {{- end -}}
-{{- $fallback := printf "%s/image/upload/%sc_limit,f_auto,q_auto,w_1024/%s" site.Params.cloudinaryBase $crop $src -}}
+{{- $fallback := printf "%s/image/upload/%sc_limit,f_auto,q_auto,w_%d/%s" site.Params.cloudinaryBase $crop (int (math.Min 1024 (index $widths (sub (len $widths) 1)))) $src -}}
 {{- $loading := .loading | default "lazy" -}}
 
 <img
