@@ -41,8 +41,13 @@
         <h1 class="text-4xl font-black tracking-tight text-eto-600 sm:text-5xl">
           {{ .Title }}
         </h1>
-        <p class="mt-4 text-lede text-warm-800">{{ $p.lede }}</p>
-        <div class="mt-8 md:mt-10 {{ $prose }}">
+        {{/* The tagline is a step up from lede size, and the short bar (as on
+             home's hero) closes the heading block before the intro opens: at
+             lede size alone it read as a first paragraph only 2px larger
+             than the body below it. */}}
+        <p class="mt-4 text-xl leading-snug text-warm-800 md:text-2xl">{{ $p.lede }}</p>
+        <div aria-hidden="true" class="mt-6 h-0.5 w-16 bg-eto-600/30 md:mt-8"></div>
+        <div class="mt-6 md:mt-8 {{ $prose }}">
           {{ .Content }}
         </div>
       </div>
