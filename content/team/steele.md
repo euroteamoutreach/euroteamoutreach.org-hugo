@@ -9,9 +9,10 @@ photo:
   width: 3755
   height: 2816
   position: "object-center"
-  # Hub card only: zoom in ~1.33x so faces match the Days' closer shot. Same
+  # Hub card only: zoom in ~1.25x so faces match the Days' closer shot,
+  # framed so the seated group sits centred with less foreground grass. Same
   # 4:3 shape as the original, so width/height above still hold.
-  card_crop: "c_crop,x_563,y_526,w_2816,h_2112"
+  card_crop: "c_crop,x_200,y_300,w_3004,h_2253"
 donate_url: "https://ofreport.com/donate/"
 contact_url: "https://ofreport.com/contact/"
 links:
