@@ -4,7 +4,7 @@ description: "Ben and Karen Sargent. Ben serves on the board of Euro Team Outrea
 members: "Ben & Karen"
 role: "Board of directors · Virginia"
 photo:
-  id: ""
+  id: "eto/team-sargent-1000w_hizd4m"
   alt: "Ben and Karen Sargent smiling in a pasture, with cattle behind them"
   width: 1000
   height: 750
