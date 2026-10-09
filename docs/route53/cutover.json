@@ -1,0 +1,47 @@
+{
+  "Comment": "Cutover: point euroteamoutreach.org apex + www from the legacy CloudFront distribution to Netlify",
+  "Changes": [
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "euroteamoutreach.org.",
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": "Z2FDTNDATAQYW2",
+          "DNSName": "d2amb9pccla9r3.cloudfront.net.",
+          "EvaluateTargetHealth": false
+        }
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "euroteamoutreach.org.",
+        "Type": "A",
+        "TTL": 300,
+        "ResourceRecords": [{ "Value": "75.2.60.5" }]
+      }
+    },
+    {
+      "Action": "DELETE",
+      "ResourceRecordSet": {
+        "Name": "www.euroteamoutreach.org.",
+        "Type": "A",
+        "AliasTarget": {
+          "HostedZoneId": "Z2FDTNDATAQYW2",
+          "DNSName": "d2amb9pccla9r3.cloudfront.net.",
+          "EvaluateTargetHealth": false
+        }
+      }
+    },
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "www.euroteamoutreach.org.",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [{ "Value": "euroteamoutreach.netlify.app" }]
+      }
+    }
+  ]
+}
