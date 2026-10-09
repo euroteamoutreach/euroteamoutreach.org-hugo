@@ -3,6 +3,7 @@
      §"Meet Jesus (`/jesus/`) · Doctrine (`/doctrine/`)".
 
          hero → intro → the sections, in alternating bands
+              → "Forgiven!" on a band of its own → the conclusion
 
      ⚠️ A FAITHFUL PORT: the text lives in content/jesus/ (index.md for the
      intro, sections/ for the rest) and is not reworded or softened here.
@@ -10,18 +11,21 @@
 
      RULES THIS FILE MUST KEEP:
 
-     1. ONE READING COLUMN. Every paragraph sits left-aligned in the same
-        measure (max-w-prose). The legacy page centred some passages and
-        swapped illustrations from side to side; that read as a jumble.
+     1. ONE CENTRED READING COLUMN. Text is left-aligned in a max-w-prose
+        column, and the column is centred on the page, under a centred
+        heading. With no visible container, a column pushed to one side
+        reads as off-balance; centred, both its edges answer to the page.
 
-     2. ILLUSTRATIONS ON THE RIGHT, ALWAYS. The illustration shortcode hangs
-        floats them; from lg this page hangs them in the margin beside the
-        column (the -mr on .illustration in $prose), so the column needs the
-        room to its right: keep it left-aligned in the max-w-5xl container,
-        never centred. flow-root keeps a figure inside its band.
+     2. ILLUSTRATIONS IN THE FLOW, IN PANELS. Each sits between the
+        paragraphs it belongs to, framed at the column's width, so drawings
+        of different shapes line up. The panel takes the opposite ground to
+        its band: white on paper, paper on white.
 
-     3. CENTRED TEXT TWICE ONLY: the hero, and the "Forgiven!" climax. Each
-        is a moment because nothing else on the page is centred.
+     3. ONE BAND BREAKS THE COLUMN: "Who is Jesus Christ?" is six parallel
+        claims, so it is a grid of cards at the container's full width.
+
+     4. "FORGIVEN!" IS THE CLIMAX: the one dark band below the hero, alone
+        and centred. Nothing else on the page looks like it.
      --------------------------------------------------------------------- */}}
 
 {{ define "main" }}
@@ -31,12 +35,8 @@
     {{ errorf "layouts/jesus.html: no section files in content/jesus/sections/" }}
   {{ end }}
   {{ $section := "mx-auto max-w-5xl px-6 py-12 sm:py-16 md:py-20" }}
-  {{/* Sub-headings (the "Who is Jesus Christ?" claims) and links come from
-       the Markdown, so they are styled from the column. The illustration
-       hang: a right margin of minus (width + left margin) takes the float's
-       box out of the line, so the text keeps its full measure and the
-       figure sits in the gutter. */}}
-  {{ $prose := "flow-root max-w-prose space-y-4 text-body text-warm-800 md:space-y-5 [&_a]:font-semibold [&_a]:text-eto-600 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-eto-700 focus-visible:[&_a]:outline-2 focus-visible:[&_a]:outline-offset-2 focus-visible:[&_a]:outline-eto-600 [&_h3]:pt-6 [&_h3]:text-subheading [&_h3]:text-ink [&_strong]:text-ink lg:[&_.illustration]:-mr-[calc(var(--fig-w)+3rem)]" }}
+  {{/* Links come from the Markdown, so they are styled from the column. */}}
+  {{ $prose := "mx-auto max-w-prose space-y-4 text-body text-warm-800 md:space-y-5 [&_a]:font-semibold [&_a]:text-eto-600 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-eto-700 focus-visible:[&_a]:outline-2 focus-visible:[&_a]:outline-offset-2 focus-visible:[&_a]:outline-eto-600 [&_strong]:text-ink" }}
 
   {{/* ---------------- Hero ---------------- */}}
   <section class="relative isolate overflow-hidden bg-eto-900 text-white">
@@ -72,23 +72,45 @@
     {{ $id := partial "section-id.html" $s }}
     <section
       {{ with $s.Title }}aria-labelledby="{{ $id }}"{{ end }}
-      class="{{ if $white }}border-y border-warm-200 bg-white{{ end }}"
+      class="{{ if $white }}border-y border-warm-200 bg-white [&_.illustration]:bg-paper{{ else }}[&_.illustration]:bg-white{{ end }}"
     >
       <div class="{{ $section }}">
         {{/* A section file with no title (the conclusion) runs on with no
              heading, as on the legacy page. */}}
         {{ with $s.Title }}
-          <h2 id="{{ $id }}" class="mb-6 max-w-prose text-heading text-ink md:mb-8">{{ . }}</h2>
+          <h2 id="{{ $id }}" class="mx-auto mb-8 max-w-prose text-center text-heading text-ink md:mb-10">{{ . }}</h2>
         {{ end }}
-        <div class="{{ $prose }}">
+        {{/* Above the card grid, the one-line lead-in centres over the grid. */}}
+        <div class="{{ $prose }}{{ if $s.Params.claims }} text-center{{ end }}">
           {{ $s.Content }}
         </div>
-        {{ with $s.Params.climax }}
-          <p class="mt-10 max-w-prose text-center font-serif text-5xl font-semibold tracking-tight text-eto-600 md:mt-14 md:text-6xl">
-            {{ . }}
-          </p>
+        {{ with $s.Params.claims }}
+          <ul class="mt-10 grid gap-6 md:mt-12 md:grid-cols-2">
+            {{ range . }}
+              <li class="rounded-eto-lg border border-warm-200 bg-white p-6 md:p-8">
+                <h3 class="text-subheading text-ink">{{ .claim }}</h3>
+                <div class="mt-5 space-y-5">
+                  {{ range .verses }}
+                    {{ partial "scripture-quote.html" (dict
+                      "text" (.text | $s.RenderString)
+                      "ref" .ref
+                      "compact" true
+                    ) }}
+                  {{ end }}
+                </div>
+              </li>
+            {{ end }}
+          </ul>
         {{ end }}
       </div>
     </section>
+
+    {{ with $s.Params.climax }}
+      <section class="bg-eto-900 text-white">
+        <div class="mx-auto max-w-5xl px-6 py-16 text-center md:py-24">
+          <p class="font-serif text-5xl font-semibold tracking-tight md:text-7xl">{{ . }}</p>
+        </div>
+      </section>
+    {{ end }}
   {{ end }}
 {{ end }}

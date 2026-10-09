@@ -2,7 +2,7 @@
 title: "The Bible says ALL have sinned."
 ---
 
-{{< illustration src="gods-standard" width="9rem" alt="God's standard: a measuring scale with a line drawn high above it, and an arrow showing how far short we fall." >}}
+{{< illustration src="gods-standard" height="22rem" alt="God's standard: a measuring scale with a line drawn high above it, and an arrow showing how far short we fall." >}}
 "For all have sinned, and **come short** of the glory of God." — Romans 3:23
 {{< /illustration >}}
 
@@ -12,7 +12,7 @@ There are no exceptions. Guided by the law of God written in your heart, you've 
 
 God is holy, and He does not forget. He says of Himself in the Bible: _"The LORD is longsuffering, and of great mercy, forgiving iniquity and transgression, and by no means clearing the guilty…" (Numbers 14:18)_
 
-{{< illustration src="tablets" width="13rem" alt="The Ten Commandments on two stone tablets: thou shalt do no murder, not commit adultery, not steal, not bear false witness; honour thy father and mother; love thy neighbour as thyself." />}}
+{{< illustration src="tablets" alt="The Ten Commandments on two stone tablets: thou shalt do no murder, not commit adultery, not steal, not bear false witness; honour thy father and mother; love thy neighbour as thyself." />}}
 
 "So what happens to sinners? Surely God wouldn't damn everyone just for a few little sins."
 

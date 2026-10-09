@@ -2,7 +2,7 @@
 title: "What is your verdict?"
 ---
 
-{{< illustration src="verdict-hammer" width="10rem" alt="A judge's gavel coming down: guilty." />}}
+{{< illustration src="verdict-hammer" alt="A judge's gavel coming down: guilty." />}}
 
 Judgment day is coming, and no one is exempt. The Bible says, _"The eyes of the LORD are in every place, beholding the evil and the good." (Proverbs 15:3)_
 
@@ -10,7 +10,7 @@ God has seen and recorded everything you've ever done, said, thought, or even in
 
 What will your verdict be? The Bible says, _"But the fearful, and unbelieving, and the abominable, and murderers, and whoremongers, and sorcerers, and idolaters, and all liars, shall have their part in the lake which burneth with fire and brimstone: which is the second death." (Revelation 21:8)_
 
-{{< illustration src="hell" width="10rem" alt="A man hanging by the single thread of physical life above the flames of Hell, with the scissors of physical death about to cut it." />}}
+{{< illustration src="hell" alt="A man hanging by the single thread of physical life above the flames of Hell, with the scissors of physical death about to cut it." />}}
 
 Consider your position. Your ungodliness has separated you from God's favor, and His wrath is upon you. _"God judgeth the righteous, and God is angry with the wicked every day." (Psalm 7:11)_
 

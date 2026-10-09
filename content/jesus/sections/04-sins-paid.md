@@ -4,7 +4,7 @@ title: "Jesus has paid for all of your sins."
 climax: "Forgiven!"
 ---
 
-{{< illustration src="christ-on-cross-landscape" width="16rem" alt="Christ on the cross on a hill, against a glowing sky." />}}
+{{< illustration src="christ-on-cross-landscape" alt="Christ on the cross on a hill, against a glowing sky." />}}
 
 It is done. There is nothing you can add to it. When Christ died on the cross, He cried out, "It is FINISHED!" And so it is. But will you believe on His name? As long as you attempt to earn God's favor, He will reckon with you based on your works. You will be found guilty and condemned. But if you believe on Jesus, He will give you His righteousness.
 

@@ -1,22 +1,21 @@
 {{- /*
-  illustration — an SVG illustration from assets/img/<page section>/.
+  illustration — an SVG illustration from assets/img/<page section>/, framed
+  in a panel across the reading column, between the paragraphs it belongs to.
 
-  Floated right beside the paragraphs that follow it, or stacked and centred
-  on phones. With wide="true" it is a figure of its own across the column, for
-  a diagram too wide to sit beside text. The figure carries the class
-  "illustration" so a page with room to its right can hang it in the margin
-  (layouts/jesus.html).
+  Every panel is the column's width, with the art centred at a set height, so
+  drawings of different shapes still line up down the page. The panel takes
+  its ground from the band it sits in (the page sets it on .illustration).
 
   An <img>, not inlined: the artwork's lettering is drawn as paths, so the alt
   text carries the words. Its width and height come from the SVG's viewBox,
   so the space is reserved before the lazy load.
 
   Params:
-    src    (required) file basename
-    alt    (required) what the illustration says
-    width  (floated only) its width beside the text, e.g. "10rem"; phones get
-           three quarters of it, and a caption may run wider than the art
-    wide   "true" for the full-column placement
+    src     (required) file basename
+    alt     (required) what the illustration says
+    height  (optional) the art's height, default "16rem"; phones get three
+            quarters of it
+    wide    "true" to fill the panel's width instead, for a wide diagram
 
   An optional caption goes between the tags (Markdown).
 */ -}}
@@ -32,29 +31,24 @@
 {{- end -}}
 {{- $box := index (findRESubmatch `viewBox="[\d.]+ [\d.]+ ([\d.]+) ([\d.]+)"` $img.Content 1) 0 -}}
 {{- $img = $img | minify | fingerprint -}}
-{{- $wide := eq (.Get "wide") "true" -}}
-{{- $width := .Get "width" -}}
-{{- if and (not $wide) (not $width) -}}
-  {{- errorf "illustration: a floated illustration needs 'width' (%s)" .Position -}}
+{{- $art := "mx-auto h-[calc(var(--art-h)*0.75)] w-auto md:h-(--art-h)" -}}
+{{- if eq (.Get "wide") "true" -}}
+  {{- $art = "mx-auto h-auto w-full max-w-lg" -}}
 {{- end -}}
-
-{{- $figure := "illustration mx-auto mb-6 w-fit max-w-full md:float-right md:clear-right md:mt-1 md:mb-4 md:ml-8 md:w-(--fig-w) lg:ml-12" -}}
-{{- $art := "mx-auto w-[calc(var(--fig-w)*0.75)] md:w-full" -}}
-{{- if $wide -}}
-  {{- $figure = "my-8 md:my-10" -}}
-  {{- $art = "mx-auto w-full max-w-xl" -}}
-{{- end -}}
-<figure {{ with $width }}style="--fig-w: {{ . }}" {{ end }}class="{{ $figure }}">
+<figure
+  style="--art-h: {{ .Get "height" | default "16rem" }}"
+  class="illustration my-8 rounded-eto-lg border border-warm-200 px-6 py-8 md:my-12 md:px-10 md:py-10"
+>
   <img
     src="{{ $img.RelPermalink }}"
     alt="{{ $alt }}"
     width="{{ index $box 1 | math.Round }}"
     height="{{ index $box 2 | math.Round }}"
-    class="{{ $art }} h-auto"
+    class="{{ $art }}"
     loading="lazy"
     decoding="async">
   {{- with .Inner }}
-    <figcaption class="mx-auto mt-2 max-w-64 text-center text-caption text-warm-600 md:max-w-none md:text-left">
+    <figcaption class="mx-auto mt-6 max-w-sm text-center text-caption text-warm-600">
       {{ . | strings.TrimSpace | $.Page.RenderString }}
     </figcaption>
   {{- end }}

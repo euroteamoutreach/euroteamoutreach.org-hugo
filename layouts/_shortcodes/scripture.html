@@ -1,13 +1,10 @@
 {{- /*
-  scripture — a block quotation of Scripture with its reference beneath.
-
-  The same face as /ugo/'s pull quotes (serif, a blue bar at the left), so a
-  quoted verse looks the same wherever it appears. Verses quoted mid-sentence
-  stay inline italics in the Markdown; this is for the ones set apart.
+  scripture — a set-apart verse in Markdown, via partials/scripture-quote.html.
+  Verses quoted mid-sentence stay inline italics; this is for the ones set
+  apart.
 
   Params:
-    ref  (required) the reference, e.g. "John 3:16". KJV is implied, so the
-         version is never written out.
+    ref  (required) the reference, e.g. "John 3:16"
 
   Usage:
     {{< scripture ref="John 8:12" >}}
@@ -18,9 +15,9 @@
 {{- if not $ref -}}
   {{- errorf "scripture: 'ref' is required (%s)" .Position -}}
 {{- end -}}
-<figure class="scripture my-6 border-l-2 border-eto-600 pl-4 md:my-8">
-  <blockquote class="font-serif text-lg leading-relaxed text-ink italic md:text-xl">
-    {{ .Inner | strings.TrimSpace | .Page.RenderString (dict "display" "block") }}
-  </blockquote>
-  <figcaption class="mt-3 text-caption text-warm-600">{{ $ref }}</figcaption>
-</figure>
+<div class="my-6 md:my-8">
+  {{ partial "scripture-quote.html" (dict
+    "text" (.Inner | strings.TrimSpace | .Page.RenderString (dict "display" "block"))
+    "ref" $ref
+  ) }}
+</div>

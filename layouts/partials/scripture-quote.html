@@ -1,0 +1,20 @@
+{{- /*
+  scripture-quote — a quoted verse with its reference beneath: serif italic
+  behind a blue bar. One face for every set-apart verse, whether it comes from
+  Markdown (the scripture shortcode) or from front matter (/jesus/'s cards).
+
+  Params (dict):
+    text     (required) the verse, already rendered HTML
+    ref      (required) e.g. "John 3:16"; KJV is implied, never written out
+    compact  (optional) true for one step smaller type, inside a card
+*/ -}}
+{{- if or (not .text) (not .ref) -}}
+  {{- errorf "scripture-quote: 'text' and 'ref' are required" -}}
+{{- end -}}
+{{- $size := cond (.compact | default false) "text-base md:text-lg" "text-lg md:text-xl" -}}
+<figure class="border-l-2 border-eto-600 pl-4">
+  <blockquote class="font-serif {{ $size }} leading-relaxed text-ink italic">
+    {{ .text }}
+  </blockquote>
+  <figcaption class="mt-3 text-caption text-warm-600">{{ .ref }}</figcaption>
+</figure>
