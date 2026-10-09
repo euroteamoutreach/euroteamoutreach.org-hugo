@@ -1,11 +1,11 @@
 ---
 title: "The Days"
 description: "Nathan and Katelin Day, missionaries with Euro Team Outreach in Lviv, Ukraine."
-members: "Nathan & Katelin and their children"
+members: "Nathan & Katelin, with Melissa, Lydia, Briana, Jonathan, Eric, and Kiera"
 role: "Missionaries in Lviv since 2004"
 photo:
   id: "eto/day-family_qjclqs"
-  alt: "The Day family, Nathan and Katelin with their children, standing together under the trees"
+  alt: "The Day family, Nathan and Katelin with their six children, standing together under the trees"
   width: 3000
   height: 2000
 donate_url: "https://daysinukraine.com/donate/"
